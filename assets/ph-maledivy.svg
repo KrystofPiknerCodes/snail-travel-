@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250">
+<defs>
+<radialGradient id="g" cx="40%" cy="32%" r="95%">
+<stop offset="0%" stop-color="#31b6c9" stop-opacity="0.5"/>
+<stop offset="48%" stop-color="#0f2f3d"/>
+<stop offset="100%" stop-color="#0b0f0e"/>
+</radialGradient>
+<linearGradient id="v" x1="0" y1="0" x2="0" y2="1">
+<stop offset="55%" stop-color="#000" stop-opacity="0"/>
+<stop offset="100%" stop-color="#000" stop-opacity="0.5"/>
+</linearGradient>
+</defs>
+<rect width="1000" height="1250" fill="url(#g)"/>
+<rect width="1000" height="1250" fill="url(#v)"/>
+<text x="50%" y="90%" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="58" fill="#f4efe4" opacity="0.9" letter-spacing="1.5">Maledivy</text>
+</svg>
