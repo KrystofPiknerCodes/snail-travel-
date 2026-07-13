@@ -1,12 +1,13 @@
-# Snail Travel — homepage
+# Snail Travel — homepage + destinace
 
-Exkluzivní česká luxusní cestovní agentura. Statická homepage (zatím jen homepage).
+Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`) + stránka destinací (`destinace.html`).
 
 ## Stack & spuštění
-- Čistá statika: `index.html` + `css/style.css` + `js/main.js` + `assets/`. Žádný build.
+- Čistá statika: `index.html`, `destinace.html`, `css/style.css`, `js/*.js`, `assets/`. Žádný build.
 - Lokální náhled: `python3 -m http.server 4137` v rootu → http://localhost:4137
   (`.claude/launch.json` existuje, ale MCP `preview_start` ho aktuálně nenačítá — spouštět server přes Bash.)
-- Cache-busting přes query verze: `style.css?v=6`, `main.js?v=4`, `hero.mp4?v=3`. **Při změně CSS/JS zvýšit verzi**, jinak prohlížeč drží cache.
+- Cache-busting přes query verze: aktuálně `style.css?v=9`, `main.js?v=4`, `destinations.js?v=1`, `globe.js?v=2`, `hero.mp4?v=3`. **Při změně CSS/JS zvýšit verzi**, jinak prohlížeč drží cache.
+- Externí knihovny (jen na `destinace.html`) z CDN: D3 v7, topojson-client v3, `world-atlas@2/countries-110m.json`.
 
 ## Design
 - Směr: světlý editorial + cinematic video hero (reference Rolex + Reschio). Jazyk: **čeština**.
@@ -35,10 +36,18 @@ Exkluzivní česká luxusní cestovní agentura. Statická homepage (zatím jen 
 - Fotky lokálně: `assets/dest-<slug>.jpg` (Pexels + Unsplash, licenčně čisté pro komerční užití, vizuálně ověřené). Fallback `assets/ph-<slug>.svg`.
 - Slider: `--cols` = 3 (desktop) / 2 (≤1024) / 1+peek (≤540). Přesný počet celých karet, žádná půlka.
 - Ovládání: šipky + drag (desktop), swipe (mobil). JS v `main.js` (`#destSlider`, `.dest-arrow`).
-- Pod sliderem tlačítko **„Všechny destinace"** (`.btn-ghost`) — zatím odkazuje na `#destinace`, později přepojit na stránku se všemi destinacemi.
+- Pod sliderem tlačítko **„Všechny destinace"** (`.btn-ghost`) → odkazuje na `destinace.html`.
+
+## Stránka `destinace.html`
+- **Hero**: kicker „DESTINACE" + title „Vyberte si, kam vás zavedeme" + lead + **vyhledávací bar** (search bar).
+- **Vyhledávání** (`js/destinations.js`): diakritika-agnostické, real-time filtr, schová prázdné bloky, hint s počtem výsledků. Enter = skok na první match.
+- **Globus** (`js/globe.js`): D3 orthographic projekce, world-atlas countries-110m. Draggable rotace + pomalý auto-rotate. Hover státu → celý kontinent zezlátne (brand gold) + tmavý pill tooltip s názvem kontinentu u kurzoru. Klik → smooth scroll na sekci daného kontinentu.
+- **6 sekcí zemí** pod globem (`#kontinent-evropa`, `-afrika`, `-asie`, `-amerika-sever`, `-amerika-jih`, `-australie`). Každá země je odkaz na `index.html#kontakt` (zatím).
+- **CTA band**: „Nenašli jste svou destinaci?" → kontakt.
+- Klasifikace zemí → kontinent je v `js/globe.js` konstantě `COUNTRY` (name → EU/AF/AS/NA/SA/OC). Střední Amerika + Karibik jdou pod NA. Rusko a Turecko pod EU (kulturní volba). Antarktida není klikatelná na globu, ale je v seznamu zemí Jižní Ameriky.
 
 ## Stav / TODO
-- [ ] „Všechny destinace" → skutečná stránka (až bude).
+- [ ] Detail jednotlivé země (teď každá vede na `index.html#kontakt`).
 - [ ] Kontaktní formulář napojit na backend / službu (teď jen simuluje úspěch).
 - [ ] Finální hero video od klienta → přepsat `assets/hero.mp4` (a zvýšit `?v=`). Zvážit kompresi.
 - [ ] Volitelně: vektor loga; vlastní fotky destinací od klienta.
