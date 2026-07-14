@@ -110,6 +110,23 @@
     }, true);
   }
 
+  /* ---------- Zážitky: expand extra bento tiles ---------- */
+  var bentoToggle = document.getElementById("bentoToggle");
+  var bentoExtra = document.getElementById("bentoExtra");
+  if (bentoToggle && bentoExtra) {
+    var bentoLabel = bentoToggle.querySelector(".btn-ghost-label");
+    bentoToggle.addEventListener("click", function () {
+      var open = bentoExtra.classList.toggle("is-open");
+      bentoToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      if (bentoLabel) { bentoLabel.textContent = open ? "Skrýt zážitky" : "Všechny zážitky"; }
+      if (open) {
+        setTimeout(function () {
+          bentoExtra.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "nearest" });
+        }, 120);
+      }
+    });
+  }
+
   /* ---------- Subtle parallax on quote band ---------- */
   var parallax = document.querySelector("[data-parallax]");
   var ticking = false;

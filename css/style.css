@@ -561,6 +561,140 @@ body.menu-open .mobile-nav {
 }
 .pillar p { margin: 0; color: var(--ink-soft); font-size: 15.5px; }
 
+/* ---- Experiences (bento grid) ---- */
+.experiences { background: var(--cream-2); }
+
+.bento {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 200px);
+  gap: 16px;
+  grid-template-areas:
+    "golf golf f1        euro"
+    "golf golf poznavani svatby"
+    "wellness lety safari safari"
+    "allinc   vily safari safari";
+}
+.bento .tile:nth-child(1)  { grid-area: golf; }
+.bento .tile:nth-child(2)  { grid-area: f1; }
+.bento .tile:nth-child(3)  { grid-area: euro; }
+.bento .tile:nth-child(4)  { grid-area: poznavani; }
+.bento .tile:nth-child(5)  { grid-area: svatby; }
+.bento .tile:nth-child(6)  { grid-area: wellness; }
+.bento .tile:nth-child(7)  { grid-area: lety; }
+.bento .tile:nth-child(8)  { grid-area: safari; }
+.bento .tile:nth-child(9)  { grid-area: allinc; }
+.bento .tile:nth-child(10) { grid-area: vily; }
+
+.bento-extra {
+  grid-template-rows: repeat(2, 200px);
+  grid-template-areas:
+    "vlaky plavby rodina lyzovani"
+    "gastronomie adults wow events";
+  margin-top: 16px;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height .7s var(--ease), opacity .5s var(--ease), margin-top .7s var(--ease);
+}
+.bento-extra.is-open { max-height: 900px; opacity: 1; }
+.bento-extra .tile:nth-child(1) { grid-area: vlaky; }
+.bento-extra .tile:nth-child(2) { grid-area: plavby; }
+.bento-extra .tile:nth-child(3) { grid-area: rodina; }
+.bento-extra .tile:nth-child(4) { grid-area: lyzovani; }
+.bento-extra .tile:nth-child(5) { grid-area: gastronomie; }
+.bento-extra .tile:nth-child(6) { grid-area: adults; }
+.bento-extra .tile:nth-child(7) { grid-area: wow; }
+.bento-extra .tile:nth-child(8) { grid-area: events; }
+
+.tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+  display: flex;
+  align-items: flex-end;
+  isolation: isolate;
+  color: var(--white);
+  text-decoration: none;
+  background: var(--ink);
+}
+.tile-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.1s var(--ease);
+}
+.tile:hover .tile-img { transform: scale(1.06); }
+.tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(20, 16, 10, 0) 40%, rgba(18, 14, 9, .8) 100%);
+}
+.tile-body { position: relative; z-index: 2; padding: 22px 24px; width: 100%; }
+.tile-cat {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+.tile-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.15;
+  font-size: 21px;
+}
+.tile[data-size="lg"] .tile-title { font-size: 30px; }
+.tile-desc {
+  font-family: var(--serif-2);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--cream-2);
+  margin: 8px 0 0;
+  font-size: 15.5px;
+  line-height: 1.4;
+  max-width: 36ch;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height .5s var(--ease), opacity .4s ease, margin-top .5s var(--ease);
+}
+.tile[data-size="lg"] .tile-desc { max-height: 80px; opacity: 1; }
+.tile:hover .tile-desc { max-height: 80px; opacity: 1; }
+.tile-rule {
+  width: 26px; height: 1.5px;
+  background: var(--gold);
+  margin: 0 0 12px;
+  transform-origin: left;
+  transform: scaleX(.55);
+  transition: transform .5s var(--ease);
+}
+.tile:hover .tile-rule { transform: scaleX(1); }
+
+.experiences .cta-row { display: flex; justify-content: center; margin-top: 46px; }
+.experiences .btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--sans);
+}
+.experiences .btn-ghost::after {
+  content: "";
+  width: 9px; height: 9px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform .35s var(--ease);
+}
+.experiences .btn-ghost[aria-expanded="true"]::after { transform: rotate(-135deg); }
+
 /* ---- Quote band ---- */
 .quote-band {
   position: relative;
@@ -713,6 +847,29 @@ body.menu-open .mobile-nav {
    ============================================================ */
 @media (max-width: 1024px) {
   .dest-slider { --cols: 2; }
+  .bento {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(8, 168px);
+    grid-template-areas:
+      "golf golf"
+      "golf golf"
+      "f1        euro"
+      "poznavani svatby"
+      "wellness  lety"
+      "safari safari"
+      "safari safari"
+      "allinc vily";
+  }
+  .bento-extra {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 168px);
+    grid-template-areas:
+      "vlaky plavby"
+      "rodina lyzovani"
+      "gastronomie adults"
+      "wow events";
+  }
+  .bento-extra.is-open { max-height: 1500px; }
 }
 @media (max-width: 860px) {
   .nav, .nav-cta { display: none; }
@@ -731,6 +888,22 @@ body.menu-open .mobile-nav {
   .dest-slider { padding-left: 22px; padding-right: 22px; scroll-padding-left: 22px; }
   .dest-card { width: 78vw; }
   body { font-size: 16px; }
+  .bento, .bento-extra {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+  .bento {
+    grid-template-areas:
+      "golf" "f1" "euro" "poznavani" "svatby"
+      "wellness" "lety" "safari" "allinc" "vily";
+  }
+  .bento-extra {
+    grid-template-areas:
+      "vlaky" "plavby" "rodina" "lyzovani"
+      "gastronomie" "adults" "wow" "events";
+  }
+  .bento .tile, .bento-extra .tile { height: 220px; }
+  .bento-extra.is-open { max-height: 2200px; }
 }
 
 /* ============================================================
