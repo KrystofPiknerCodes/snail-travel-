@@ -1492,3 +1492,178 @@ body.page-light .menu-toggle span { background: var(--ink); }
   .reveal { opacity: 1; transform: none; }
   .hero-video { animation: none; }
 }
+
+/* ============================================================
+   KONTAKTNÍ POPUP (Barbora) + launcher
+   Vyskočí po 15 s, zavře se zlatým křížkem, znovu otevře launcher.
+   ============================================================ */
+.cpop-overlay {
+  position: fixed;
+  right: 26px;
+  bottom: 26px;
+  z-index: 1000;
+  width: 358px;
+  max-width: calc(100vw - 32px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(26px) scale(0.98);
+  transform-origin: bottom right;
+  transition: opacity .45s var(--ease), visibility .45s var(--ease),
+              transform .45s var(--ease);
+  pointer-events: none;
+}
+.cpop-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.cpop {
+  position: relative;
+  width: 100%;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 60px rgba(33, 30, 24, 0.26);
+  padding: 38px 32px 30px;
+  text-align: center;
+}
+.cpop::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold-soft), var(--gold), var(--gold-deep));
+}
+
+.cpop-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 40px; height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--gold-deep);
+  cursor: pointer;
+  transition: background .3s var(--ease), color .3s var(--ease), transform .3s var(--ease);
+}
+.cpop-close:hover {
+  background: rgba(189, 154, 69, 0.12);
+  color: var(--gold);
+  transform: rotate(90deg);
+}
+.cpop-close svg { width: 20px; height: 20px; display: block; }
+
+.cpop-mark {
+  width: auto;
+  height: 38px;
+  margin: 0 auto 15px;
+  display: block;
+}
+
+.cpop .kicker { margin-bottom: 9px; }
+
+.cpop-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: -0.01em;
+  font-size: 1.55rem;
+  margin: 0 0 11px;
+  color: var(--ink);
+}
+.cpop-text {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 0 auto 20px;
+}
+
+.cpop-person {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  margin: 0 0 2px;
+}
+.cpop-role {
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin: 0 0 18px;
+}
+
+.cpop-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0 0 22px;
+}
+.cpop-lines a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-size: 15.5px;
+  color: var(--ink);
+  transition: color .3s var(--ease);
+}
+.cpop-lines a:hover { color: var(--gold-deep); }
+.cpop-lines svg {
+  width: 16px; height: 16px;
+  flex: none;
+  color: var(--gold-deep);
+}
+
+.cpop .btn-solid { width: 100%; }
+
+/* --- Launcher (znovuotevření) --- */
+.cpop-launcher {
+  position: fixed;
+  right: 26px;
+  bottom: 26px;
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 22px 13px 18px;
+  border: none;
+  border-radius: 100px;
+  background: var(--gold);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(146, 114, 51, 0.32);
+  transform: translateY(24px) scale(0.94);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform .45s var(--ease), opacity .45s var(--ease),
+              visibility .45s var(--ease), background .3s var(--ease);
+}
+.cpop-launcher.is-visible {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  visibility: visible;
+}
+.cpop-launcher:hover { background: var(--gold-deep); color: #fff; }
+.cpop-launcher svg { width: 18px; height: 18px; flex: none; }
+
+@media (max-width: 540px) {
+  .cpop-overlay { right: 12px; bottom: 12px; }
+  .cpop { padding: 34px 24px 26px; }
+  .cpop-launcher { right: 12px; bottom: 12px; padding: 12px 18px 12px 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cpop-close:hover { transform: none; }
+}

@@ -6,7 +6,7 @@ Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`
 - Čistá statika: `index.html`, `destinace.html`, `reference.html`, `css/style.css`, `js/*.js`, `assets/`. Žádný build.
 - Lokální náhled: `python3 -m http.server 4137` v rootu → http://localhost:4137
   (`.claude/launch.json` existuje, ale MCP `preview_start` ho aktuálně nenačítá — spouštět server přes Bash.)
-- Cache-busting přes query verze: aktuálně `style.css?v=21`, `main.js?v=5`, `destinations.js?v=1`, `globe.js?v=4`, `references.js?v=1`, `hero.mp4?v=6`. **Při změně CSS/JS zvýšit verzi**, jinak prohlížeč drží cache. (Verze mezi stránkami se občas rozjedou — před release srovnat.)
+- Cache-busting přes query verze: aktuálně `style.css?v=22`, `main.js?v=5`, `destinations.js?v=1`, `globe.js?v=4`, `references.js?v=1`, `popup.js?v=1`, `hero.mp4?v=6`. **Při změně CSS/JS zvýšit verzi**, jinak prohlížeč drží cache. (Verze mezi stránkami se občas rozjedou — před release srovnat.)
 - Externí knihovny (jen na `destinace.html`) z CDN: D3 v7, topojson-client v3, `world-atlas@2/countries-110m.json`.
 
 ## Design
@@ -51,6 +51,11 @@ Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`
 - **Vitrína** (`#vyber`): 8 ručně vybraných citátů, napsáno přímo v HTML (`.ref-quote-card`), beze změny smyslu, jen zkráceno na nejsilnější větu.
 - **Archiv** (`#archiv`, `js/references.js`): render všech 221 karet z `SNAIL_REFERENCES`, prvních 12 viditelných, zbytek za tlačítkem „Zobrazit všechny reference“ (`.ref-more-item` / `.is-expanded`, stejný vzorec jako `bentoToggle` v `main.js`). Vyhledávání je diakritika-agnostické (stejný princip jako `destinations.js`) + chipy pro filtr podle destinace (`#refChips`, počty auto-odvozené). Filtr/hledání ignoruje sbalený stav a prohledává úplně vše. Delší reference mají per-kartu clamp (`.is-clampable`, 420+ znaků) s „Zobrazit celý text“.
 - Statistiky v hlavičce (`#refStatCount/Years/Dest`) se počítají v JS z dat, ne hardcoded.
+
+## Kontaktní karta (Barbora)
+- Sdílený `js/popup.js` (načtený na všech 3 stránkách) sám injektuje rohovou kartu + launcher — markup není duplikovaný v HTML. Styly v `css/style.css` (`.cpop-*`, `.cpop-launcher`). **Není to modal** — karta sedí vpravo dole (`.cpop-overlay` je poziční kontejner, žádné ztmavení, `pointer-events` mimo kartu neblokují stránku).
+- Chování: auto-vysune se po **15 s** (konstanta `DELAY`), jednou za návštěvu — po zavření se drží `sessionStorage['snailContactDismissed']`, takže při dalších stránkách už sama nevyskočí, jen zůstává zlatý launcher „Kontakt" vpravo dole. Zavření: zlatý křížek nebo Esc. Chceš-li vysouvat při každém načtení, smaž session guard.
+- Kontakt: Barbora Blaschke, `barbora@snailtravel.cz`, `+420 602 552 624` (reálné údaje, na rozdíl od placeholderů v patičce/kontaktu).
 
 ## Stav / TODO
 - [ ] Detail jednotlivé země (teď každá vede na `index.html#kontakt`).
