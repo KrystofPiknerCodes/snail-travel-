@@ -1557,11 +1557,23 @@ body.page-light .menu-toggle span { background: var(--ink); }
 }
 .cpop-close svg { width: 20px; height: 20px; display: block; }
 
-.cpop-mark {
+.cpop-photo {
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 16px;
+  display: block;
+  border: 2px solid var(--gold-soft);
+  box-shadow: 0 6px 18px rgba(33, 30, 24, 0.16);
+}
+/* fallback na logo, když fotka chybí */
+.cpop-photo.is-fallback {
   width: auto;
   height: 38px;
-  margin: 0 auto 15px;
-  display: block;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .cpop .kicker { margin-bottom: 9px; }

@@ -27,7 +27,8 @@
   overlay.innerHTML =
     '<div class="cpop">' +
       '<button class="cpop-close" type="button" aria-label="Zavřít">' + icoClose + '</button>' +
-      '<img class="cpop-mark" src="assets/logo-mark.png" alt="" />' +
+      '<img class="cpop-photo" src="assets/barbora.jpg" alt="Barbora Blaschke" ' +
+        'onerror="this.onerror=null;this.src=\'assets/logo-mark.png\';this.classList.add(\'is-fallback\')" />' +
       '<p class="kicker">Váš osobní kontakt</p>' +
       '<h2 class="cpop-title" id="cpopTitle">Naplánujte cestu<br />s&nbsp;Barborou</h2>' +
       '<p class="cpop-text">Nechte se provést světem beze spěchu. Barbora vám ráda ' +
