@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css?v=14" />
+<link rel="stylesheet" href="css/style.css?v=17" />
 </head>
 <body>
 
@@ -51,9 +51,11 @@
   <section class="hero" id="hero">
     <div class="hero-media">
       <!-- Až dorazí finální video, nahraď assets/hero.mp4 (poster zůstane jako fallback). -->
-      <video class="hero-video is-active" autoplay muted loop playsinline preload="auto" poster="assets/ph-hero.svg">
-        <source src="assets/hero.mp4?v=3" type="video/mp4" />
-      </video>
+      <div class="hero-video-zoom is-active">
+        <video class="hero-video is-active" autoplay muted loop playsinline preload="metadata" poster="assets/ph-hero.svg">
+          <source src="assets/hero.mp4?v=6" type="video/mp4" />
+        </video>
+      </div>
       <div class="hero-scrim"></div>
     </div>
 
