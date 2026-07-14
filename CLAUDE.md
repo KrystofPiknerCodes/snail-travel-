@@ -1,12 +1,12 @@
-# Snail Travel — homepage + destinace
+# Snail Travel — homepage + destinace + reference
 
-Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`) + stránka destinací (`destinace.html`).
+Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`) + stránka destinací (`destinace.html`) + stránka referencí (`reference.html`).
 
 ## Stack & spuštění
-- Čistá statika: `index.html`, `destinace.html`, `css/style.css`, `js/*.js`, `assets/`. Žádný build.
+- Čistá statika: `index.html`, `destinace.html`, `reference.html`, `css/style.css`, `js/*.js`, `assets/`. Žádný build.
 - Lokální náhled: `python3 -m http.server 4137` v rootu → http://localhost:4137
   (`.claude/launch.json` existuje, ale MCP `preview_start` ho aktuálně nenačítá — spouštět server přes Bash.)
-- Cache-busting přes query verze: aktuálně `style.css?v=9`, `main.js?v=4`, `destinations.js?v=1`, `globe.js?v=2`, `hero.mp4?v=3`. **Při změně CSS/JS zvýšit verzi**, jinak prohlížeč drží cache.
+- Cache-busting přes query verze: aktuálně `style.css?v=21`, `main.js?v=5`, `destinations.js?v=1`, `globe.js?v=4`, `references.js?v=1`, `hero.mp4?v=6`. **Při změně CSS/JS zvýšit verzi**, jinak prohlížeč drží cache. (Verze mezi stránkami se občas rozjedou — před release srovnat.)
 - Externí knihovny (jen na `destinace.html`) z CDN: D3 v7, topojson-client v3, `world-atlas@2/countries-110m.json`.
 
 ## Design
@@ -45,6 +45,12 @@ Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`
 - **6 sekcí zemí** pod globem (`#kontinent-evropa`, `-afrika`, `-asie`, `-amerika-sever`, `-amerika-jih`, `-australie`). Každá země je odkaz na `index.html#kontakt` (zatím).
 - **CTA band**: „Nenašli jste svou destinaci?" → kontakt.
 - Klasifikace zemí → kontinent je v `js/globe.js` konstantě `COUNTRY` (name → EU/AF/AS/NA/SA/OC). Střední Amerika + Karibik jdou pod NA. Rusko a Turecko pod EU (kulturní volba). Antarktida není klikatelná na globu, ale je v seznamu zemí Jižní Ameriky.
+
+## Stránka `reference.html`
+- Zdroj dat: 221 reálných klientských referencí (2011–2026) stažených z živého webu `snailtravel.cz/reference`, zparsováno skriptem a uloženo jako `js/references-data.js` (`window.SNAIL_REFERENCES`, pole `{date, dateLabel, year, tags[], text[]}`). Text je beze změny (jen sloučené odstavce), destinace jsou odvozené automaticky z původního nadpisu reference přes keyword tagger — při dalších úpravách dat kontrolovat přiřazené `tags`.
+- **Vitrína** (`#vyber`): 8 ručně vybraných citátů, napsáno přímo v HTML (`.ref-quote-card`), beze změny smyslu, jen zkráceno na nejsilnější větu.
+- **Archiv** (`#archiv`, `js/references.js`): render všech 221 karet z `SNAIL_REFERENCES`, prvních 12 viditelných, zbytek za tlačítkem „Zobrazit všechny reference“ (`.ref-more-item` / `.is-expanded`, stejný vzorec jako `bentoToggle` v `main.js`). Vyhledávání je diakritika-agnostické (stejný princip jako `destinations.js`) + chipy pro filtr podle destinace (`#refChips`, počty auto-odvozené). Filtr/hledání ignoruje sbalený stav a prohledává úplně vše. Delší reference mají per-kartu clamp (`.is-clampable`, 420+ znaků) s „Zobrazit celý text“.
+- Statistiky v hlavičce (`#refStatCount/Years/Dest`) se počítají v JS z dat, ne hardcoded.
 
 ## Stav / TODO
 - [ ] Detail jednotlivé země (teď každá vede na `index.html#kontakt`).

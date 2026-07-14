@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reference — Snail Travel</title>
+<meta name="description" content="Co o nás říkají klienti Snail Travel — 221 referencí z patnácti let cestování, podle destinace a s možností vyhledávání." />
+<link rel="icon" href="assets/logo-mark.png" type="image/png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css?v=21" />
+</head>
+<body class="page-light">
+
+<!-- ============ HEADER ============ -->
+<header class="site-header scrolled" id="header">
+  <div class="header-inner">
+    <a href="index.html" class="brand" aria-label="Snail Travel — domů">
+      <img class="brand-mark" src="assets/logo-mark.png" alt="" />
+      <span class="brand-name">Snail&nbsp;Travel</span>
+    </a>
+
+    <nav class="nav" aria-label="Hlavní navigace">
+      <a href="destinace.html">Destinace</a>
+      <a href="reference.html" class="is-active">Reference</a>
+      <a href="index.html#filozofie">Filozofie</a>
+      <a href="index.html#zazitky">Zážitky</a>
+      <a href="index.html#kontakt">Kontakt</a>
+    </nav>
+
+    <a href="index.html#kontakt" class="btn btn-pill nav-cta">Naplánovat cestu</a>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="Otevřít menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile drawer -->
+<div class="mobile-nav" id="mobileNav" aria-hidden="true">
+  <a href="destinace.html">Destinace</a>
+  <a href="reference.html">Reference</a>
+  <a href="index.html#filozofie">Filozofie</a>
+  <a href="index.html#zazitky">Zážitky</a>
+  <a href="index.html#kontakt">Kontakt</a>
+  <a href="index.html#kontakt" class="btn btn-pill">Naplánovat cestu</a>
+</div>
+
+<main id="top">
+
+  <!-- ============ PAGE HEAD ============ -->
+  <section class="section dest-head">
+    <div class="wrap">
+      <p class="kicker reveal">Reference</p>
+      <h1 class="display reveal" data-delay="1">Co o&nbsp;nás říkají ti,<br />se kterými jsme už&nbsp;cestovali</h1>
+      <p class="dest-lead reveal" data-delay="2">
+        Patnáct let, stovky cest na&nbsp;míru — a&nbsp;klienti, kteří se k&nbsp;nám vracejí.
+        Níže si přečtěte jejich vlastní slova, přesně tak, jak nám je poslali.
+      </p>
+      <div class="ref-stats reveal" data-delay="3">
+        <div class="ref-stat"><strong id="refStatCount">–</strong><span>referencí od&nbsp;klientů</span></div>
+        <div class="ref-stat"><strong id="refStatYears">–</strong><span>let na cestách</span></div>
+        <div class="ref-stat"><strong id="refStatDest">–</strong><span>destinací s&nbsp;referencemi</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VITRÍNA — VYBRANÉ CITÁTY ============ -->
+  <section class="section ref-featured" id="vyber">
+    <div class="wrap">
+      <header class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center;">
+        <p class="kicker">Nejlépe to řekli sami</p>
+        <h2 class="display">Pár slov, která nás potěšila nejvíc</h2>
+      </header>
+    </div>
+
+    <div class="wrap">
+      <div class="ref-featured-grid reveal" data-delay="1">
+        <figure class="ref-quote-card">
+          <span class="ref-quote-mark" aria-hidden="true">“</span>
+          <blockquote class="ref-quote-text">Před dnem partnerových narozenin jsme našli v&nbsp;pokoji láhev se&nbsp;vzkazem uvnitř — gratulace a&nbsp;pozvání na&nbsp;večeři na&nbsp;účet podniku. Bylo to od&nbsp;nich opravdu milé překvapení.</blockquote>
+          <figcaption class="ref-quote-foot">
+            <span class="ref-quote-name">Zdeňka</span>
+            <span class="ref-quote-meta">Madeira · 2021</span>
+          </figcaption>
+        </figure>
+
+        <figure class="ref-quote-card">
+          <span class="ref-quote-mark" aria-hidden="true">“</span>
+          <blockquote class="ref-quote-text">Nový rok tedy i&nbsp;díky Vám pro nás začíná nádherně — a&nbsp;protože šlo o&nbsp;vánoční dárek manželce, splnili jste slib, který jsem jí dal asi před dvaceti lety.</blockquote>
+          <figcaption class="ref-quote-foot">
+            <span class="ref-quote-name">Rao Uppaluri</span>
+            <span class="ref-quote-meta">Réunion · 2013</span>
+          </figcaption>
+        </figure>
+
+        <figure class="ref-quote-card">
+          <span class="ref-quote-mark" aria-hidden="true">“</span>
+          <blockquote class="ref-quote-text">Dovolenou jsme si užili a&nbsp;manžel se smál, že to má odpočinkovou dovolenou, když každý den „propotí“ triko na&nbsp;kole.</blockquote>
+          <figcaption class="ref-quote-foot">
+            <span class="ref-quote-name">Eva Krbcová</span>
+            <span class="ref-quote-meta">Seychely · 2016</span>
+          </figcaption>
+        </figure>
+
+        <figure class="ref-quote-card">
+          <span class="ref-quote-mark" aria-hidden="true">“</span>
+          <blockquote class="ref-quote-text">Máte i&nbsp;velmi šťastnou ruku na&nbsp;zahraniční partnery — všechno klaplo naprosto bez&nbsp;jediného problému.</blockquote>
+          <figcaption class="ref-quote-foot">
+            <span class="ref-quote-name">Irena a&nbsp;Jirka Čechovi</span>
+            <span class="ref-quote-meta">Fidži · 2019</span>
+          </figcaption>
+        </figure>
+
+        <figure class="ref-quote-card">
+          <span class="ref-quote-mark" aria-hidden="true">“</span>
+          <blockquote class="ref-quote-text">Výlet do&nbsp;Dubaje byl úžasný. Hotel jste našla moc hezký, měl velkou zahradu i&nbsp;vlastní pláž. Všechno klaplo tak, jak mělo.</blockquote>
+          <figcaption class="ref-quote-foot">
+            <span class="ref-quote-name">Jarmila</span>
+            <span class="ref-quote-meta">Emiráty · 2019</span>
+          </figcaption>
+        </figure>
+
+        <figure class="ref-quote-card">
+          <span class="ref-quote-mark" aria-hidden="true">“</span>
+          <blockquote class="ref-quote-text">Byla to pro nás nejkrásnější golfová dovolená. Dokoupili jsme ještě noční hřiště, takže jsme nakonec zvládli sedm golfů!</blockquote>
+          <figcaption class="ref-quote-foot">
+            <span class="ref-quote-name">Kamil</span>
+            <span class="ref-quote-meta">Turecko · 2018</span>
+          </figcaption>
+        </figure>
+
+        <figure class="ref-quote-card">
+          <span class="ref-quote-mark" aria-hidden="true">“</span>
+          <blockquote class="ref-quote-text">Hotel Atmosphere Kanifushi je naprosto úžasný a&nbsp;patří mezi top&nbsp;5 hotelů, které jsme měli možnost poznat.</blockquote>
+          <figcaption class="ref-quote-foot">
+            <span class="ref-quote-name">J. Keltyčková</span>
+            <span class="ref-quote-meta">Maledivy · 2019</span>
+          </figcaption>
+        </figure>
+
+        <figure class="ref-quote-card">
+          <span class="ref-quote-mark" aria-hidden="true">“</span>
+          <blockquote class="ref-quote-text">Azory dopadly skvěle, všechno klaplo jak mělo a&nbsp;děsně se&nbsp;nám tam líbilo. Určitě se&nbsp;tam vrátíme.</blockquote>
+          <figcaption class="ref-quote-foot">
+            <span class="ref-quote-name">Daniela</span>
+            <span class="ref-quote-meta">Azorské ostrovy · 2024</span>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CELÝ ARCHIV ============ -->
+  <section class="section ref-archive" id="archiv">
+    <div class="wrap">
+      <header class="ref-archive-head reveal">
+        <p class="kicker">Celý archiv</p>
+        <h2 class="display">Všechny reference, podle destinace</h2>
+        <p class="lead" style="margin-top:18px;">Vyberte destinaci nebo si vyhledejte konkrétní jméno či slovo.</p>
+      </header>
+
+      <form class="dest-search ref-search reveal" data-delay="1" role="search" onsubmit="return false;">
+        <svg class="dest-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M20 20 L16 16" />
+        </svg>
+        <input type="search" id="refSearch" placeholder="Hledat v referencích — jméno, destinace, hotel…" autocomplete="off" spellcheck="false" />
+        <button type="button" class="dest-search-clear" id="refSearchClear" aria-label="Vymazat">×</button>
+      </form>
+
+      <div class="ref-chips reveal" data-delay="2" id="refChips" role="group" aria-label="Filtrovat podle destinace"></div>
+      <p class="ref-result-hint" id="refResultHint" aria-live="polite"></p>
+
+      <div class="ref-grid" id="refGrid" aria-live="polite"></div>
+
+      <p class="ref-empty" id="refEmpty">
+        Nic jsme nenašli — zkuste jiné hledání, nebo nám <a href="index.html#kontakt">napište</a> a&nbsp;doplníme to.
+      </p>
+
+      <div class="ref-loadmore reveal">
+        <button class="btn btn-ghost" id="refLoadMore" type="button">Zobrazit všechny reference</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BAND ============ -->
+  <section class="section dest-cta-band">
+    <div class="wrap">
+      <div class="dest-cta-inner reveal">
+        <h2 class="display">Chcete se přidat mezi&nbsp;ně?</h2>
+        <p>Napište nám, kam vás to láká — ozveme se do&nbsp;48&nbsp;hodin s&nbsp;prvním návrhem cesty.</p>
+        <a href="index.html#kontakt" class="btn btn-pill">Naplánovat cestu</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <img class="footer-logo" src="assets/logo-full.png" alt="Snail Travel" />
+      <p class="footer-tag">Umění cestovat pomalu.</p>
+    </div>
+    <nav class="footer-nav" aria-label="Patička">
+      <a href="destinace.html">Destinace</a>
+      <a href="reference.html">Reference</a>
+      <a href="index.html#filozofie">Filozofie</a>
+      <a href="index.html#zazitky">Zážitky</a>
+      <a href="index.html#kontakt">Kontakt</a>
+    </nav>
+    <div class="footer-contact">
+      <a href="mailto:cesty@snailtravel.cz">cesty@snailtravel.cz</a>
+      <a href="tel:+420000000000">+420&nbsp;000&nbsp;000&nbsp;000</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Snail Travel. Všechna práva vyhrazena.</span>
+    <span>Soukromé luxusní cesty na míru.</span>
+  </div>
+</footer>
+
+<script src="js/main.js?v=5"></script>
+<script src="js/references-data.js?v=1"></script>
+<script src="js/references.js?v=1"></script>
+</body>
+</html>
