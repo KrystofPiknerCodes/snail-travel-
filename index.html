@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css?v=25" />
+<link rel="stylesheet" href="css/style.css?v=27" />
 </head>
 <body>
 
@@ -22,7 +22,7 @@
     </a>
 
     <nav class="nav" aria-label="Hlavní navigace">
-      <a href="destinace.html">Destinace</a>
+      <a href="destinace.html" data-nav-section="destinace">Destinace</a>
       <a href="reference.html">Reference</a>
       <a href="#filozofie">Filozofie</a>
       <a href="#zazitky">Zážitky</a>
@@ -39,7 +39,7 @@
 
 <!-- Mobile drawer -->
 <div class="mobile-nav" id="mobileNav" aria-hidden="true">
-  <a href="destinace.html">Destinace</a>
+  <a href="destinace.html" data-nav-section="destinace">Destinace</a>
   <a href="reference.html">Reference</a>
   <a href="#filozofie">Filozofie</a>
   <a href="#zazitky">Zážitky</a>
@@ -119,6 +119,7 @@
             <img src="assets/dest-seychely.jpg" onerror="this.onerror=null;this.src='assets/ph-seychely.svg'" alt="Pláž na Seychelách" loading="lazy" width="1000" height="1250" />
           </div>
           <div class="dest-meta">
+            <div class="dest-rule"></div>
             <h3>Seychely</h3>
             <p>Žulové útesy a&nbsp;tyrkysové laguny</p>
             <span class="dest-cta">Zobrazit nabídky</span>
@@ -133,6 +134,7 @@
                  alt="Chrám na Bali" loading="lazy" width="1000" height="1250" />
           </div>
           <div class="dest-meta">
+            <div class="dest-rule"></div>
             <h3>Bali</h3>
             <p>Chrámy, rýžové terasy a&nbsp;duše ostrova</p>
             <span class="dest-cta">Zobrazit nabídky</span>
@@ -146,6 +148,7 @@
             <img src="assets/dest-azory.jpg" onerror="this.onerror=null;this.src='assets/ph-azory.svg'" alt="Zelené kopce a pobřeží Azor" loading="lazy" width="1000" height="1250" />
           </div>
           <div class="dest-meta">
+            <div class="dest-rule"></div>
             <h3>Azorské ostrovy</h3>
             <p>Zelené krátery uprostřed Atlantiku</p>
             <span class="dest-cta">Zobrazit nabídky</span>
@@ -159,6 +162,7 @@
             <img src="assets/dest-madeira.jpg" onerror="this.onerror=null;this.src='assets/ph-madeira.svg'" alt="Dramatické útesy Madeiry" loading="lazy" width="1000" height="1250" />
           </div>
           <div class="dest-meta">
+            <div class="dest-rule"></div>
             <h3>Madeira</h3>
             <p>Dramatické útesy a&nbsp;věčné jaro</p>
             <span class="dest-cta">Zobrazit nabídky</span>
@@ -173,6 +177,7 @@
                  alt="Vodní vily na Maledivách" loading="lazy" width="1000" height="1250" />
           </div>
           <div class="dest-meta">
+            <div class="dest-rule"></div>
             <h3>Maledivy</h3>
             <p>Vily nad&nbsp;křišťálovou lagunou</p>
             <span class="dest-cta">Zobrazit nabídky</span>
@@ -187,6 +192,7 @@
                  alt="Pláž na Mauriciu" loading="lazy" width="1000" height="1250" />
           </div>
           <div class="dest-meta">
+            <div class="dest-rule"></div>
             <h3>Mauritius</h3>
             <p>Bílé pláže a&nbsp;korálové útesy</p>
             <span class="dest-cta">Zobrazit nabídky</span>
@@ -486,7 +492,7 @@
   </div>
 </footer>
 
-<script src="js/main.js?v=5"></script>
+<script src="js/main.js?v=6"></script>
 <script src="js/popup.js?v=3"></script>
 </body>
 </html>

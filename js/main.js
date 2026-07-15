@@ -15,6 +15,41 @@
   }
   onScrollHeader();
 
+  /* ---------- Scrollspy: gold nav link for the section in view ----------
+     Only affects links whose target section exists on this page (bare "#id"
+     hrefs, or an explicit data-nav-section — used for "Destinace" pointing
+     at destinace.html while this page also has an #destinace section). The
+     static .is-active on destinace.html/reference.html is left alone since
+     no matching section exists there. */
+  (function () {
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll(".nav a, .mobile-nav a"));
+    function linkSectionId(a) {
+      var href = a.getAttribute("href") || "";
+      return a.getAttribute("data-nav-section") || (href.charAt(0) === "#" ? href.slice(1) : "");
+    }
+    var sections = navLinks
+      .map(linkSectionId)
+      .filter(function (id, i, arr) { return id && arr.indexOf(id) === i; })
+      .map(function (id) { return document.getElementById(id); })
+      .filter(Boolean);
+
+    if (!sections.length || !("IntersectionObserver" in window)) return;
+
+    function setActive(id) {
+      navLinks.forEach(function (a) {
+        a.classList.toggle("is-active", linkSectionId(a) === id);
+      });
+    }
+
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    }, { rootMargin: "-45% 0px -50% 0px", threshold: 0 });
+
+    sections.forEach(function (s) { spy.observe(s); });
+  })();
+
   /* ---------- Scroll reveal (IntersectionObserver) ---------- */
   var reveals = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window && !prefersReduced) {
