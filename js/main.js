@@ -126,12 +126,16 @@
       isDown = true; moved = 0;
       startX = e.clientX;
       startScroll = slider.scrollLeft;
-      slider.classList.add("dragging");
     });
     window.addEventListener("pointermove", function (e) {
       if (!isDown) return;
       var dx = e.clientX - startX;
       moved = Math.abs(dx);
+      // only treat this as a drag (and disable the card links) once the
+      // pointer has actually travelled — otherwise a plain click leaves
+      // pointer-events:none on the link during its own pointerup hit-test
+      // and the click silently fails to navigate.
+      if (moved > 6) slider.classList.add("dragging");
       slider.scrollLeft = startScroll - dx;
     });
     window.addEventListener("pointerup", function () {

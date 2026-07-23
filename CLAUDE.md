@@ -6,7 +6,7 @@ Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`
 - Čistá statika: `index.html`, `destinace.html`, `reference.html`, `css/style.css`, `js/*.js`, `assets/`. Žádný build.
 - Lokální náhled: `python3 -m http.server 4137` v rootu → http://localhost:4137
   (`.claude/launch.json` existuje, ale MCP `preview_start` ho aktuálně nenačítá — spouštět server přes Bash.)
-- Cache-busting přes query verze: aktuálně `style.css?v=22`, `main.js?v=5`, `destinations.js?v=1`, `globe.js?v=4`, `references.js?v=1`, `popup.js?v=1`, `hero.mp4?v=6`. **Při změně CSS/JS zvýšit verzi**, jinak prohlížeč drží cache. (Verze mezi stránkami se občas rozjedou — před release srovnat.)
+- Cache-busting přes query verze: aktuálně `style.css?v=30`, `main.js?v=7`, `destinations.js?v=1`, `globe.js?v=4`, `references.js?v=1`, `popup.js?v=3`, `hero.mp4?v=6`. **Při změně CSS/JS zvýšit verzi**, jinak prohlížeč drží cache. (Verze mezi stránkami se občas rozjedou — před release srovnat.)
 - Externí knihovny (jen na `destinace.html`) z CDN: D3 v7, topojson-client v3, `world-atlas@2/countries-110m.json`.
 
 ## Design
@@ -42,9 +42,15 @@ Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`
 - **Hero**: kicker „DESTINACE" + title „Vyberte si, kam vás zavedeme" + lead + **vyhledávací bar** (search bar).
 - **Vyhledávání** (`js/destinations.js`): diakritika-agnostické, real-time filtr, schová prázdné bloky, hint s počtem výsledků. Enter = skok na první match.
 - **Globus** (`js/globe.js`): D3 orthographic projekce, world-atlas countries-110m. Draggable rotace + pomalý auto-rotate. Hover státu → celý kontinent zezlátne (brand gold) + tmavý pill tooltip s názvem kontinentu u kurzoru. Klik → smooth scroll na sekci daného kontinentu.
-- **6 sekcí zemí** pod globem (`#kontinent-evropa`, `-afrika`, `-asie`, `-amerika-sever`, `-amerika-jih`, `-australie`). Každá země je odkaz na `index.html#kontakt` (zatím).
+- **6 sekcí zemí** pod globem (`#kontinent-evropa`, `-afrika`, `-asie`, `-amerika-sever`, `-amerika-jih`, `-australie`). Každá země je odkaz na `index.html#kontakt`, **kromě Seychel** → `destinace/seychely.html` (viz níže).
 - **CTA band**: „Nenašli jste svou destinaci?" → kontakt.
 - Klasifikace zemí → kontinent je v `js/globe.js` konstantě `COUNTRY` (name → EU/AF/AS/NA/SA/OC). Střední Amerika + Karibik jdou pod NA. Rusko a Turecko pod EU (kulturní volba). Antarktida není klikatelná na globu, ale je v seznamu zemí Jižní Ameriky.
+
+## Detail destinace — `destinace/seychely.html` (vzor pro další země)
+- Zatím jediná rozklikávací destinace (ostatní země i homepage slider dál vedou na `index.html#kontakt`). Odkazují sem: karta „Seychely" v `destinace.html` (sekce Afrika) a karta „Seychely" v homepage sliderU (`index.html#destinace`).
+- Struktura stránky: drobečková navigace (`.crumb`) + kicker/h1/lead (`.dest-head`, stejné jako hlavička `destinace.html`) → grid ostrovů (znovupoužité `.country-grid`/`.country-photo`/`.country-name` z `destinace.html`, 3 ostrovy `is-featured`: Mahé, La Digue, Praslin) → CTA band → footer. Zatím žádné JS specifické pro stránku (jen `main.js` + `popup.js`), každý ostrov vede na `index.html#kontakt`.
+- Fotky ostrovů: `assets/seychely/<slug>.jpg` (13 ostrovů), staženo a zkomprimováno (šířka ≤1000px) z živého webu `snailtravel.cz/destinace/seychely1`.
+- Stránka žije v podsložce `destinace/`, takže všechny cesty k `css/`, `js/`, `assets/`, `index.html`, `destinace.html`, `reference.html` mají prefix `../`. Další zemské detaily by měly následovat stejný vzor (`destinace/<slug>.html`).
 
 ## Stránka `reference.html`
 - Zdroj dat: 221 reálných klientských referencí (2011–2026) stažených z živého webu `snailtravel.cz/reference`, zparsováno skriptem a uloženo jako `js/references-data.js` (`window.SNAIL_REFERENCES`, pole `{date, dateLabel, year, tags[], text[]}`). Text je beze změny (jen sloučené odstavce), destinace jsou odvozené automaticky z původního nadpisu reference přes keyword tagger — při dalších úpravách dat kontrolovat přiřazené `tags`.
@@ -58,7 +64,7 @@ Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`
 - Kontakt: Barbora Blaschke, `barbora@snailtravel.cz`, `+420 602 552 624` (reálné údaje, na rozdíl od placeholderů v patičce/kontaktu).
 
 ## Stav / TODO
-- [ ] Detail jednotlivé země (teď každá vede na `index.html#kontakt`).
+- [ ] Detail jednotlivé země pro zbytek destinací (vzor hotový v `destinace/seychely.html`, ostatní země zatím vedou na `index.html#kontakt`).
 - [ ] Kontaktní formulář napojit na backend / službu (teď jen simuluje úspěch).
 - [ ] Finální hero video od klienta → přepsat `assets/hero.mp4` (a zvýšit `?v=`). Zvážit kompresi.
 - [ ] Volitelně: vektor loga; vlastní fotky destinací od klienta.

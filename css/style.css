@@ -953,6 +953,25 @@ body.page-light .menu-toggle span { background: var(--ink); }
 }
 .dest-head .kicker { margin-bottom: 18px; }
 .dest-head .display { margin-bottom: 22px; }
+
+.crumb {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 26px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.crumb a { color: var(--ink-soft); transition: color .3s var(--ease); }
+.crumb a:hover { color: var(--gold-deep); }
+.crumb-sep { color: var(--line); }
+.crumb-current { color: var(--gold-deep); }
+
 .dest-lead {
   font-family: var(--serif-2);
   font-size: clamp(1.15rem, 1.9vw, 1.4rem);
@@ -961,6 +980,40 @@ body.page-light .menu-toggle span { background: var(--ink); }
   max-width: 720px;
   margin: 0 auto 40px;
 }
+
+/* Page head with a destination photo behind it (e.g. destinace/seychely.html) */
+.dest-head-photo {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  padding-top: calc(120px + 4vh);
+  padding-bottom: 70px;
+  color: var(--cream);
+}
+.dest-head-photo .wrap { width: 100%; }
+.dest-head-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-size: cover;
+  background-position: center 68%;
+  background-repeat: no-repeat;
+}
+.dest-head-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(18,14,9,.5) 0%, rgba(16,12,8,.68) 55%, rgba(14,11,7,.88) 100%);
+}
+.dest-head-photo .crumb a { color: rgba(250, 248, 243, 0.72); }
+.dest-head-photo .crumb a:hover { color: var(--gold-soft); }
+.dest-head-photo .crumb-sep { color: rgba(250, 248, 243, 0.3); }
+.dest-head-photo .crumb-current { color: var(--gold-soft); }
+.dest-head-photo .display { color: var(--cream); }
+.dest-head-photo .dest-lead { color: rgba(250, 248, 243, 0.85); }
 
 .dest-search {
   position: relative;
