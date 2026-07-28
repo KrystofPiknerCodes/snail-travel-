@@ -6,7 +6,7 @@ Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`
 - Čistá statika: `index.html`, `destinace.html`, `reference.html`, `css/style.css`, `js/*.js`, `assets/`. Žádný build.
 - Lokální náhled: `python3 -m http.server 4137` v rootu → http://localhost:4137
   (`.claude/launch.json` existuje, ale MCP `preview_start` ho aktuálně nenačítá — spouštět server přes Bash.)
-- Cache-busting přes query verze: aktuálně `style.css?v=30`, `main.js?v=7`, `destinations.js?v=1`, `globe.js?v=4`, `references.js?v=1`, `popup.js?v=3`, `hero.mp4?v=6`. **Při změně CSS/JS zvýšit verzi**, jinak prohlížeč drží cache. (Verze mezi stránkami se občas rozjedou — před release srovnat.)
+- Cache-busting přes query verze: aktuálně `style.css?v=36`, `main.js?v=7`, `destinations.js?v=2`, `globe.js?v=4`, `references.js?v=1`, `popup.js?v=4`, `search-index.js?v=2`, `header-search.js?v=2`, `hero.mp4?v=6`. **Při změně CSS/JS zvýšit verzi**, jinak prohlížeč drží cache. (Verze mezi stránkami se občas rozjedou — před release srovnat.)
 - Externí knihovny (jen na `destinace.html`) z CDN: D3 v7, topojson-client v3, `world-atlas@2/countries-110m.json`.
 
 ## Design
@@ -57,6 +57,15 @@ Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`
 - **Vitrína** (`#vyber`): 8 ručně vybraných citátů, napsáno přímo v HTML (`.ref-quote-card`), beze změny smyslu, jen zkráceno na nejsilnější větu.
 - **Archiv** (`#archiv`, `js/references.js`): render všech 221 karet z `SNAIL_REFERENCES`, prvních 12 viditelných, zbytek za tlačítkem „Zobrazit všechny reference“ (`.ref-more-item` / `.is-expanded`, stejný vzorec jako `bentoToggle` v `main.js`). Vyhledávání je diakritika-agnostické (stejný princip jako `destinations.js`) + chipy pro filtr podle destinace (`#refChips`, počty auto-odvozené). Filtr/hledání ignoruje sbalený stav a prohledává úplně vše. Delší reference mají per-kartu clamp (`.is-clampable`, 420+ znaků) s „Zobrazit celý text“.
 - Statistiky v hlavičce (`#refStatCount/Years/Dest`) se počítají v JS z dat, ne hardcoded.
+
+## Hlavička — telefon + fulltextové vyhledávání
+- Sdílený `js/header-search.js` (na všech 4 stránkách) injektuje do `.header-inner` dvě kolečka (lupa + telefon) před CTA — markup není v HTML, stejný princip jako `popup.js`. Styly `.hact-*` a `.hsearch-*` v `css/style.css`.
+- **Telefon**: klik vysune `+420 602 552 624` vedle ikony (`tel:` odkaz, zavře se klikem mimo). Na dotykových zařízeních (`hover: none`) klik rovnou vytáčí.
+- **Hledání**: klik (nebo ⌘/Ctrl+K) otevře overlay pod hlavičkou — live výsledky, diakritika-agnostické, šipky ↑↓ + Enter, Esc zavře. Prázdný dotaz nabídne chipy s tipy. Overlay má `z-index: 1200`, tj. nad kontaktní kartou, a kartu i launcher po dobu otevření skryje (`body.hsearch-open`).
+- Data: `js/search-index.js` = `window.SNAIL_SEARCH_INDEX`, 143 položek (107 zemí, 18 zážitků, 13 seychelských ostrovů, 5 stránek/sekcí). Pole `t` (název), `s` (podtitulek), `c` (kategorie), `u` (URL relativní ke kořeni — na podstránkách se prefixuje `../`), `n` (normalizovaný text pro hledání vč. aliasů typu „mauricius“ → Mauritius).
+- Index **negeneruje se za běhu** — je vyparsovaný z `destinace.html` / `index.html` / `destinace/seychely.html` skriptem. Při přidání země, zážitku nebo stránky doplnit i sem (generátor: `python3 tools/gen-search-index.py` z rootu — regex parser, přepíše `js/search-index.js`; aliasy názvů jsou v konstantě `ALIAS`).
+- Reference (221 textů) v tomto indexu **nejsou**, ty má vlastní vyhledávání přímo na `reference.html`.
+- Odkaz na zemi vede na `destinace.html?q=<země>#kontinent-<x>`; `destinations.js` `?q=` přečte, předvyplní hledání a odscrolluje na kartu. Seychely vedou rovnou na `destinace/seychely.html`.
 
 ## Kontaktní karta (Barbora)
 - Sdílený `js/popup.js` (načtený na všech 3 stránkách) sám injektuje rohovou kartu + launcher — markup není duplikovaný v HTML. Styly v `css/style.css` (`.cpop-*`, `.cpop-launcher`). **Není to modal** — karta sedí vpravo dole (`.cpop-overlay` je poziční kontejner, žádné ztmavení, `pointer-events` mimo kartu neblokují stránku).

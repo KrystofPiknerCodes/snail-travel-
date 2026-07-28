@@ -12,6 +12,9 @@
 
   var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // Stránky v podsložce (destinace/*.html) potřebují ../ prefix k assets/
+  var basePath = /\/destinace\//.test(window.location.pathname) ? "../" : "";
+
   // Ikony (inline SVG, currentColor)
   var icoClose = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>';
   var icoMail  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7 L12 13 L20.5 7"/></svg>';
@@ -27,8 +30,8 @@
   overlay.innerHTML =
     '<div class="cpop">' +
       '<button class="cpop-close" type="button" aria-label="Zavřít">' + icoClose + '</button>' +
-      '<img class="cpop-photo" src="assets/barbora.jpg" alt="Barbora Blaschke" ' +
-        'onerror="this.onerror=null;this.src=\'assets/logo-mark.png\';this.classList.add(\'is-fallback\')" />' +
+      '<img class="cpop-photo" src="' + basePath + 'assets/barbora.jpg" alt="Barbora Blaschke" ' +
+        'onerror="this.onerror=null;this.src=\'' + basePath + 'assets/logo-mark.png\';this.classList.add(\'is-fallback\')" />' +
       '<p class="kicker">Váš osobní kontakt</p>' +
       '<h2 class="cpop-title" id="cpopTitle">Naplánujte cestu<br />s&nbsp;Barborou</h2>' +
       '<p class="cpop-text">Nechte se provést světem beze spěchu. Barbora vám ráda ' +

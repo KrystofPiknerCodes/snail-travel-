@@ -101,6 +101,19 @@
     input.focus();
   });
 
+  // ---- Předvyplnění z ?q= (odkazy z vyhledávání v hlavičce) ------------
+  const preset = new URLSearchParams(window.location.search).get('q');
+  if (preset) {
+    input.value = preset;
+    runSearch(preset);
+    const first = index.find(({ key }) => key.includes(norm(preset)));
+    if (first) {
+      requestAnimationFrame(() => {
+        first.li.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+  }
+
   // ---- Map tile → smooth scroll (keeps URL clean-ish) -----------------
   mapTiles.forEach(tile => {
     tile.addEventListener('click', e => {
