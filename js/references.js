@@ -189,4 +189,50 @@
       searchInput.focus();
     });
   }
+
+  /* ---------- Předvýběr destinace z ?dest= ----------
+     Odkazy z odznaků na destinace.html (js/dest-refs.js) a z detailů
+     destinací. Když chip neexistuje, spadneme na fulltext, ať odkaz
+     nikdy neskončí prázdnou stránkou. */
+  (function presetFromQuery() {
+    var dest = new URLSearchParams(window.location.search).get('dest');
+    if (!dest) return;
+
+    var chip = null;
+    if (chipsEl) {
+      Array.prototype.forEach.call(chipsEl.querySelectorAll('.ref-chip'), function (c) {
+        if (norm(c.dataset.tag) === norm(dest)) chip = c;
+      });
+    }
+
+    if (chip) {
+      activeTag = chip.dataset.tag;
+      Array.prototype.forEach.call(chipsEl.querySelectorAll('.ref-chip'), function (c) {
+        c.classList.toggle('is-active', c === chip);
+      });
+    } else if (searchInput) {
+      searchInput.value = dest;
+    }
+    applyFilter();
+
+    /* Skok na archiv až po load — dřív se poloha #archiv ještě posouvá,
+       jak dobíhají obrázky vitríny, a scroll skončí na špatném místě. */
+    var archive = document.getElementById('archiv');
+    if (!archive) return;
+
+    function goToArchive() {
+      var header = document.querySelector('.site-header');
+      var offset = (header ? header.offsetHeight : 0) + 12;
+      window.scrollTo({
+        top: archive.getBoundingClientRect().top + window.scrollY - offset,
+        behavior: 'smooth'
+      });
+    }
+
+    if (document.readyState === 'complete') {
+      setTimeout(goToArchive, 60);
+    } else {
+      window.addEventListener('load', function () { setTimeout(goToArchive, 60); });
+    }
+  })();
 })();

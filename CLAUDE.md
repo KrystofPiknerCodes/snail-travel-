@@ -1,12 +1,12 @@
 # Snail Travel — homepage + destinace + reference
 
-Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`) + stránka destinací (`destinace.html`) + stránka referencí (`reference.html`).
+Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`) + destinace (`destinace.html`) + reference (`reference.html`) + o nás/tým (`o-nas.html`).
 
 ## Stack & spuštění
-- Čistá statika: `index.html`, `destinace.html`, `reference.html`, `css/style.css`, `js/*.js`, `assets/`. Žádný build.
+- Čistá statika: `index.html`, `destinace.html`, `reference.html`, `o-nas.html`, `css/style.css`, `js/*.js`, `assets/`. Žádný build.
 - Lokální náhled: `python3 -m http.server 4137` v rootu → http://localhost:4137
   (`.claude/launch.json` existuje, ale MCP `preview_start` ho aktuálně nenačítá — spouštět server přes Bash.)
-- Cache-busting přes query verze: aktuálně `style.css?v=36`, `main.js?v=7`, `destinations.js?v=2`, `globe.js?v=4`, `references.js?v=1`, `popup.js?v=4`, `search-index.js?v=2`, `header-search.js?v=2`, `hero.mp4?v=6`. **Při změně CSS/JS zvýšit verzi**, jinak prohlížeč drží cache. (Verze mezi stránkami se občas rozjedou — před release srovnat.)
+- Cache-busting přes query verze: aktuálně `style.css?v=41`, `main.js?v=7`, `destinations.js?v=3`, `globe.js?v=4`, `references.js?v=3`, `references-data.js?v=1`, `ref-counts.js?v=1`, `ref-quotes.js?v=1`, `dest-refs.js?v=2`, `dest-references.js?v=1`, `popup.js?v=4`, `search-index.js?v=4`, `header-search.js?v=2`, `hero.mp4?v=6`. **Při změně CSS/JS zvýšit verzi**, jinak prohlížeč drží cache. Pozor: verzi zvyšovat **až po** přegenerování obsahu, ne dopředu — jinak se stará verze stihne zacachovat pod novým číslem.
 - Externí knihovny (jen na `destinace.html`) z CDN: D3 v7, topojson-client v3, `world-atlas@2/countries-110m.json`.
 
 ## Design
@@ -20,6 +20,10 @@ Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`
   - `assets/logo-mark.png` — ulita (hlavička)
   - `assets/logo-full.png` — ulita + nápis SNAIL TRAVEL (patička)
 - Pokud přijde vektor (SVG/AI/PDF), nahradit za ostřejší verzi.
+
+## Navigace (sdílená napříč stránkami)
+- Hlavička (desktop) má 5 položek: **O nás · Destinace · Reference · Zážitky · Kontakt**. „Filozofie" z hlavičky vypadla, aby se vešlo O nás — zůstává v mobilním draweru a v patičce (obojí má 6 položek).
+- Při přidání stránky upravit ve **všech** HTML: `.nav`, `.mobile-nav`, `.footer-nav` — markup není sdílený.
 
 ## Sekce (pořadí v `index.html`)
 1. Header/nav (fixní, průhledná nad herem → krémová po odscrollování), CTA „Naplánovat cestu" (zlaté).
@@ -58,12 +62,35 @@ Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`
 - **Archiv** (`#archiv`, `js/references.js`): render všech 221 karet z `SNAIL_REFERENCES`, prvních 12 viditelných, zbytek za tlačítkem „Zobrazit všechny reference“ (`.ref-more-item` / `.is-expanded`, stejný vzorec jako `bentoToggle` v `main.js`). Vyhledávání je diakritika-agnostické (stejný princip jako `destinations.js`) + chipy pro filtr podle destinace (`#refChips`, počty auto-odvozené). Filtr/hledání ignoruje sbalený stav a prohledává úplně vše. Delší reference mají per-kartu clamp (`.is-clampable`, 420+ znaků) s „Zobrazit celý text“.
 - Statistiky v hlavičce (`#refStatCount/Years/Dest`) se počítají v JS z dat, ne hardcoded.
 
+## Propojení referencí s destinacemi
+Reference jsou hlavní důkazní materiál — proto nesedí jen na `reference.html`, ale jsou vidět tam, kde návštěvník hledá destinaci.
+
+- **Odznaky na kartách zemí** (`destinace.html`): `js/dest-refs.js` přišije do `.country-grid li` pill „57 referencí" u zemí, které reference mají (30 ze 107). Odkaz vede na `reference.html?dest=<tag>`. Odznak je **sourozenec** karty, ne vnořený odkaz (to by nebylo validní HTML), proto `.country-grid li { position: relative }`.
+  - CSS musí být `.country-grid .country-refs`, jinak ho přebije `.country-grid a` (display/aspect-ratio/overlaye). U `li.is-featured` je navíc potřeba `aspect-ratio: auto`.
+  - `js/destinations.js` čte název země z `.country-name`, ne z `li.textContent` — jinak by se text odznaku dostal do vyhledávacího klíče.
+- **`?dest=` na `reference.html`** (`js/references.js`): předvybere chip dané destinace a po `load` odscrolluje na `#archiv`. Když chip neexistuje, spadne na fulltext.
+- **Inline reference na detailu destinace** (`js/dest-references.js`): sekce `.ref-inline` s `data-dest="<tag>"` a `data-root="../"` vyrenderuje pár referencí přímo na stránku a odkáže na plný archiv. Bez referencí se sekce sama skryje. Použito na `destinace/seychely.html`, stejně to bude fungovat na dalších detailech.
+
+### Generovaná data (`tools/gen-refs.py`)
+`js/references-data.js` má ~170 KB, takže se nikam jinam netahá. Z něj se generuje:
+- `js/ref-counts.js` — `destinace -> { n: počet, t: tag }` pro odznaky (~1,7 KB)
+- `js/ref-quotes.js` — `tag -> max 3 reference` pro detaily destinací (~40 KB)
+
+Spouštět `python3 tools/gen-refs.py` z rootu po každé změně `references-data.js` **nebo po přidání země** do `destinace.html` (počty se párují na `.country-name`). Skript vypíše tagy, ke kterým karta země neexistuje — dnes jen „Skandinávie". Přejmenování řeší konstanta `ALIAS` (např. tag „Fidži" → karta „Fiji").
+
+## Stránka `o-nas.html` — tým
+- Obsah převzatý z živého webu `snailtravel.cz/o-nas`: firma založena **1998**, butiková CK, „kvalita před kvantitou". Adresa Snail Travel International a.s., Veleslavínova 6, 110 00 Praha 1.
+- Struktura: hlavička s `.ref-stats` proužkem (1998 / 107 destinací / 221 referencí — čísla jsou v HTML natvrdo, při změně srovnat) → `.philosophy` s příběhem → `.team` s mřížkou lidí → CTA band → patička.
+- **Tým**: 5 lidí (Kristina Králová, Barbora Blaschke, Marcela Hynštová, Jitka Weiss, Pavla Piknerová), u každého fotka + e-mail + telefon. Fotky staženy z živého webu do `assets/team/<jmeno>.jpg` (440×440, kruhový výřez už zapečený na bílém pozadí — proto `border-radius: 50%` + zlatý kroužek sedí).
+- **Role/pozice u lidí zatím nikde nejsou** — živý web je neuvádí a nevymýšlíme je. Až je klient dodá, doplnit pod `.team-name`.
+- Členové týmu jsou i ve vyhledávání v hlavičce (kategorie „Tým", odkaz na `o-nas.html#tym`) — vztahový byznys, klienti hledají jméno.
+
 ## Hlavička — telefon + fulltextové vyhledávání
 - Sdílený `js/header-search.js` (na všech 4 stránkách) injektuje do `.header-inner` dvě kolečka (lupa + telefon) před CTA — markup není v HTML, stejný princip jako `popup.js`. Styly `.hact-*` a `.hsearch-*` v `css/style.css`.
 - **Telefon**: klik vysune `+420 602 552 624` vedle ikony (`tel:` odkaz, zavře se klikem mimo). Na dotykových zařízeních (`hover: none`) klik rovnou vytáčí.
 - **Hledání**: klik (nebo ⌘/Ctrl+K) otevře overlay pod hlavičkou — live výsledky, diakritika-agnostické, šipky ↑↓ + Enter, Esc zavře. Prázdný dotaz nabídne chipy s tipy. Overlay má `z-index: 1200`, tj. nad kontaktní kartou, a kartu i launcher po dobu otevření skryje (`body.hsearch-open`).
-- Data: `js/search-index.js` = `window.SNAIL_SEARCH_INDEX`, 143 položek (107 zemí, 18 zážitků, 13 seychelských ostrovů, 5 stránek/sekcí). Pole `t` (název), `s` (podtitulek), `c` (kategorie), `u` (URL relativní ke kořeni — na podstránkách se prefixuje `../`), `n` (normalizovaný text pro hledání vč. aliasů typu „mauricius“ → Mauritius).
-- Index **negeneruje se za běhu** — je vyparsovaný z `destinace.html` / `index.html` / `destinace/seychely.html` skriptem. Při přidání země, zážitku nebo stránky doplnit i sem (generátor: `python3 tools/gen-search-index.py` z rootu — regex parser, přepíše `js/search-index.js`; aliasy názvů jsou v konstantě `ALIAS`).
+- Data: `js/search-index.js` = `window.SNAIL_SEARCH_INDEX`, 149 položek (107 zemí, 18 zážitků, 13 seychelských ostrovů, 5 lidí z týmu, 6 stránek/sekcí). Pole `t` (název), `s` (podtitulek), `c` (kategorie), `u` (URL relativní ke kořeni — na podstránkách se prefixuje `../`), `n` (normalizovaný text pro hledání vč. aliasů typu „mauricius“ → Mauritius).
+- Index **negeneruje se za běhu** — je vyparsovaný z `destinace.html` / `index.html` / `destinace/seychely.html` skriptem. Při přidání země, zážitku, člověka nebo stránky doplnit i sem (generátor: `python3 tools/gen-search-index.py` z rootu — regex parser, přepíše `js/search-index.js`; aliasy názvů jsou v konstantě `ALIAS`, tým a stránky jsou ručně v konstantách `team` a `pages`).
 - Reference (221 textů) v tomto indexu **nejsou**, ty má vlastní vyhledávání přímo na `reference.html`.
 - Odkaz na zemi vede na `destinace.html?q=<země>#kontinent-<x>`; `destinations.js` `?q=` přečte, předvyplní hledání a odscrolluje na kartu. Seychely vedou rovnou na `destinace/seychely.html`.
 
@@ -72,8 +99,17 @@ Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`
 - Chování: auto-vysune se po **15 s** (konstanta `DELAY`), jednou za návštěvu — po zavření se drží `sessionStorage['snailContactDismissed']`, takže při dalších stránkách už sama nevyskočí, jen zůstává zlatý launcher „Kontakt" vpravo dole. Zavření: zlatý křížek nebo Esc. Chceš-li vysouvat při každém načtení, smaž session guard.
 - Kontakt: Barbora Blaschke, `barbora@snailtravel.cz`, `+420 602 552 624` (reálné údaje, na rozdíl od placeholderů v patičce/kontaktu).
 
+## Co web reálně prodává (z dat, ne z dojmu)
+Rozbor 221 referencí říká něco jiného, než co dnes web vypichuje — dobré vědět při každé úpravě obsahu:
+- **Madeira 57 · Turecko 25 · Azory 14 · Maledivy 14 · Mauritius 13 · Itálie 12 · Portugalsko 11**. Naopak **Seychely 4, Bali 3** — tedy vlajkové destinace homepage slideru a jediný hotový detail jsou fakticky okrajový byznys.
+- 30 % referencí zmiňuje **průvodce/doprovod**, 26 % **skupinový zájezd**, 15 % **golf** (nejvíc Turecko, Mauritius, Kanáry).
+- Reference jsou samovýběr a jeden skupinový zájezd vygeneruje víc ohlasů než jedna individuální cesta, takže skupinová část je nadhodnocená — poměr 57 : 4 tím ale vysvětlit nejde.
+
 ## Stav / TODO
-- [ ] Detail jednotlivé země pro zbytek destinací (vzor hotový v `destinace/seychely.html`, ostatní země zatím vedou na `index.html#kontakt`).
+- [ ] Doplnit role/pozice členů týmu na `o-nas.html` (klient je zatím nikde neuvádí).
+- [ ] Nahradit stockové fotky destinací (Pexels/Unsplash) fotkami z vlastních zájezdů — na stránce, jejímž úkolem je důvěryhodnost, stock pracuje proti.
+- [ ] Doplnit tvrdé signály existence (pojištění proti úpadku, IČO, počet klientů) na `o-nas.html`.
+- [ ] Detail jednotlivé země pro zbytek destinací (vzor hotový v `destinace/seychely.html`, ostatní země zatím vedou na `index.html#kontakt`). Prioritně Madeira a Azory — tam je byznys i reference.
 - [ ] Kontaktní formulář napojit na backend / službu (teď jen simuluje úspěch).
 - [ ] Finální hero video od klienta → přepsat `assets/hero.mp4` (a zvýšit `?v=`). Zvážit kompresi.
 - [ ] Volitelně: vektor loga; vlastní fotky destinací od klienta.

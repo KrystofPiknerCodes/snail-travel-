@@ -52,8 +52,21 @@ s = open('destinace/seychely.html', encoding='utf-8').read()
 for name in re.findall(r'country-name">(.*?)</span>', s, re.S):
     items.append({'t': clean(name), 's': 'Seychely', 'c': 'Ostrov', 'u': 'destinace/seychely.html'})
 
+# --- tým (o-nas.html) ---
+# Vztahový byznys: klienti hledají konkrétní jméno, ne jen destinaci.
+team = [
+    ('Kristina Králová', 'kristina@snailtravel.cz'),
+    ('Barbora Blaschke', 'barbora@snailtravel.cz bara'),
+    ('Marcela Hynštová', 'marcela@snailtravel.cz marcelka'),
+    ('Jitka Weiss', 'jitka@snailtravel.cz'),
+    ('Pavla Piknerová', 'pavla@snailtravel.cz'),
+]
+for name, keys in team:
+    items.append({'t': name, 's': 'Náš tým', 'c': 'Tým', 'u': 'o-nas.html#tym', 'k': keys})
+
 # --- stránky a sekce ---
 pages = [
+    ('O nás', 'Butiková cestovní kancelář od roku 1998 a lidé za cestami', 'Stránka', 'o-nas.html', 'tým kdo jsme příběh firma historie kontakty'),
     ('Destinace', 'Všechny země, které pro vás zařídíme', 'Stránka', 'destinace.html', 'mapa globus kontinenty země'),
     ('Reference', '221 skutečných ohlasů klientů od roku 2011', 'Stránka', 'reference.html', 'recenze hodnocení zkušenosti klienti ohlasy'),
     ('Filozofie', 'Proč cestujeme pomalu', 'Stránka', 'index.html#filozofie', 'o nás příběh hodnoty'),

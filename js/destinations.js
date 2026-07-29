@@ -34,7 +34,9 @@
   const index = [];
   blocks.forEach(block => {
     block.querySelectorAll('.country-grid li').forEach(li => {
-      const name = li.textContent.trim();
+      // Jen .country-name — v <li> sedí i odznak referencí (js/dest-refs.js),
+      // jehož text by jinak zaneřádil vyhledávací klíč.
+      const name = (li.querySelector('.country-name') || li).textContent.trim();
       index.push({ name, key: norm(name), li, block });
     });
   });

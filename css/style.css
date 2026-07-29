@@ -1515,7 +1515,7 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   grid-auto-flow: dense;
   gap: 10px;
 }
-.country-grid li { margin: 0; }
+.country-grid li { margin: 0; position: relative; }
 .country-grid li.is-featured { grid-column: span 2; }
 .country-grid li.is-featured a { aspect-ratio: 8 / 5; }
 .country-grid li.is-featured .country-name { font-size: 19px; }
@@ -1571,6 +1571,56 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .country-grid a:focus-visible::after { opacity: 1; }
 .country-grid a:focus-visible { outline: none; }
 
+/* Odznak s počtem klientských referencí (js/dest-refs.js).
+   Selektor musí být .country-grid .country-refs — jinak ho přebije
+   .country-grid a výš (aspect-ratio, display: block, overlaye). */
+.country-grid .country-refs {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: auto;
+  aspect-ratio: auto;
+  overflow: visible;
+  box-shadow: none;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(20, 18, 12, 0.58);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  border: 1px solid rgba(216, 190, 126, 0.38);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: var(--gold-soft);
+  white-space: nowrap;
+  transition: background .3s var(--ease), color .3s var(--ease),
+              border-color .3s var(--ease), transform .3s var(--ease);
+}
+/* Fotogradient a zlatý rámeček patří kartě, ne odznaku. */
+.country-grid .country-refs::before,
+.country-grid .country-refs::after { content: none; }
+
+.country-refs-n { font-variant-numeric: tabular-nums; }
+.country-grid .country-refs:hover,
+.country-grid .country-refs:focus-visible {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--ink);
+  transform: translateY(-1px);
+  outline: none;
+}
+/* .country-grid li.is-featured a nese aspect-ratio 8/5 — na odznak nesmí. */
+.country-grid li.is-featured .country-refs {
+  aspect-ratio: auto;
+  font-size: 11.5px;
+  padding: 5px 11px;
+}
+
 /* Search highlight/dim */
 .country-grid li.is-hidden { display: none; }
 .country-grid li.is-match a::after { opacity: 1; }
@@ -1598,6 +1648,9 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   .continent-label { font-size: 12px; letter-spacing: 0.04em; }
   .country-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
   .country-name { font-size: 13px; left: 9px; right: 9px; bottom: 8px; }
+  .country-grid .country-refs { top: 6px; right: 6px; padding: 3px 7px; font-size: 10px; }
+  .country-refs-w { display: none; }
+  .country-grid li.is-featured .country-refs-w { display: inline; }
   .dest-search { padding-left: 16px; }
   .dest-search input { font-size: 15px; padding: 14px 10px; }
 }
@@ -1801,10 +1854,88 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .ref-empty a:hover { color: var(--ink); border-color: var(--gold); }
 .ref-empty.is-visible { display: block; }
 
+/* ---- Reference na detailu destinace (js/dest-references.js) ---- */
+.ref-inline { background: var(--cream-2); }
+.ref-inline[hidden] { display: none; }
+.ref-inline-head { max-width: 680px; margin: 0 auto 8px; text-align: center; }
+.ref-inline-head .display { margin-bottom: 16px; }
+.ref-inline-head .lead { margin: 0; color: var(--ink-soft); font-size: 17px; }
+.ref-inline .ref-grid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  margin-top: 40px;
+}
+.ref-inline-more { text-align: center; margin-top: 44px; }
+
 @media (max-width: 620px) {
   .ref-quote-card { padding: 30px 24px; min-height: 0; }
   .ref-card { padding: 22px 22px; }
   .ref-stats { gap: 26px; }
+}
+
+/* ============================================================
+   O NÁS — tým
+   ============================================================ */
+.team { background: var(--cream-2); }
+.team-head { max-width: 720px; margin: 0 auto 12px; text-align: center; }
+.team-head .lead { margin: 18px auto 0; color: var(--ink-soft); }
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(196px, 1fr));
+  gap: 52px 26px;
+  margin-top: 64px;
+}
+.team-card { text-align: center; }
+.team-photo {
+  width: 158px;
+  height: 158px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 20px;
+  background: var(--white);
+  border: 2px solid var(--gold-soft);
+  box-shadow: 0 14px 34px -20px rgba(33, 30, 24, 0.55);
+  transition: transform .45s var(--ease), border-color .35s var(--ease);
+}
+.team-card:hover .team-photo {
+  transform: translateY(-4px);
+  border-color: var(--gold);
+}
+.team-name {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.25;
+  margin: 0 0 12px;
+}
+.team-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.team-contact a {
+  color: var(--ink-soft);
+  word-break: break-word;
+  transition: color .3s var(--ease);
+}
+.team-contact a:hover { color: var(--gold-deep); }
+
+.team-note {
+  margin: 66px 0 0;
+  text-align: center;
+  font-size: 13.5px;
+  letter-spacing: 0.03em;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 620px) {
+  .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 18px; }
+  .team-photo { width: 122px; height: 122px; }
+  .team-name { font-size: 17px; }
+  .team-contact { font-size: 13px; }
 }
 
 /* ============================================================
