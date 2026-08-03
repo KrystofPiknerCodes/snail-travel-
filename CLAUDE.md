@@ -12,7 +12,7 @@ Exkluzivní česká luxusní cestovní agentura. Statika: homepage (`index.html`
 ## Design
 - Směr: světlý editorial + cinematic video hero (reference Rolex + Reschio). Jazyk: **čeština**.
 - Brand zlatá z loga: `--gold: #BD9A45`, `--gold-deep: #927233`, `--gold-soft: #D8BE7E`. Klient chce zlatou výrazně (CTA tlačítka, akcenty jsou zlaté).
-- Fonty: Playfair Display (nadpisy), Cormorant Garamond (lead), Inter (text).
+- Fonty: Playfair Display (nadpisy), Cormorant Garamond (lead), Inter (text), Cinzel jen na dvou místech: nápis u loga v hlavičce (`.brand-name`) a titulek hero videa (`.hero-title`) — jinam ho nešířit.
 - Barvy/tokeny jsou CSS proměnné v `:root` v `css/style.css`.
 
 ## Logo (klientovo, důležité)
