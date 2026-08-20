@@ -26,16 +26,27 @@ se přenesou, jen obsah se přelije do strukturovaných dat.
 
 ## Fáze projektu
 
-### Fáze 0 — Dotazník stálým klientům (e-mail)
-**Cíl:** zjistit, k čemu klienti web reálně používají, co jim chybí, co buduje důvěru.
-- Sestavit otázky (draft níže), odsouhlasit s Kristinou.
-- Poslat jako **osobní e-mail od Kristiny** (ne Google Form — vztahový byznys, starší
-  věrná klientela, odpověď přímo do mailu má násobně vyšší návratnost).
-- Sesbírat odpovědi (~2 týdny), vytáhnout závěry do `docs/analyza-klienti.md`.
+### Fáze 0 — Dotazník stálým klientům ✅ HOTOVO (srpen 2026)
+Dotazník proběhl přes Quandu, **~143 odpovědí** (víc, než jsme čekali).
+Vyhodnocení a 5 hlavních zjištění: **`docs/analyza-klienti.md`**.
 
-**Výstup:** shrnutí odpovědí + 5 hlavních zjištění pro stavbu webu.
+Nejdůležitější závěry pro stavbu webu:
+- Hlavní inspirační kanál jsou **mailingy (65 %)**, ne web → web je ověřovací vitrína,
+  musí perfektně obsloužit příchod z e-mailu.
+- Klienti nás vnímají jako **osobní přístup (70 %) / spolehlivost (57 %) / odbornost (50 %)**,
+  ne jako „luxus" (19 %) → doladit tón webu.
+- **Golf potvrzen**: 59 % cestuje za golfem, golfová nabídka byla nejčastější důvod
+  první volby CK (39 %). Opakovaná bolest: golf nejde filtrovat napříč destinacemi
+  a „Snail Travel Golf se špatně hledá".
+- Na detailu chtějí: **orientační cenu (51 %), reference (48 %), konkrétní hotely (41 %)**.
+- Kontakt: e-mail 65 % a telefon 42 % ≫ webový formulář 18 %. Výběr na počítači (71 %).
 
-### Fáze 1 — Konzultace s Kristinou → brand dokument
+### Fáze 1 — Konzultace s Kristinou → brand dokument ◀ PROBÍHÁ
+Otázky připravené: **`docs/otazky-kristina.md`** (feel, představa, na čem si zakládá).
+Paralelně otázky na tým, který spravuje obsah: **`docs/otazky-admin-tym.md`** — ty
+rozhodují o datovém modelu a volbě adminu, proto se ptáme hned na začátku.
+Technické předpoklady adminu: **`docs/admin-predpoklady.md`**.
+
 **Cíl:** aby existoval MD soubor, ze kterého jde poznat „feel" firmy, a podle kterého
 se dá rozhodovat bez dalšího doptávání.
 - Projít s ní zjištění z dotazníku.
@@ -43,7 +54,9 @@ se dá rozhodovat bez dalšího doptávání.
   jací jsou klienti, jak mluví, čím se liší od konkurence, které destinace chce tlačit.
 - Konfrontovat s daty z referencí (Madeira 57×, Turecko 25×, golf 15 % — vs. Seychely 4×):
   chce web stavět na tom, co reálně prodává, nebo na tom, kam chce firmu posunout?
-- Golfový web: pro koho je, jaký má mít vztah k hlavnímu webu (značka, doména, tón).
+- Golfový web: pro koho je, jaká značka/doména/tón. **Rozhodnuto (srpen 2026): golf je
+  samostatný web, weby se neslučují.** Propojení mezi doménami je samozřejmost a golf
+  musí být „na první dobrou" k nalezení — z hlavního webu na golfový a zpět.
 
 **Výstup:** `docs/brand-snail.md` — hodnoty, tón, cílovka, priority destinací, co web
 má/nemá dělat (už víme: vizitka a důvěra, ne konverzní mašina).
@@ -109,7 +122,10 @@ Platba vždy po odsouhlasení milníku — kryje to obě strany a drží tempo.
 
 ---
 
-## Draft dotazníku pro stálé klienty (fáze 0)
+## Draft dotazníku pro stálé klienty (fáze 0) — ARCHIV, dotazník už proběhl
+Reálně použitá verze byla jiná (Quanda, ~143 odpovědí) — výsledky v `docs/analyza-klienti.md`.
+Ponecháno jen pro historii.
+
 
 Krátký — max 8 otázek, osobní tón, odpověď přímo v mailu. Návrh:
 
@@ -137,8 +153,8 @@ před jeho stavbou.
 
 ## Otevřené otázky (potřebuji od Krystofa / Kristiny)
 
-- **Golf web:** vlastní značka a doména, nebo „Snail Golf" pod hlavní značkou? Existuje
-  už nějaký obsah/nabídka?
+- ~~**Golf web:** slučovat, nebo ne?~~ **Vyřešeno: oddělený web, vzájemně propojený.**
+  Otevřené zůstává: název, doména a jak moc má vypadat jako Snail Travel.
 - **Domény a hosting:** kdo vlastní snailtravel.cz, kde běží současný web, kdo bude
   platit hosting?
 - **Podklady:** kdo dodá texty/fotky/ceny hotelů — klient, nebo se přebírají ze
