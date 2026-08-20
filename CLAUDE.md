@@ -115,6 +115,37 @@ Rozbor 221 referencí říká něco jiného, než co dnes web vypichuje — dobr
 - [ ] Volitelně: vektor loga; vlastní fotky destinací od klienta.
 - [ ] Nasazení (hosting) — zatím jen lokálně.
 
+## Astro verze (`web/`) — obsah oddělený od šablon
+
+Vedle statického webu v rootu (beze změny, dál běží samostatně) vzniká v `web/` Astro
+verze, jejímž cílem je oddělit obsah od šablon, aby nad ním mohla později fungovat
+administrace. Zatím je hotový jen detail jedné destinace jako vzor — Madeira, protože má
+nejvíc klientských referencí (57).
+
+- **Spuštění**: `cd web && npm install` (jednou), pak `npm run dev` → http://localhost:4321,
+  nebo `npm run build` pro produkční build (`web/dist/`).
+- **Design system je přenesený 1:1**: `web/public/css/style.css` je kopie `css/style.css`
+  (stejné CSS proměnné, fonty, hlavička/patička), `web/public/js/*.js` je kopie `js/*.js`
+  (funguje i sdílené vyhledávání, kontaktní karta, reference u destinace). Nové komponenty
+  (fotogalerie, karty hotelů, tabulka počasí, placeholder box) mají vlastní doplňkový
+  soubor `web/public/css/destinace-detail.css`, aby se nesahalo do `css/style.css` v rootu.
+- **Sdílená hlavička/patička**: `web/src/layouts/Base.astro` — na rozdíl od statického webu
+  (kde se `.nav`/`.mobile-nav`/`.footer-nav` kopíruje do každého HTML) je tohle jediné místo.
+- **Obsahová kolekce**: `web/src/content.config.ts` definuje schéma destinace (Zod), obsah
+  jednotlivých destinací je v `web/src/content/destinace/<slug>.md` (frontmatter + Markdown
+  popis). Šablona `web/src/pages/destinace/[slug].astro` obsah vyrenderuje.
+- **Přidání další destinace** = jeden nový soubor `web/src/content/destinace/<slug>.md`
+  podle vzoru `madeira.md` (žádná nová šablona, žádné kopírování HTML). Nezapomenout na
+  fotky do `web/public/assets/<slug>/` a případně nový klíč v `js/ref-quotes.js`
+  (`ref_tag` musí sedět na tag z `tools/gen-refs.py`).
+- **Co ještě chybí u Madeiry** (viditelné přímo na stránce jako „⚠ Doplnit od klienta“,
+  seznam i v poli `chybi` v `madeira.md`): itinerář den po dni, mapa s souřadnicemi hotelů,
+  aktuální vlastní fotky (teď 2 fotky z archivu klienta + 1 stock), ověření aktuálnosti
+  hotelových cen (zdroj je archivní verze webu s rokem 2019 v patičce), fotky u levnějších
+  hotelů, "podpis specialisty" u hotelu (nápad z dotazníku, zatím bez dat).
+- Reference k destinaci dál jedou přes existující mechanismus (`js/ref-quotes.js` +
+  `js/dest-references.js`), ne přes novou kolekci — 221 referencí se zatím nemigruje.
+
 ## Poznámky
 - Vše respektuje `prefers-reduced-motion`.
 - Placeholder kontakt: `cesty@snailtravel.cz`, `+420 000 000 000` (nahradit reálnými).

@@ -1,0 +1,235 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const destinace = await getCollection('destinace');
+  return destinace.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+
+const KONTINENT_NAZEV: Record<string, string> = {
+  EU: 'Evropa',
+  AF: 'Afrika',
+  AS: 'Asie',
+  NA: 'Severní Amerika',
+  SA: 'Jižní Amerika',
+  OC: 'Austrálie a Oceánie',
+};
+
+const priceFormatter = new Intl.NumberFormat('cs-CZ');
+---
+<Base title={`${d.nazev} — Destinace — Snail Travel`} description={d.perex} activeNav="destinace">
+
+  <!-- ============ HERO ============ -->
+  <section class="section dest-head dest-head-photo">
+    <div class="dest-head-bg" style={`background-image: url('${d.hlavni_foto}')`} aria-hidden="true"></div>
+    <div class="wrap">
+      <nav class="crumb reveal" aria-label="Drobečková navigace">
+        <a href="/">Hlavní strana</a>
+        <span class="crumb-sep">/</span>
+        <span>Destinace</span>
+        <span class="crumb-sep">/</span>
+        <span class="crumb-current">{d.nazev}</span>
+      </nav>
+      <p class="kicker kicker-light reveal" data-delay="1">Destinace · {KONTINENT_NAZEV[d.kontinent]}{d.nadrazena ? ` · ${d.nadrazena}` : ''}</p>
+      <h1 class="display reveal" data-delay="2">{d.nazev}</h1>
+      <p class="dest-lead reveal" data-delay="3">{d.perex}</p>
+
+      {d.cena_od.znamo ? (
+        <div class="dest-price-badge reveal" data-delay="4">
+          <span class="price-value">od {priceFormatter.format(d.cena_od.hodnota ?? 0)} Kč</span>
+          <span class="price-unit">{d.cena_od.jednotka}{d.cena_od.zahrnuje ? `, ${d.cena_od.zahrnuje}` : ''}</span>
+          {d.cena_od.poznamka && <span class="price-note">{d.cena_od.poznamka}</span>}
+        </div>
+      ) : (
+        <div class="dest-price-badge reveal" data-delay="4">
+          <span class="price-value">⚠ Doplnit od klienta</span>
+          <span class="price-unit">orientační cena za osobu a noc</span>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ============ PEREX / POPIS ============ -->
+  <section class="section">
+    <div class="wrap dest-about reveal">
+      <Content />
+    </div>
+  </section>
+
+  <!-- ============ FOTOGALERIE ============ -->
+  <section class="section" style="padding-top: 0; background: var(--cream-2);">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="kicker">Fotogalerie</p>
+        <h2 class="display">Madeira v obrazech</h2>
+      </header>
+      <div class="dest-gallery reveal" data-delay="1">
+        {d.galerie.map((img) => (
+          <div class="gallery-item">
+            <img src={img.src} alt={img.alt} loading="lazy" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOTELY ============ -->
+  <section class="section">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="kicker">Kde bydlet</p>
+        <h2 class="display">Konkrétní hotely</h2>
+        <p class="lead">Výběr z aktuální nabídky, od cenově dostupných po ikonické adresy ostrova.</p>
+      </header>
+
+      {d.hotely.length > 0 ? (
+        <div class="hotel-grid reveal" data-delay="1">
+          {d.hotely.map((hotel) => (
+            <article class="hotel-card">
+              {hotel.foto ? (
+                <img class="hotel-photo" src={hotel.foto} alt={hotel.nazev} loading="lazy" />
+              ) : (
+                <div class="hotel-photo-ph">⚠ Foto hotelu chybí — doplnit od klienta</div>
+              )}
+              <div class="hotel-body">
+                <h3 class="hotel-name">{hotel.nazev}</h3>
+                {hotel.hvezdy && <div class="hotel-stars">{'★'.repeat(hotel.hvezdy)}</div>}
+                {hotel.misto && <div class="hotel-place">{hotel.misto}</div>}
+                {hotel.cena_od ? (
+                  <div class="hotel-price">
+                    <strong>od {priceFormatter.format(hotel.cena_od)} Kč</strong>
+                    {hotel.cena_jednotka && <span> {hotel.cena_jednotka}</span>}
+                    {hotel.co_cena_zahrnuje && <span>, {hotel.co_cena_zahrnuje}</span>}
+                  </div>
+                ) : (
+                  <div class="hotel-price">⚠ Cena chybí</div>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="chybi-box reveal">
+          <strong>⚠ Doplnit od klienta</strong>
+          Konkrétní hotely na této destinaci zatím nemáme.
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ============ KDY JET ============ -->
+  <section class="section" style="background: var(--cream-2);">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="kicker">Kdy jet</p>
+        <h2 class="display">Počasí po měsících</h2>
+      </header>
+      {d.kdy_jet_poznamka && <p class="weather-note reveal" data-delay="1">{d.kdy_jet_poznamka}</p>}
+
+      {d.kdy_jet.length > 0 ? (
+        <div class="weather-table-wrap reveal" data-delay="2">
+          <table class="weather-table">
+            <thead>
+              <tr>
+                <th>Měsíc</th>
+                <th>Vzduch</th>
+                <th>Moře</th>
+                <th>Doporučení</th>
+              </tr>
+            </thead>
+            <tbody>
+              {d.kdy_jet.map((m) => (
+                <tr>
+                  <td>{m.mesic}</td>
+                  <td>{m.teplota_vzduch}</td>
+                  <td>{m.teplota_more}</td>
+                  <td class="doporuceni">{m.doporuceni}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div class="chybi-box reveal">
+          <strong>⚠ Doplnit od klienta</strong>
+          Počasí po měsících zatím nemáme.
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ============ ZÁŽITKY ============ -->
+  <section class="section">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="kicker">Co zažít</p>
+        <h2 class="display">Zážitky a výlety</h2>
+      </header>
+      <div class="experience-grid reveal" data-delay="1">
+        {d.zazitky.map((z) => (
+          <div class="experience-item">
+            <h3>{z.nazev}</h3>
+            <p>{z.popis}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REFERENCE KE DESTINACI (js/dest-references.js) ============ -->
+  <section class="section ref-inline" id="reference" data-dest={d.ref_tag} data-root="/">
+    <div class="wrap">
+      <header class="ref-inline-head reveal">
+        <p class="kicker">Reference klientů</p>
+        <h2 class="display">Co říkají ti, kdo tam&nbsp;byli</h2>
+        <p class="lead">Skutečné dopisy od&nbsp;našich klientů, beze změny.</p>
+      </header>
+
+      <div class="ref-grid" data-ref-grid></div>
+
+      <div class="ref-inline-more reveal">
+        <a class="btn btn-ghost" data-ref-all href="/reference.html">Všechny reference na&nbsp;{d.nazev}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CO PORTÁLU ZATÍM CHYBÍ (viditelný podklad k diskusi) ============ -->
+  {d.chybi.length > 0 && (
+    <section class="section" style="padding-top: 0; padding-bottom: 60px;">
+      <div class="wrap">
+        <div class="chybi-box reveal">
+          <strong>⚠ Doplnit od klienta — podklad k diskusi</strong>
+          <ul>
+            {d.chybi.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ============ CTA BAND — kontakt ============ -->
+  <section class="section dest-cta-band">
+    <div class="wrap">
+      <div class="dest-cta-inner reveal">
+        <h2 class="display">Naplánujme spolu vaši cestu na {d.nazev}</h2>
+        <p>
+          Barbora Blaschke se vám ozve do 48 hodin s nabídkou na míru.
+          <br />
+          <a href="mailto:barbora@snailtravel.cz">barbora@snailtravel.cz</a>
+          &nbsp;·&nbsp;
+          <a href="tel:+420602552624">+420&nbsp;602&nbsp;552&nbsp;624</a>
+        </p>
+        <a href="/#kontakt" class="btn btn-pill">Naplánovat cestu</a>
+      </div>
+    </div>
+  </section>
+
+</Base>
