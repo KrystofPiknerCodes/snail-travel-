@@ -75,14 +75,14 @@ hotely:
     hvezdy: 5
     misto: Funchal
     cena_od: 35890
-    cena_jednotka: "/ os / noc"
+    cena_jednotka: "/ os ⚠ ověřit rozsah"
     co_cena_zahrnuje: se snídaní
     foto: /assets/madeira/the-cliff-bay.jpg
   - nazev: Belmond Reid's Palace
     hvezdy: 5
     misto: Funchal
     cena_od: 54890
-    cena_jednotka: "/ os / noc"
+    cena_jednotka: "/ os ⚠ ověřit rozsah"
     co_cena_zahrnuje: se snídaní
     foto: /assets/madeira/belmond-reids-palace.jpg
 
