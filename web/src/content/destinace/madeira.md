@@ -34,6 +34,14 @@ cena_od:
     v patičce rok 2019, ceny je proto potřeba s klientem ověřit jako aktuální
     před nasazením.
 
+# Vycentrování mapy oblasti na ostrov Madeira. Souřadnice z OpenStreetMap
+# Nominatim (dotaz "Madeira Portugal", hraniční relace ostrova/souostroví) —
+# k ověření. Zoom 11 ukáže celý ostrov od Funchalu po Encumeadu.
+mapa:
+  lat: 32.7517501
+  lng: -16.9817487
+  zoom: 11
+
 hotely:
   - nazev: Valley View Hotel
     hvezdy: 3
@@ -41,36 +49,62 @@ hotely:
     cena_od: 990
     cena_jednotka: "/ os / noc"
     co_cena_zahrnuje: se snídaní
+    # Souřadnice z OSM Nominatim (přesná shoda názvu "Valley View Hotel
+    # Encumeada") — k ověření.
+    poloha:
+      lat: 32.7495336
+      lng: -17.0244953
   - nazev: Portobay Serra Golf
     hvezdy: 4
     misto: Santo da Serra
     cena_od: 1490
     cena_jednotka: "/ os / noc"
     co_cena_zahrnuje: se snídaní
+    # Souřadnice z OSM Nominatim (nalezeno jako "Porto Bay Serra Golf",
+    # Santo António da Serra) — k ověření.
+    poloha:
+      lat: 32.7222046
+      lng: -16.8153285
   - nazev: Pestana Carlton Madeira
     hvezdy: 5
     misto: Funchal
     cena_od: 1990
     cena_jednotka: "/ os / noc"
     co_cena_zahrnuje: se snídaní
+    # Souřadnice z OSM Nominatim (přesná shoda názvu) — k ověření.
+    poloha:
+      lat: 32.6424614
+      lng: -16.9220174
   - nazev: Calheta Beach
     hvezdy: 4
     misto: Calheta
     cena_od: 1990
     cena_jednotka: "/ os / noc"
     co_cena_zahrnuje: all inclusive
+    # Souřadnice se v OSM Nominatim nepodařilo spolehlivě ověřit (dotaz
+    # našel jen pláže Calheta, ne konkrétní hotel) — poloha záměrně
+    # nevyplněna, hotel se na mapě nezobrazí, dokud ji nedoplní klient.
   - nazev: Savoy Palace
     hvezdy: 5
     misto: Funchal
     cena_od: 2790
     cena_jednotka: "/ os / noc"
     co_cena_zahrnuje: se snídaní
+    # Souřadnice z OSM Nominatim (přesná shoda názvu) — k ověření.
+    poloha:
+      lat: 32.6436598
+      lng: -16.9205632
   - nazev: Vidamar Resort
     hvezdy: 5
     misto: Funchal
     cena_od: 2990
     cena_jednotka: "/ os / noc"
     co_cena_zahrnuje: s polopenzí
+    # Souřadnice z OSM Nominatim (nalezeno jako "Vidamar Resorts Madeira") —
+    # k ověření.
+    poloha:
+      lat: 32.6377884
+      lng: -16.9283691
   - nazev: The Cliff Bay
     hvezdy: 5
     misto: Funchal
@@ -78,6 +112,12 @@ hotely:
     cena_jednotka: "/ os ⚠ ověřit rozsah"
     co_cena_zahrnuje: se snídaní
     foto: /assets/madeira/the-cliff-bay.jpg
+    # Souřadnice z OSM Nominatim — hotel je v OSM veden pod aktuálním
+    # názvem "Les Suites at the Cliff Bay" (přeznačení stejné budovy na
+    # Estrada Monumental, Funchal) — k ověření.
+    poloha:
+      lat: 32.6392673
+      lng: -16.9257335
   - nazev: Belmond Reid's Palace
     hvezdy: 5
     misto: Funchal
@@ -85,6 +125,10 @@ hotely:
     cena_jednotka: "/ os ⚠ ověřit rozsah"
     co_cena_zahrnuje: se snídaní
     foto: /assets/madeira/belmond-reids-palace.jpg
+    # Souřadnice z OSM Nominatim (přesná shoda názvu) — k ověření.
+    poloha:
+      lat: 32.6406140
+      lng: -16.9239058
 
 kdy_jet_poznamka: >
   Orientační údaje — Madeira leží v Golfském proudu a má nadprůměrně mírné,
@@ -177,7 +221,7 @@ ref_tag: Madeira
 chybi:
   - "Ověřit u klienta aktuálnost hotelových cen — zdrojová data jsou z archivní verze webu s rokem 2019 v patičce."
   - "Itinerář den po dni (33 % klientů si ho žádá) — na živém webu není, potřeba od Kristiny/Barbory."
-  - "Mapa oblasti se souřadnicemi hotelů (27 % klientů) — živý web dává jen název místa (např. „Funchal“), ne souřadnice."
+  - "Mapa oblasti — 7 z 8 hotelů má souřadnice předvyplněné z veřejného OSM Nominatim API, je ale potřeba je s klientem ověřit (živý web dával jen název místa, ne souřadnice). Hotel Calheta Beach se přes OSM nepodařilo spolehlivě dohledat — jeho polohu musí doplnit klient/redaktor."
   - "Aktuální vlastní fotky z zájezdů na Madeiru (galerie teď kombinuje 2 fotky z archivu klienta a 1 stock fotku)."
   - "Podpis specialisty / \"byl jsem tam, ručím za to\" u hotelu — nápad z dotazníku (bod 4), zatím bez dat kdo z týmu Madeiru osobně ověřil."
 ---

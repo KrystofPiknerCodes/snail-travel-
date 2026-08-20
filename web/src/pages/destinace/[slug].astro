@@ -1,6 +1,8 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Rozcestnik from '../../components/Rozcestnik.astro';
+import MapaOblasti from '../../components/MapaOblasti.astro';
 
 export async function getStaticPaths() {
   const destinace = await getCollection('destinace');
@@ -24,6 +26,20 @@ const KONTINENT_NAZEV: Record<string, string> = {
 };
 
 const priceFormatter = new Intl.NumberFormat('cs-CZ');
+
+// Rozcestník (sticky kotevní navigace) — sestavuje se z toho, co destinace
+// v obsahu reálně má. "Reference" je zařazena vždy (ref_tag je v kolekci
+// povinné pole) a runtimový skript public/js/dest-toc.js odkaz odstraní,
+// pokud se sekce sama skryje (žádné citace k destinaci).
+const tocItems = [
+  { id: 'info', label: 'Info' },
+  d.galerie.length > 0 && { id: 'fotogalerie', label: 'Fotogalerie' },
+  d.hotely.length > 0 && { id: 'ubytovani', label: 'Ubytování' },
+  d.kdy_jet.length > 0 && { id: 'kdy-jet', label: 'Kdy jet' },
+  d.mapa && { id: 'mapa', label: 'Mapa' },
+  d.zazitky.length > 0 && { id: 'zazitky', label: 'Zážitky' },
+  { id: 'reference', label: 'Reference' },
+].filter(Boolean) as Array<{ id: string; label: string }>;
 ---
 <Base title={`${d.nazev} — Destinace — Snail Travel`} description={d.perex} activeNav="destinace">
 
@@ -57,19 +73,22 @@ const priceFormatter = new Intl.NumberFormat('cs-CZ');
     </div>
   </section>
 
+  <!-- ============ ROZCESTNÍK (sticky kotevní navigace) ============ -->
+  <Rozcestnik items={tocItems} />
+
   <!-- ============ PEREX / POPIS ============ -->
-  <section class="section">
+  <section class="section" id="info">
     <div class="wrap dest-about reveal">
       <Content />
     </div>
   </section>
 
   <!-- ============ FOTOGALERIE ============ -->
-  <section class="section" style="padding-top: 0; background: var(--cream-2);">
+  <section class="section" id="fotogalerie" style="padding-top: 0; background: var(--cream-2);">
     <div class="wrap">
       <header class="section-head reveal">
         <p class="kicker">Fotogalerie</p>
-        <h2 class="display">Madeira v obrazech</h2>
+        <h2 class="display">{d.nazev} v obrazech</h2>
       </header>
       <div class="dest-gallery reveal" data-delay="1">
         {d.galerie.map((img) => (
@@ -82,7 +101,7 @@ const priceFormatter = new Intl.NumberFormat('cs-CZ');
   </section>
 
   <!-- ============ HOTELY ============ -->
-  <section class="section">
+  <section class="section" id="ubytovani">
     <div class="wrap">
       <header class="section-head reveal">
         <p class="kicker">Kde bydlet</p>
@@ -126,7 +145,7 @@ const priceFormatter = new Intl.NumberFormat('cs-CZ');
   </section>
 
   <!-- ============ KDY JET ============ -->
-  <section class="section" style="background: var(--cream-2);">
+  <section class="section" id="kdy-jet" style="background: var(--cream-2);">
     <div class="wrap">
       <header class="section-head reveal">
         <p class="kicker">Kdy jet</p>
@@ -166,8 +185,11 @@ const priceFormatter = new Intl.NumberFormat('cs-CZ');
     </div>
   </section>
 
+  <!-- ============ MAPA OBLASTI ============ -->
+  {d.mapa && <MapaOblasti mapa={d.mapa} hotely={d.hotely} destNazev={d.nazev} />}
+
   <!-- ============ ZÁŽITKY ============ -->
-  <section class="section">
+  <section class="section" id="zazitky">
     <div class="wrap">
       <header class="section-head reveal">
         <p class="kicker">Co zažít</p>

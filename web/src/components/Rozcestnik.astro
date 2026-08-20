@@ -1,0 +1,30 @@
+---
+// Sticky kotevní navigace (rozcestník) na detailu destinace.
+//
+// Seznam položek se sestavuje na serveru z toho, co destinace v obsahu
+// reálně má (viz [slug].astro) — jiná destinace nemusí mít všechny sekce.
+// Jedinou výjimkou je "Reference": ta je v obsahové kolekci vždy (ref_tag
+// je povinné pole), ale sekce se na stránce za běhu sama skryje, pokud pro
+// daný tag neexistují žádné citace (js/dest-references.js). Proto ji sem
+// vždy zařadíme a runtimový skript (public/js/dest-toc.js) odkaz odstraní,
+// pokud cílová sekce skončí `hidden`.
+//
+// Sticky pozicování pod pevnou hlavičkou a scrollspy (IntersectionObserver)
+// řeší stejný skript — measure header výšky přes JS, ne natvrdo v CSS,
+// protože přesná výška hlavičky není v CSS zafixovaná napevno.
+export interface Props {
+  items: Array<{ id: string; label: string }>;
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="dest-toc" id="destToc" aria-label="Rychlá navigace po stránce">
+  <div class="dest-toc-inner">
+    {items.map((item) => (
+      <a href={`#${item.id}`} class="dest-toc-link" data-toc-link data-target={item.id}>
+        {item.label}
+      </a>
+    ))}
+  </div>
+</nav>

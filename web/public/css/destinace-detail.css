@@ -154,6 +154,91 @@
 .experience-item p { color: var(--ink-soft); font-size: 15px; margin: 0; }
 
 /* ---------- Sekce nadpisy (opakovaný vzor) ---------- */
-.section-head { max-width: 680px; margin: 0 auto 8px; text-align: center; }
+.section-head { max-width: 680px; margin: 0 auto 18px; text-align: center; }
 .section-head .display { margin-bottom: 16px; }
 .section-head .lead { margin: 0; color: var(--ink-soft); font-size: 17px; }
+
+/* ---------- Sekce s vlastní kotvou (id) — odsazení pod pevnou hlavičku +
+   sticky rozcestník, aby po kliknutí na kotvu nadpis neskončil schovaný.
+   --dest-scroll-offset nastavuje public/js/dest-toc.js podle skutečné
+   výšky hlavičky + rozcestníku; fallback pro chvíli před prvním výpočtem
+   a pro prohlížeče bez JS. ---------- */
+section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
+
+/* ============================================================
+   ROZCESTNÍK — sticky kotevní navigace pod hero sekcí
+   ============================================================ */
+.dest-toc {
+  position: sticky;
+  top: var(--header-h, 84px);
+  z-index: 90;
+  background: rgba(250, 248, 243, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.dest-toc-inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.dest-toc-inner::-webkit-scrollbar { display: none; }
+.dest-toc-link {
+  flex: none;
+  padding: 16px 4px;
+  margin-right: 22px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color .3s var(--ease), border-color .3s var(--ease);
+}
+.dest-toc-link:last-child { margin-right: 0; }
+.dest-toc-link:hover { color: var(--ink); }
+.dest-toc-link.is-active {
+  color: var(--gold-deep);
+  border-bottom-color: var(--gold);
+}
+
+/* ============================================================
+   MAPA OBLASTI (Leaflet)
+   ============================================================ */
+.dest-map {
+  position: relative;
+  margin-top: 46px;
+  height: 480px;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--cream);
+}
+.dest-map-ph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-soft);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+.dest-map .leaflet-popup-content-wrapper { border-radius: 3px; }
+.dest-map-popup { font-family: var(--sans); min-width: 160px; }
+.dest-map-popup-name { display: block; font-family: var(--serif); font-size: 16px; margin-bottom: 4px; }
+.dest-map-popup-stars { color: var(--gold); font-size: 12px; letter-spacing: 1.5px; margin-bottom: 4px; }
+.dest-map-popup-price { font-size: 13px; color: var(--ink-soft); margin-bottom: 8px; }
+.dest-map-popup-link { font-size: 12.5px; font-weight: 500; color: var(--gold-deep); }
+.dest-map-popup-link:hover { color: var(--ink); }
+.dest-map-pin { background: none; border: none; filter: drop-shadow(0 3px 6px rgba(33, 30, 24, 0.35)); }
+
+@media (max-width: 620px) {
+  .dest-map { height: 340px; }
+  .dest-toc-link { padding: 13px 4px; margin-right: 18px; font-size: 12.5px; }
+}

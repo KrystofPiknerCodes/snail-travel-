@@ -1,0 +1,210 @@
+---
+// Sekce "Mapa oblasti" — Leaflet + dlaždice OpenStreetMap (npm balíček, ne
+// Google Maps a ne CDN — viz zadání: klíč, cena, cookie souhlas navíc).
+//
+// Souřadnice destinace (`mapa`) i hotelu (`poloha`) jsou v obsahové kolekci
+// VOLITELNÉ pole vyplňované redaktorem v administraci — proto:
+// - bez `mapa` na destinaci se sekce vůbec nevykreslí (viz [slug].astro,
+//   podmínka je tam, ne tady — kvůli rozcestníku, který o existenci sekce
+//   potřebuje vědět ještě před renderem téhle komponenty),
+// - hotel bez `poloha` se na mapu prostě nepřipne (radši chybějící špendlík
+//   než špendlík na špatném místě).
+//
+// Samotná Leaflet knihovna (JS + CSS) i dlaždice se načtou, až uživatel na
+// mapu doscrolluje (IntersectionObserver v inline scriptu níže) — kvůli
+// rychlosti načtení zbytku stránky.
+export interface Props {
+  mapa: { lat: number; lng: number; zoom: number };
+  hotely: Array<{
+    nazev: string;
+    hvezdy?: number;
+    cena_od?: number;
+    cena_jednotka?: string;
+    poloha?: { lat: number; lng: number };
+  }>;
+  destNazev: string;
+}
+
+const { mapa, hotely, destNazev } = Astro.props;
+const pinned = hotely.filter((h) => h.poloha);
+
+const mapHotels = pinned.map((h) => ({
+  nazev: h.nazev,
+  hvezdy: h.hvezdy ?? null,
+  cena_od: h.cena_od ?? null,
+  cena_jednotka: h.cena_jednotka ?? null,
+  lat: h.poloha!.lat,
+  lng: h.poloha!.lng,
+}));
+---
+
+<section class="section" id="mapa" style="background: var(--cream-2);">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <p class="kicker">Mapa oblasti</p>
+      <h2 class="display">Kde na {destNazev} bydlet</h2>
+      {hotely.length > 0 && (
+        <p class="lead">
+          {pinned.length > 0
+            ? `Na mapě je zakresleno ${pinned.length} z ${hotely.length} hotelů — u zbylých čekáme na přesnou polohu od klienta.`
+            : 'U žádného z hotelů zatím nemáme přesnou polohu — mapa oblasti se doplní, jakmile ji dodá klient.'}
+        </p>
+      )}
+    </header>
+
+    {pinned.length > 0 ? (
+      <div
+        class="dest-map reveal"
+        data-delay="1"
+        id="destMap"
+        data-lat={mapa.lat}
+        data-lng={mapa.lng}
+        data-zoom={mapa.zoom}
+        data-hotels={JSON.stringify(mapHotels)}
+        role="img"
+        aria-label={`Mapa oblasti ${destNazev} se zákresem hotelů z nabídky`}
+      >
+        <div class="dest-map-ph" aria-hidden="true">Mapa se načte po přiblížení…</div>
+      </div>
+    ) : (
+      <div class="chybi-box reveal">
+        <strong>⚠ Doplnit od klienta</strong>
+        Souřadnice hotelů zatím nemáme — mapa se zobrazí, jakmile je redaktor doplní v administraci.
+      </div>
+    )}
+  </div>
+</section>
+
+<script>
+  type MapHotel = {
+    nazev: string;
+    hvezdy: number | null;
+    cena_od: number | null;
+    cena_jednotka: string | null;
+    lat: number;
+    lng: number;
+  };
+
+  function buildPopup(h: MapHotel, priceFormatter: Intl.NumberFormat): HTMLElement {
+    const wrap = document.createElement('div');
+    wrap.className = 'dest-map-popup';
+
+    const title = document.createElement('strong');
+    title.className = 'dest-map-popup-name';
+    title.textContent = h.nazev;
+    wrap.appendChild(title);
+
+    if (h.hvezdy) {
+      const stars = document.createElement('div');
+      stars.className = 'dest-map-popup-stars';
+      stars.textContent = '★'.repeat(h.hvezdy);
+      wrap.appendChild(stars);
+    }
+
+    const price = document.createElement('div');
+    price.className = 'dest-map-popup-price';
+    price.textContent = h.cena_od
+      ? `od ${priceFormatter.format(h.cena_od)} Kč ${h.cena_jednotka ?? ''}`.trim()
+      : 'Cena na dotaz';
+    wrap.appendChild(price);
+
+    const link = document.createElement('a');
+    link.href = '#ubytovani';
+    link.className = 'dest-map-popup-link';
+    link.textContent = 'Zobrazit v ubytování →';
+    wrap.appendChild(link);
+
+    return wrap;
+  }
+
+  function initMap(container: HTMLElement) {
+    if (container.dataset.mapInited === '1') return;
+    container.dataset.mapInited = '1';
+
+    const lat = parseFloat(container.dataset.lat || '0');
+    const lng = parseFloat(container.dataset.lng || '0');
+    const zoom = parseInt(container.dataset.zoom || '10', 10);
+    let hotels: MapHotel[] = [];
+    try {
+      hotels = JSON.parse(container.dataset.hotels || '[]');
+    } catch {
+      hotels = [];
+    }
+
+    // Leaflet je npm závislost (ne CDN) — importuje se dynamicky až tady,
+    // aby se JS ani CSS knihovny netahaly, dokud uživatel na mapu nedoscrolluje.
+    Promise.all([import('leaflet'), import('leaflet/dist/leaflet.css')]).then(([leafletMod]) => {
+      const L = (leafletMod as any).default ?? leafletMod;
+      const ph = container.querySelector('.dest-map-ph');
+      if (ph) ph.remove();
+
+      const map = L.map(container, {
+        center: [lat, lng],
+        zoom,
+        // Mapa nesmí zabrat scroll kolečkem, když jí uživatel jen
+        // projíždí při scrollování stránky — zapne se až po kliknutí.
+        scrollWheelZoom: false,
+      });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> přispěvatelé',
+      }).addTo(map);
+
+      map.on('click', () => map.scrollWheelZoom.enable());
+      container.addEventListener('mouseleave', () => map.scrollWheelZoom.disable());
+
+      const priceFormatter = new Intl.NumberFormat('cs-CZ');
+      const goldIcon = L.divIcon({
+        className: 'dest-map-pin',
+        html:
+          '<svg width="28" height="38" viewBox="0 0 30 40" xmlns="http://www.w3.org/2000/svg">' +
+          '<path d="M15 0C6.7 0 0 6.7 0 15c0 10.5 15 25 15 25s15-14.5 15-25C30 6.7 23.3 0 15 0z" fill="#BD9A45"/>' +
+          '<circle cx="15" cy="15" r="6" fill="#211E18"/>' +
+          '</svg>',
+        iconSize: [28, 38],
+        iconAnchor: [14, 38],
+        popupAnchor: [0, -34],
+      });
+
+      hotels.forEach((h) => {
+        L.marker([h.lat, h.lng], { icon: goldIcon, title: h.nazev, alt: h.nazev })
+          .addTo(map)
+          .bindPopup(buildPopup(h, priceFormatter));
+      });
+
+      if (hotels.length > 1) {
+        const bounds = L.latLngBounds(hotels.map((h) => [h.lat, h.lng] as [number, number]));
+        map.fitBounds(bounds, { padding: [42, 42], maxZoom: zoom + 3 });
+      }
+
+      window.requestAnimationFrame(() => map.invalidateSize());
+    });
+  }
+
+  function setup() {
+    const el = document.getElementById('destMap');
+    if (!el) return;
+
+    if (!('IntersectionObserver' in window)) {
+      initMap(el);
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            initMap(entry.target as HTMLElement);
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: '200px 0px' }
+    );
+    io.observe(el);
+  }
+
+  setup();
+</script>

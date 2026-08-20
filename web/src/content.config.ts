@@ -25,9 +25,15 @@ import { glob } from 'astro/loaders';
 // - `tipy_specialisty` (vazba na Osobu) z modelu zatím nepoužito — klient
 //   nedodal, kdo se pod kterou destinaci podepisuje (stejný dluh jako role
 //   týmu na o-nas.html, viz CLAUDE.md TODO).
-// - `poloha` (souřadnice) u hotelu z modelu zatím nepoužito — živý web dává
-//   jen název místa (např. "Funchal"), ne souřadnice; mapa je proto
-//   placeholder, ne implementace bez dat.
+// - `poloha` (souřadnice) u hotelu z modelu doplněno jako VOLITELNÉ pole —
+//   vyplňuje ho redaktor v administraci, proto stránka musí fungovat i
+//   s prázdnou hodnotou (hotel bez souřadnic se prostě nepřipne na mapu,
+//   viz mapová sekce v [slug].astro). U Madeiry předvyplněno tam, kde šlo
+//   ověřit přes veřejné OSM Nominatim API — vždy s komentářem u konkrétní
+//   hodnoty v madeira.md, že jde o OSM zdroj k ověření klientem.
+// - `mapa` (souřadnice + zoom destinace) přidáno na úrovni Destinace —
+//   určuje, na co se mapa oblasti vycentruje. Volitelné ze stejného
+//   důvodu jako `poloha` — bez dat sekce Mapa oblasti na stránce nenaběhne.
 // ---------------------------------------------------------------------------
 
 const destinaceCollection = defineCollection({
@@ -58,6 +64,16 @@ const destinaceCollection = defineCollection({
       zdroj: z.string().optional(),
     }),
 
+    // Souřadnice + zoom pro vycentrování mapy oblasti. Volitelné — vyplňuje
+    // redaktor v administraci. Bez nich se sekce "Mapa oblasti" nevykreslí.
+    mapa: z
+      .object({
+        lat: z.number(),
+        lng: z.number(),
+        zoom: z.number(),
+      })
+      .optional(),
+
     hotely: z.array(
       z.object({
         nazev: z.string(),
@@ -67,6 +83,15 @@ const destinaceCollection = defineCollection({
         cena_jednotka: z.string().optional(),
         co_cena_zahrnuje: z.string().optional(),
         foto: z.string().optional(),
+        // Souřadnice hotelu pro špendlík na mapě oblasti. Volitelné —
+        // vyplňuje redaktor v administraci. Bez nich se hotel na mapu
+        // nepřipne (radši chybějící špendlík než špendlík na špatném místě).
+        poloha: z
+          .object({
+            lat: z.number(),
+            lng: z.number(),
+          })
+          .optional(),
       })
     ),
 
