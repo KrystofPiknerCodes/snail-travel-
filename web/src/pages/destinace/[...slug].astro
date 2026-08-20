@@ -1,0 +1,456 @@
+---
+// Jedna šablona pro celý strom Destinace/Oblast/Hotel (klientovo zadání:
+// Hlavní strana > Destinace > Evropa > Madeira > Funchal > Hotel).
+//
+// URL segmenty i drobečková navigace se počítají generickým procházením
+// `nadrazena` (web/src/lib/hierarchie.ts) do libovolné hloubky — přidání
+// další destinace, oblasti nebo hotelu (i bez oblasti) proto nevyžaduje
+// úpravu routeru, jen nový soubor v content/destinace nebo content/hotel.
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Rozcestnik from '../../components/Rozcestnik.astro';
+import MapaOblasti from '../../components/MapaOblasti.astro';
+import {
+  indexDestinace,
+  resolveAncestors,
+  childOblasti,
+  hotelyPod,
+  buildBreadcrumb,
+  resolveKontinent,
+  KONTINENT_NAZEV,
+  type DestEntry,
+  type HotelEntry,
+} from '../../lib/hierarchie';
+
+type Kind = 'destinace' | 'oblast' | 'hotel';
+
+interface Props {
+  kind: Kind;
+  entry: DestEntry | HotelEntry;
+  chain: DestEntry[];
+  destinaceAll: DestEntry[];
+  hotelyAll: HotelEntry[];
+}
+
+export async function getStaticPaths() {
+  const destinaceAll = await getCollection('destinace');
+  const hotelyAll = await getCollection('hotel');
+  const destinaceById = indexDestinace(destinaceAll);
+
+  const paths: Array<{ params: { slug: string }; props: Props }> = [];
+
+  for (const entry of destinaceAll) {
+    const chain = resolveAncestors(entry.data.nadrazena, destinaceById);
+    const segments = [...chain.map((c) => c.id), entry.id];
+    paths.push({
+      params: { slug: segments.join('/') },
+      props: {
+        kind: entry.data.typ === 'oblast' ? 'oblast' : 'destinace',
+        entry,
+        chain,
+        destinaceAll,
+        hotelyAll,
+      },
+    });
+  }
+
+  for (const hotel of hotelyAll) {
+    const chain = resolveAncestors(hotel.data.nadrazena, destinaceById);
+    const segments = [...chain.map((c) => c.id), hotel.id];
+    paths.push({
+      params: { slug: segments.join('/') },
+      props: { kind: 'hotel', entry: hotel, chain, destinaceAll, hotelyAll },
+    });
+  }
+
+  return paths;
+}
+
+const { kind, entry, chain, destinaceAll, hotelyAll } = Astro.props as Props;
+const { Content } = await render(entry as any);
+
+const priceFormatter = new Intl.NumberFormat('cs-CZ');
+const breadcrumb = buildBreadcrumb(entry, chain);
+const kontinent = resolveKontinent(entry, chain);
+const basePath = '/destinace/' + [...chain.map((c) => c.id), entry.id].join('/');
+
+// ---- Destinace i Oblast sdílejí stejná data (obě žijí v kolekci `destinace`) ----
+const d = kind !== 'hotel' ? (entry as DestEntry).data : null;
+
+// Přímo podřazené oblasti (jen relevantní pro kind === 'destinace'/'oblast',
+// oblast může mít v budoucnu vlastní podoblasti, i když to zadání nevyžaduje).
+const oblasti = kind !== 'hotel' ? childOblasti(entry.id, destinaceAll) : [];
+
+// Hotely přímo podřazené tomuto uzlu (bez mezičlánku oblasti).
+const hotelyPrime = kind !== 'hotel' ? hotelyAll.filter((h) => h.data.nadrazena === entry.id) : [];
+
+// Všechny hotely v podstromu (napříč libovolně hlubokými oblastmi) — pro mapu.
+const hotelyVsechny = kind !== 'hotel' ? hotelyPod(entry.id, hotelyAll, destinaceAll) : [];
+
+// ---- Hotel ----
+const h = kind === 'hotel' ? (entry as HotelEntry).data : null;
+
+const tocItems =
+  kind === 'destinace' && d
+    ? ([
+        { id: 'info', label: 'Info' },
+        d.galerie.length > 0 && { id: 'fotogalerie', label: 'Fotogalerie' },
+        (oblasti.length > 0 || hotelyPrime.length > 0) && { id: 'ubytovani', label: 'Ubytování' },
+        d.kdy_jet.length > 0 && { id: 'kdy-jet', label: 'Kdy jet' },
+        d.mapa && { id: 'mapa', label: 'Mapa' },
+        d.zazitky.length > 0 && { id: 'zazitky', label: 'Zážitky' },
+        d.ref_tag && { id: 'reference', label: 'Reference' },
+      ].filter(Boolean) as Array<{ id: string; label: string }>)
+    : [];
+
+const pageTitle =
+  kind === 'hotel'
+    ? `${h!.nazev} — ${chain[chain.length - 1]?.data.nazev ?? ''} — Snail Travel`
+    : `${d!.nazev} — Destinace — Snail Travel`;
+const pageDescription = kind === 'hotel' ? `${h!.nazev}${h!.misto ? `, ${h!.misto}` : ''}` : d!.perex;
+---
+
+<Base title={pageTitle} description={pageDescription} activeNav="destinace">
+
+  <!-- ============ HERO ============ -->
+  <section class={`section dest-head ${(kind !== 'hotel' && d?.hlavni_foto) ? 'dest-head-photo' : ''}`}>
+    {kind !== 'hotel' && d?.hlavni_foto && (
+      <div class="dest-head-bg" style={`background-image: url('${d.hlavni_foto}')`} aria-hidden="true"></div>
+    )}
+    <div class="wrap">
+      <nav class="crumb reveal" aria-label="Drobečková navigace">
+        {breadcrumb.map((c, i) => (
+          <>
+            {i > 0 && <span class="crumb-sep">/</span>}
+            {c.href ? <a href={c.href}>{c.label}</a> : <span class="crumb-current">{c.label}</span>}
+          </>
+        ))}
+      </nav>
+
+      {kind === 'hotel' ? (
+        <>
+          <p class="kicker kicker-light reveal" data-delay="1">
+            Hotel{h!.misto ? ` · ${h!.misto}` : ''}
+          </p>
+          <h1 class="display reveal" data-delay="2">{h!.nazev}</h1>
+          {h!.hvezdy && <div class="hotel-stars reveal" data-delay="3">{'★'.repeat(h!.hvezdy)}</div>}
+          {h!.cena_od ? (
+            <div class="dest-price-badge reveal" data-delay="4">
+              <span class="price-value">od {priceFormatter.format(h!.cena_od)} Kč</span>
+              <span class="price-unit">{h!.cena_jednotka}{h!.co_cena_zahrnuje ? `, ${h!.co_cena_zahrnuje}` : ''}</span>
+            </div>
+          ) : (
+            <div class="dest-price-badge reveal" data-delay="4">
+              <span class="price-value">⚠ Cena chybí</span>
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          <p class="kicker kicker-light reveal" data-delay="1">
+            {kind === 'oblast'
+              ? `Oblast · ${chain.map((c) => c.data.nazev).join(' · ')}`
+              : `Destinace · ${kontinent ? KONTINENT_NAZEV[kontinent] : ''}${chain.length === 0 && d?.nadrazena ? ` · ${d.nadrazena}` : ''}`}
+          </p>
+          <h1 class="display reveal" data-delay="2">{d!.nazev}</h1>
+          <p class="dest-lead reveal" data-delay="3">{d!.perex}</p>
+
+          {kind === 'destinace' && (
+            d!.cena_od?.znamo ? (
+              <div class="dest-price-badge reveal" data-delay="4">
+                <span class="price-value">od {priceFormatter.format(d!.cena_od.hodnota ?? 0)} Kč</span>
+                <span class="price-unit">{d!.cena_od.jednotka}{d!.cena_od.zahrnuje ? `, ${d!.cena_od.zahrnuje}` : ''}</span>
+                {d!.cena_od.poznamka && <span class="price-note">{d!.cena_od.poznamka}</span>}
+              </div>
+            ) : (
+              <div class="dest-price-badge reveal" data-delay="4">
+                <span class="price-value">⚠ Doplnit od klienta</span>
+                <span class="price-unit">orientační cena za osobu a noc</span>
+              </div>
+            )
+          )}
+        </>
+      )}
+    </div>
+  </section>
+
+  {kind === 'destinace' && <Rozcestnik items={tocItems} />}
+
+  {kind === 'hotel' ? (
+    <>
+      <!-- ============ FOTO HOTELU ============ -->
+      <section class="section" id="info">
+        <div class="wrap">
+          {h!.foto ? (
+            <img src={h!.foto} alt={h!.nazev} loading="lazy" style="width:100%; max-height:520px; object-fit:cover; border-radius:3px;" />
+          ) : (
+            <div class="hotel-photo-ph" style="height:320px;">⚠ Foto hotelu chybí — doplnit od klienta</div>
+          )}
+        </div>
+      </section>
+
+      <!-- ============ POLOHA ============ -->
+      <section class="section" style="padding-top:0;">
+        <div class="wrap dest-about">
+          {h!.poloha ? (
+            <p class="lead">
+              Souřadnice: {h!.poloha.lat.toFixed(4)}, {h!.poloha.lng.toFixed(4)}
+              {' '}— zakresleno i na mapě oblasti {chain[chain.length - 1]?.data.nazev}.
+            </p>
+          ) : (
+            <div class="chybi-box reveal">
+              <strong>⚠ Doplnit od klienta</strong>
+              Přesnou polohu hotelu zatím nemáme — na mapě oblasti se proto nezobrazí.
+            </div>
+          )}
+        </div>
+      </section>
+
+      <!-- ============ CTA ============ -->
+      <section class="section dest-cta-band">
+        <div class="wrap">
+          <div class="dest-cta-inner reveal">
+            <h2 class="display">Naplánujme spolu pobyt v {h!.nazev}</h2>
+            <p>
+              Barbora Blaschke se vám ozve do 48 hodin s nabídkou na míru.
+              <br />
+              <a href="mailto:barbora@snailtravel.cz">barbora@snailtravel.cz</a>
+              &nbsp;·&nbsp;
+              <a href="tel:+420602552624">+420&nbsp;602&nbsp;552&nbsp;624</a>
+            </p>
+            <a href="/#kontakt" class="btn btn-pill">Naplánovat cestu</a>
+            <p style="margin-top:18px;"><a href={`/destinace/${[...chain.map((c) => c.id)].join('/')}`}>&larr; Zpět na {chain[chain.length - 1]?.data.nazev}</a></p>
+          </div>
+        </div>
+      </section>
+    </>
+  ) : (
+    <>
+      <!-- ============ PEREX / POPIS ============ -->
+      <section class="section" id="info">
+        <div class="wrap dest-about reveal">
+          <Content />
+        </div>
+      </section>
+
+      <!-- ============ FOTOGALERIE ============ -->
+      {d!.galerie.length > 0 && (
+        <section class="section" id="fotogalerie" style="padding-top: 0; background: var(--cream-2);">
+          <div class="wrap">
+            <header class="section-head reveal">
+              <p class="kicker">Fotogalerie</p>
+              <h2 class="display">{d!.nazev} v obrazech</h2>
+            </header>
+            <div class="dest-gallery reveal" data-delay="1">
+              {d!.galerie.map((img) => (
+                <div class="gallery-item">
+                  <img src={img.src} alt={img.alt} loading="lazy" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <!-- ============ UBYTOVÁNÍ (oblasti, nebo přímo hotely, pokud oblast chybí) ============ -->
+      <section class="section" id="ubytovani">
+        <div class="wrap">
+          <header class="section-head reveal">
+            <p class="kicker">Kde bydlet</p>
+            <h2 class="display">{oblasti.length > 0 ? 'Vyberte oblast' : 'Konkrétní hotely'}</h2>
+            <p class="lead">
+              {oblasti.length > 0
+                ? 'Nabídka je rozdělená podle oblastí — vyberte si tu, která vám sedí.'
+                : 'Výběr z aktuální nabídky, od cenově dostupných po ikonické adresy.'}
+            </p>
+          </header>
+
+          {oblasti.length > 0 ? (
+            <div class="hotel-grid reveal" data-delay="1">
+              {oblasti.map((o) => {
+                const pocetHotelu = hotelyAll.filter((h2) => h2.data.nadrazena === o.id).length;
+                return (
+                  <a class="hotel-card" href={`${basePath}/${o.id}`} style="display:block; color:inherit;">
+                    {o.data.hlavni_foto ? (
+                      <img class="hotel-photo" src={o.data.hlavni_foto} alt={o.data.nazev} loading="lazy" />
+                    ) : (
+                      <div class="hotel-photo-ph">⚠ Foto oblasti chybí — doplnit od klienta</div>
+                    )}
+                    <div class="hotel-body">
+                      <h3 class="hotel-name">{o.data.nazev}</h3>
+                      <div class="hotel-place">{pocetHotelu} {pocetHotelu === 1 ? 'hotel' : pocetHotelu < 5 ? 'hotely' : 'hotelů'} v nabídce</div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          ) : hotelyPrime.length > 0 ? (
+            <div class="hotel-grid reveal" data-delay="1">
+              {hotelyPrime.map((hotel) => (
+                <a class="hotel-card" href={`${basePath}/${hotel.id}`} style="display:block; color:inherit;">
+                  {hotel.data.foto ? (
+                    <img class="hotel-photo" src={hotel.data.foto} alt={hotel.data.nazev} loading="lazy" />
+                  ) : (
+                    <div class="hotel-photo-ph">⚠ Foto hotelu chybí — doplnit od klienta</div>
+                  )}
+                  <div class="hotel-body">
+                    <h3 class="hotel-name">{hotel.data.nazev}</h3>
+                    {hotel.data.hvezdy && <div class="hotel-stars">{'★'.repeat(hotel.data.hvezdy)}</div>}
+                    {hotel.data.misto && <div class="hotel-place">{hotel.data.misto}</div>}
+                    {hotel.data.cena_od ? (
+                      <div class="hotel-price">
+                        <strong>od {priceFormatter.format(hotel.data.cena_od)} Kč</strong>
+                        {hotel.data.cena_jednotka && <span> {hotel.data.cena_jednotka}</span>}
+                        {hotel.data.co_cena_zahrnuje && <span>, {hotel.data.co_cena_zahrnuje}</span>}
+                      </div>
+                    ) : (
+                      <div class="hotel-price">⚠ Cena chybí</div>
+                    )}
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div class="chybi-box reveal">
+              <strong>⚠ Doplnit od klienta</strong>
+              Konkrétní hotely tady zatím nemáme.
+            </div>
+          )}
+        </div>
+      </section>
+
+      <!-- ============ KDY JET ============ -->
+      {kind === 'destinace' && (
+        <section class="section" id="kdy-jet" style="background: var(--cream-2);">
+          <div class="wrap">
+            <header class="section-head reveal">
+              <p class="kicker">Kdy jet</p>
+              <h2 class="display">Počasí po měsících</h2>
+            </header>
+            {d!.kdy_jet_poznamka && <p class="weather-note reveal" data-delay="1">{d!.kdy_jet_poznamka}</p>}
+
+            {d!.kdy_jet.length > 0 ? (
+              <div class="weather-table-wrap reveal" data-delay="2">
+                <table class="weather-table">
+                  <thead>
+                    <tr>
+                      <th>Měsíc</th>
+                      <th>Vzduch</th>
+                      <th>Moře</th>
+                      <th>Doporučení</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {d!.kdy_jet.map((m) => (
+                      <tr>
+                        <td>{m.mesic}</td>
+                        <td>{m.teplota_vzduch}</td>
+                        <td>{m.teplota_more}</td>
+                        <td class="doporuceni">{m.doporuceni}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div class="chybi-box reveal">
+                <strong>⚠ Doplnit od klienta</strong>
+                Počasí po měsících zatím nemáme.
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      <!-- ============ MAPA OBLASTI ============ -->
+      {kind === 'destinace' && d!.mapa && (
+        <MapaOblasti
+          mapa={d!.mapa}
+          hotely={hotelyVsechny.map((hh) => ({
+            nazev: hh.data.nazev,
+            hvezdy: hh.data.hvezdy,
+            cena_od: hh.data.cena_od,
+            cena_jednotka: hh.data.cena_jednotka,
+            poloha: hh.data.poloha,
+          }))}
+          destNazev={d!.nazev}
+        />
+      )}
+
+      <!-- ============ ZÁŽITKY ============ -->
+      {kind === 'destinace' && d!.zazitky.length > 0 && (
+        <section class="section" id="zazitky">
+          <div class="wrap">
+            <header class="section-head reveal">
+              <p class="kicker">Co zažít</p>
+              <h2 class="display">Zážitky a výlety</h2>
+            </header>
+            <div class="experience-grid reveal" data-delay="1">
+              {d!.zazitky.map((z) => (
+                <div class="experience-item">
+                  <h3>{z.nazev}</h3>
+                  <p>{z.popis}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <!-- ============ REFERENCE (js/dest-references.js) ============ -->
+      {kind === 'destinace' && d!.ref_tag && (
+        <section class="section ref-inline" id="reference" data-dest={d!.ref_tag} data-root="/">
+          <div class="wrap">
+            <header class="ref-inline-head reveal">
+              <p class="kicker">Reference klientů</p>
+              <h2 class="display">Co říkají ti, kdo tam&nbsp;byli</h2>
+              <p class="lead">Skutečné dopisy od&nbsp;našich klientů, beze změny.</p>
+            </header>
+
+            <div class="ref-grid" data-ref-grid></div>
+
+            <div class="ref-inline-more reveal">
+              <a class="btn btn-ghost" data-ref-all href="/reference.html">Všechny reference na&nbsp;{d!.nazev}</a>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <!-- ============ CO CHYBÍ (viditelný podklad k diskusi) ============ -->
+      {d!.chybi.length > 0 && (
+        <section class="section" style="padding-top: 0; padding-bottom: 60px;">
+          <div class="wrap">
+            <div class="chybi-box reveal">
+              <strong>⚠ Doplnit od klienta — podklad k diskusi</strong>
+              <ul>
+                {d!.chybi.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <!-- ============ CTA BAND — kontakt ============ -->
+      <section class="section dest-cta-band">
+        <div class="wrap">
+          <div class="dest-cta-inner reveal">
+            <h2 class="display">Naplánujme spolu vaši cestu na {d!.nazev}</h2>
+            <p>
+              Barbora Blaschke se vám ozve do 48 hodin s nabídkou na míru.
+              <br />
+              <a href="mailto:barbora@snailtravel.cz">barbora@snailtravel.cz</a>
+              &nbsp;·&nbsp;
+              <a href="tel:+420602552624">+420&nbsp;602&nbsp;552&nbsp;624</a>
+            </p>
+            <a href="/#kontakt" class="btn btn-pill">Naplánovat cestu</a>
+            {chain.length > 0 && (
+              <p style="margin-top:18px;"><a href={`/destinace/${chain.map((c) => c.id).join('/')}`}>&larr; Zpět na {chain[chain.length - 1].data.nazev}</a></p>
+            )}
+          </div>
+        </div>
+      </section>
+    </>
+  )}
+
+</Base>
