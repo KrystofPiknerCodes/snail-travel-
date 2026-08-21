@@ -64,7 +64,7 @@ a { color: inherit; text-decoration: none; }
   color: var(--gold-deep);
   margin: 0 0 22px;
 }
-.kicker-light { color: var(--gold-soft); }
+.kicker-light { color: var(--gold-soft); text-shadow: 0 2px 6px rgba(0,0,0,.65), 0 12px 36px rgba(0,0,0,.5); }
 
 .display {
   font-family: var(--serif);
@@ -74,6 +74,16 @@ a { color: inherit; text-decoration: none; }
   font-size: clamp(2.1rem, 4.6vw, 3.6rem);
   margin: 0;
   color: var(--ink);
+}
+
+/* Hlavní nadpis v hero sekci destinace/oblasti/hotelu — stejný font jako
+   .hero-title na homepage (Cinzel), aby hero nadpisy sedly napříč webem.
+   Jen h1 v .dest-head, ne ostatní .display nadpisy na stránce. */
+.dest-head h1.display {
+  font-family: "Cinzel", Georgia, serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .lead {
@@ -534,7 +544,7 @@ body.menu-open .mobile-nav {
   line-height: 1.15;
   letter-spacing: 0.03em;
   margin: 0 0 clamp(14px, 3vh, 28px);
-  text-shadow: 0 2px 40px rgba(0,0,0,.25);
+  text-shadow: 0 2px 6px rgba(0,0,0,.65), 0 14px 44px rgba(0,0,0,.5);
 }
 .hero-sub {
   max-width: 560px;
@@ -542,6 +552,7 @@ body.menu-open .mobile-nav {
   font-size: clamp(1rem, 1.6vw, 1.18rem);
   line-height: 1.65;
   color: rgba(255,255,255,.9);
+  text-shadow: 0 2px 6px rgba(0,0,0,.65), 0 12px 36px rgba(0,0,0,.5);
 }
 
 .hero-scroll {
@@ -1238,12 +1249,14 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   inset: 0;
   background: linear-gradient(180deg, rgba(18,14,9,.5) 0%, rgba(16,12,8,.68) 55%, rgba(14,11,7,.88) 100%);
 }
+.dest-head-photo .crumb { text-shadow: 0 1px 4px rgba(0,0,0,.65); }
 .dest-head-photo .crumb a { color: rgba(250, 248, 243, 0.72); }
 .dest-head-photo .crumb a:hover { color: var(--gold-soft); }
 .dest-head-photo .crumb-sep { color: rgba(250, 248, 243, 0.3); }
 .dest-head-photo .crumb-current { color: var(--gold-soft); }
-.dest-head-photo .display { color: var(--cream); }
-.dest-head-photo .dest-lead { color: rgba(250, 248, 243, 0.85); }
+.dest-head-photo .kicker { text-shadow: 0 2px 6px rgba(0,0,0,.65), 0 12px 36px rgba(0,0,0,.5); }
+.dest-head-photo .display { color: var(--cream); text-shadow: 0 2px 6px rgba(0,0,0,.65), 0 14px 44px rgba(0,0,0,.5); }
+.dest-head-photo .dest-lead { color: rgba(250, 248, 243, 0.85); text-shadow: 0 2px 6px rgba(0,0,0,.65), 0 12px 36px rgba(0,0,0,.5); }
 
 .dest-search {
   position: relative;

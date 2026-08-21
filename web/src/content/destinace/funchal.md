@@ -4,6 +4,8 @@ nazev: Funchal
 nadrazena: madeira
 kontinent: EU
 
+hlavni_foto: /assets/madeira/funchal-oblast.jpg
+
 perex: >
   Hlavní a přístavní město Madeiry, malebně rozložené v amfiteátru kopců nad
   Atlantikem. Má plážovou promenádu i historické centrum a je zázemím pro
@@ -11,7 +13,7 @@ perex: >
 
 chybi:
   - "Delší popis Funchalu (památky, tržnice, konkrétní čtvrti) — zatím jen stručný fakt převzatý z popisu Madeiry, plnohodnotný text k doplnění od klienta."
-  - "Vlastní fotka Funchalu (teď stránka běží bez hero fotky, viz hlavni_foto)."
+  - "Fotka je zatím jen stock (Pexels, ulice ve Funchalu) pro ukázku karty s fotkou — nahradit vlastní fotkou z zájezdu."
 ---
 
 Funchal je hlavní město Madeiry a její jediný větší přístav — sem přiletíte,

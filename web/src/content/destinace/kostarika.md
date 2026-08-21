@@ -1,0 +1,17 @@
+---
+typ: destinace
+nazev: Kostarika
+kontinent: NA
+
+hlavni_foto: /assets/countries/kostarika.jpg
+
+galerie:
+  - src: /assets/countries/kostarika.jpg
+    alt: Kostarika
+ref_tag: Kostarika
+
+
+chybi:
+  - "Popis destinace (perex, úvodní text) — na starém webu žádný nebyl, jen název, foto a kontinent."
+  - "Cena od, kdy jet, zážitky, konkrétní hotely — u této destinace zatím žádná data neexistují (na rozdíl od Madeiry)."
+---

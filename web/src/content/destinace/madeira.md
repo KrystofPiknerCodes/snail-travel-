@@ -3,6 +3,7 @@ typ: destinace
 nazev: Madeira
 nadrazena: Portugalsko
 kontinent: EU
+vybrana: true
 
 perex: >
   Ostrov věčného jara plný rozkvetlých květin, nekonečných oslav a lahodného

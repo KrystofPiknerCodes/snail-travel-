@@ -95,11 +95,12 @@ const tocItems =
   kind === 'destinace' && d
     ? ([
         { id: 'info', label: 'Info' },
+        (oblasti.length > 0 || hotelyPrime.length > 0) && { id: 'ubytovani', label: 'Destinace' },
         d.galerie.length > 0 && { id: 'fotogalerie', label: 'Fotogalerie' },
-        (oblasti.length > 0 || hotelyPrime.length > 0) && { id: 'ubytovani', label: 'Ubytování' },
         d.kdy_jet.length > 0 && { id: 'kdy-jet', label: 'Kdy jet' },
         d.mapa && { id: 'mapa', label: 'Mapa' },
         d.zazitky.length > 0 && { id: 'zazitky', label: 'Zážitky' },
+        d.golf.length > 0 && { id: 'golf', label: 'Golf' },
         d.ref_tag && { id: 'reference', label: 'Reference' },
       ].filter(Boolean) as Array<{ id: string; label: string }>)
     : [];
@@ -108,15 +109,30 @@ const pageTitle =
   kind === 'hotel'
     ? `${h!.nazev} — ${chain[chain.length - 1]?.data.nazev ?? ''} — Snail Travel`
     : `${d!.nazev} — Destinace — Snail Travel`;
-const pageDescription = kind === 'hotel' ? `${h!.nazev}${h!.misto ? `, ${h!.misto}` : ''}` : d!.perex;
+const pageDescription =
+  kind === 'hotel' ? `${h!.nazev}${h!.misto ? `, ${h!.misto}` : ''}` : d!.perex ?? d!.nazev;
 ---
 
 <Base title={pageTitle} description={pageDescription} activeNav="destinace">
 
   <!-- ============ HERO ============ -->
-  <section class={`section dest-head ${(kind !== 'hotel' && d?.hlavni_foto) ? 'dest-head-photo' : ''}`}>
+  <section class={`section dest-head ${(kind !== 'hotel' && d?.hlavni_foto) ? 'dest-head-photo dest-head-slider' : ''}`}>
     {kind !== 'hotel' && d?.hlavni_foto && (
-      <div class="dest-head-bg" style={`background-image: url('${d.hlavni_foto}')`} aria-hidden="true"></div>
+      d.galerie && d.galerie.length > 1 ? (
+        <div class="dest-hero-slider" id="destHeroSlider" aria-hidden="true">
+          {d.galerie.slice(0, 4).map((img, i) => (
+            <div class={`dest-hero-slide ${i === 0 ? 'is-active' : ''}`} style={`background-image: url('${img.src}')`}></div>
+          ))}
+          <div class="dest-hero-overlay"></div>
+          <div class="dest-hero-dots">
+            {d.galerie.slice(0, 4).map((_, i) => (
+              <button type="button" class={`dest-hero-dot ${i === 0 ? 'is-active' : ''}`} data-slide={i} aria-label={`Fotka ${i + 1}`}></button>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div class="dest-head-bg" style={`background-image: url('${d.hlavni_foto}')`} aria-hidden="true"></div>
+      )
     )}
     <div class="wrap">
       <nav class="crumb reveal" aria-label="Drobečková navigace">
@@ -154,22 +170,6 @@ const pageDescription = kind === 'hotel' ? `${h!.nazev}${h!.misto ? `, ${h!.mist
               : `Destinace · ${kontinent ? KONTINENT_NAZEV[kontinent] : ''}${chain.length === 0 && d?.nadrazena ? ` · ${d.nadrazena}` : ''}`}
           </p>
           <h1 class="display reveal" data-delay="2">{d!.nazev}</h1>
-          <p class="dest-lead reveal" data-delay="3">{d!.perex}</p>
-
-          {kind === 'destinace' && (
-            d!.cena_od?.znamo ? (
-              <div class="dest-price-badge reveal" data-delay="4">
-                <span class="price-value">od {priceFormatter.format(d!.cena_od.hodnota ?? 0)} Kč</span>
-                <span class="price-unit">{d!.cena_od.jednotka}{d!.cena_od.zahrnuje ? `, ${d!.cena_od.zahrnuje}` : ''}</span>
-                {d!.cena_od.poznamka && <span class="price-note">{d!.cena_od.poznamka}</span>}
-              </div>
-            ) : (
-              <div class="dest-price-badge reveal" data-delay="4">
-                <span class="price-value">⚠ Doplnit od klienta</span>
-                <span class="price-unit">orientační cena za osobu a noc</span>
-              </div>
-            )
-          )}
         </>
       )}
     </div>
@@ -227,16 +227,100 @@ const pageDescription = kind === 'hotel' ? `${h!.nazev}${h!.misto ? `, ${h!.mist
     </>
   ) : (
     <>
-      <!-- ============ PEREX / POPIS ============ -->
+      <!-- ============ ÚRYVEK + INFO ============ -->
       <section class="section" id="info">
-        <div class="wrap dest-about reveal">
-          <Content />
+        <div class="wrap">
+          {d!.perex ? (
+            <p class="lead dest-excerpt reveal">{d!.perex}</p>
+          ) : (
+            <p class="lead dest-excerpt reveal">⚠ Doplnit od klienta — popis destinace zatím chybí.</p>
+          )}
+          <div class="dest-about reveal" data-delay="1">
+            <Content />
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ UBYTOVÁNÍ (oblasti, nebo přímo hotely, pokud oblast chybí) ============ -->
+      <section class="section section-dark" id="ubytovani">
+        <div class="wrap">
+          <header class="section-head reveal">
+            <p class="kicker">Destinace</p>
+            <h2 class="display">{oblasti.length > 0 ? 'Vyberte oblast' : 'Konkrétní hotely'}</h2>
+            <p class="lead">
+              {oblasti.length > 0
+                ? 'Nabídka je rozdělená podle oblastí — vyberte si tu, která vám sedí.'
+                : 'Výběr z aktuální nabídky, od cenově dostupných po ikonické adresy.'}
+            </p>
+          </header>
+
+          {oblasti.length > 0 ? (
+            <div class="hotel-scroller reveal" data-delay="1">
+              <div class="hotel-grid" id="hotelScroller">
+                {oblasti.map((o) => {
+                  const pocetHotelu = hotelyAll.filter((h2) => h2.data.nadrazena === o.id).length;
+                  return (
+                    <a class="hotel-card" href={`${basePath}/${o.id}`}>
+                      {o.data.hlavni_foto ? (
+                        <img class="hotel-photo" src={o.data.hlavni_foto} alt={o.data.nazev} loading="lazy" />
+                      ) : (
+                        <div class="hotel-photo-ph">⚠ Foto oblasti chybí — doplnit od klienta</div>
+                      )}
+                      <span class="hotel-card-badge">{pocetHotelu} {pocetHotelu === 1 ? 'hotel' : pocetHotelu < 5 ? 'hotely' : 'hotelů'}</span>
+                      <div class="hotel-card-overlay">
+                        <p class="hotel-card-kicker">{d!.nazev}</p>
+                        <h3 class="hotel-card-title">{o.data.nazev}</h3>
+                        <span class="hotel-card-cta">Prohlédnout</span>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+              <button type="button" class="hotel-arrow hotel-arrow-prev" data-dir="-1" aria-label="Předchozí">&larr;</button>
+              <button type="button" class="hotel-arrow hotel-arrow-next" data-dir="1" aria-label="Další">&rarr;</button>
+            </div>
+          ) : hotelyPrime.length > 0 ? (
+            <div class="hotel-scroller reveal" data-delay="1">
+              <div class="hotel-grid" id="hotelScroller">
+                {hotelyPrime.map((hotel) => (
+                  <a class="hotel-card" href={`${basePath}/${hotel.id}`}>
+                    {hotel.data.foto ? (
+                      <img class="hotel-photo" src={hotel.data.foto} alt={hotel.data.nazev} loading="lazy" />
+                    ) : (
+                      <div class="hotel-photo-ph">⚠ Foto hotelu chybí — doplnit od klienta</div>
+                    )}
+                    {hotel.data.hvezdy && <span class="hotel-card-badge">{'★'.repeat(hotel.data.hvezdy)}</span>}
+                    <div class="hotel-card-overlay">
+                      {hotel.data.misto && <p class="hotel-card-kicker">{hotel.data.misto}</p>}
+                      <h3 class="hotel-card-title">{hotel.data.nazev}</h3>
+                      {hotel.data.cena_od ? (
+                        <p class="hotel-card-price">
+                          od {priceFormatter.format(hotel.data.cena_od)} Kč
+                          {hotel.data.cena_jednotka && <span> {hotel.data.cena_jednotka}</span>}
+                        </p>
+                      ) : (
+                        <p class="hotel-card-price">⚠ Cena chybí</p>
+                      )}
+                      <span class="hotel-card-cta">Prohlédnout</span>
+                    </div>
+                  </a>
+                ))}
+              </div>
+              <button type="button" class="hotel-arrow hotel-arrow-prev" data-dir="-1" aria-label="Předchozí">&larr;</button>
+              <button type="button" class="hotel-arrow hotel-arrow-next" data-dir="1" aria-label="Další">&rarr;</button>
+            </div>
+          ) : (
+            <div class="chybi-box reveal">
+              <strong>⚠ Doplnit od klienta</strong>
+              Konkrétní hotely tady zatím nemáme.
+            </div>
+          )}
         </div>
       </section>
 
       <!-- ============ FOTOGALERIE ============ -->
       {d!.galerie.length > 0 && (
-        <section class="section" id="fotogalerie" style="padding-top: 0; background: var(--cream-2);">
+        <section class="section" id="fotogalerie" style="background: var(--cream-2);">
           <div class="wrap">
             <header class="section-head reveal">
               <p class="kicker">Fotogalerie</p>
@@ -252,73 +336,6 @@ const pageDescription = kind === 'hotel' ? `${h!.nazev}${h!.misto ? `, ${h!.mist
           </div>
         </section>
       )}
-
-      <!-- ============ UBYTOVÁNÍ (oblasti, nebo přímo hotely, pokud oblast chybí) ============ -->
-      <section class="section" id="ubytovani">
-        <div class="wrap">
-          <header class="section-head reveal">
-            <p class="kicker">Kde bydlet</p>
-            <h2 class="display">{oblasti.length > 0 ? 'Vyberte oblast' : 'Konkrétní hotely'}</h2>
-            <p class="lead">
-              {oblasti.length > 0
-                ? 'Nabídka je rozdělená podle oblastí — vyberte si tu, která vám sedí.'
-                : 'Výběr z aktuální nabídky, od cenově dostupných po ikonické adresy.'}
-            </p>
-          </header>
-
-          {oblasti.length > 0 ? (
-            <div class="hotel-grid reveal" data-delay="1">
-              {oblasti.map((o) => {
-                const pocetHotelu = hotelyAll.filter((h2) => h2.data.nadrazena === o.id).length;
-                return (
-                  <a class="hotel-card" href={`${basePath}/${o.id}`} style="display:block; color:inherit;">
-                    {o.data.hlavni_foto ? (
-                      <img class="hotel-photo" src={o.data.hlavni_foto} alt={o.data.nazev} loading="lazy" />
-                    ) : (
-                      <div class="hotel-photo-ph">⚠ Foto oblasti chybí — doplnit od klienta</div>
-                    )}
-                    <div class="hotel-body">
-                      <h3 class="hotel-name">{o.data.nazev}</h3>
-                      <div class="hotel-place">{pocetHotelu} {pocetHotelu === 1 ? 'hotel' : pocetHotelu < 5 ? 'hotely' : 'hotelů'} v nabídce</div>
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
-          ) : hotelyPrime.length > 0 ? (
-            <div class="hotel-grid reveal" data-delay="1">
-              {hotelyPrime.map((hotel) => (
-                <a class="hotel-card" href={`${basePath}/${hotel.id}`} style="display:block; color:inherit;">
-                  {hotel.data.foto ? (
-                    <img class="hotel-photo" src={hotel.data.foto} alt={hotel.data.nazev} loading="lazy" />
-                  ) : (
-                    <div class="hotel-photo-ph">⚠ Foto hotelu chybí — doplnit od klienta</div>
-                  )}
-                  <div class="hotel-body">
-                    <h3 class="hotel-name">{hotel.data.nazev}</h3>
-                    {hotel.data.hvezdy && <div class="hotel-stars">{'★'.repeat(hotel.data.hvezdy)}</div>}
-                    {hotel.data.misto && <div class="hotel-place">{hotel.data.misto}</div>}
-                    {hotel.data.cena_od ? (
-                      <div class="hotel-price">
-                        <strong>od {priceFormatter.format(hotel.data.cena_od)} Kč</strong>
-                        {hotel.data.cena_jednotka && <span> {hotel.data.cena_jednotka}</span>}
-                        {hotel.data.co_cena_zahrnuje && <span>, {hotel.data.co_cena_zahrnuje}</span>}
-                      </div>
-                    ) : (
-                      <div class="hotel-price">⚠ Cena chybí</div>
-                    )}
-                  </div>
-                </a>
-              ))}
-            </div>
-          ) : (
-            <div class="chybi-box reveal">
-              <strong>⚠ Doplnit od klienta</strong>
-              Konkrétní hotely tady zatím nemáme.
-            </div>
-          )}
-        </div>
-      </section>
 
       <!-- ============ KDY JET ============ -->
       {kind === 'destinace' && (
@@ -398,6 +415,31 @@ const pageDescription = kind === 'hotel' ? `${h!.nazev}${h!.misto ? `, ${h!.mist
         </section>
       )}
 
+      <!-- ============ GOLF ============ -->
+      {kind === 'destinace' && d!.golf.length > 0 && (
+        <section class="section" id="golf" style="background: var(--cream-2);">
+          <div class="wrap">
+            <header class="section-head reveal">
+              <p class="kicker">Golf</p>
+              <h2 class="display">Golfová hřiště</h2>
+            </header>
+            <div class="experience-grid reveal" data-delay="1">
+              {d!.golf.map((g) => (
+                <div class="experience-item">
+                  <h3>{g.nazev}</h3>
+                  <p>
+                    {g.jamky ? `${g.jamky} jamek` : '⚠ Počet jamek chybí'}
+                    {g.vzdalenost_hotel ? ` · ${g.vzdalenost_hotel} od hotelu` : ''}
+                    {g.green_fee_v_cene === true ? ' · green fee v ceně' : ''}
+                    {g.green_fee_v_cene === false ? ' · green fee mimo cenu' : ''}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       <!-- ============ REFERENCE (js/dest-references.js) ============ -->
       {kind === 'destinace' && d!.ref_tag && (
         <section class="section ref-inline" id="reference" data-dest={d!.ref_tag} data-root="/">
@@ -454,3 +496,8 @@ const pageDescription = kind === 'hotel' ? `${h!.nazev}${h!.misto ? `, ${h!.mist
   )}
 
 </Base>
+
+{kind !== 'hotel' && d?.galerie && d.galerie.length > 1 && (
+  <script is:inline src="/js/dest-hero-slider.js"></script>
+)}
+{kind !== 'hotel' && <script is:inline src="/js/dest-hotel-scroller.js"></script>}

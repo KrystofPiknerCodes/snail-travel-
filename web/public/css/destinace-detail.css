@@ -5,6 +5,12 @@
    cena "od", fotogalerie, hotely, počasí po měsících, zážitky, placeholder.
    ============================================================ */
 
+/* ---------- Homepage: slider destinací (#destinace) sdílí kartu
+   .hotel-card se sekcí Destinace/Ubytování na detailu — jen bez šipek
+   dole (jsou uvnitř .hotel-scroller) a s vycentrovaným "Všechny
+   destinace" tlačítkem. ---------- */
+.destinations .dest-foot { justify-content: center; }
+
 /* ---------- Placeholder blok — "⚠ Doplnit od klienta" ---------- */
 .chybi-box {
   margin-top: 26px;
@@ -90,24 +96,83 @@
   .dest-gallery > *:first-child { grid-column: span 2; grid-row: span 1; }
 }
 
-/* ---------- Hotely ---------- */
-.hotel-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 22px;
-  margin-top: 46px;
+/* ---------- Sekce s pruhem (reference: Black Tomato "Similar experiences" —
+   celý pruh má vlastní pozadí, ne jen karty). Světlá varianta — zapadá do
+   krémového feelu webu, ne černá. Dekorace jsou dvě vlastní kreslené
+   spirály (echo naší ulity z loga, ne generický vzor) — vlevo nahoře
+   dvojlinková spirála, vpravo dole plynulá jednolinková, obě otočené o
+   180° (klientovo přání). Jméno třídy zůstává .section-dark (historicky),
+   i když je teď světlá — používá ji [...slug].astro. ---------- */
+.section-dark {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(50px, 6vw, 90px) 0;
+  background: linear-gradient(120deg, #DBE2E6 0%, #E9E1D2 100%);
 }
+.section-dark::before,
+.section-dark::after {
+  content: "";
+  position: absolute;
+  width: 384px;
+  height: 384px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.85;
+  pointer-events: none;
+}
+.section-dark::before {
+  top: 2%;
+  left: 1%;
+  transform: rotate(180deg) scaleX(1.3);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23BD9A45' stroke-width='1.2'%3E%3Cpath d='M100 100 C 100 60, 140 60, 140 100 C 140 150, 70 150, 70 90 C 70 30, 160 30, 160 100 C 160 180, 30 180, 30 90'/%3E%3Cpath d='M100 105 C 100 65, 140 65, 140 105 C 140 155, 75 155, 75 95 C 75 35, 155 35, 155 105 C 155 175, 35 175, 35 95' opacity='0.6'/%3E%3C/g%3E%3C/svg%3E");
+}
+.section-dark::after {
+  bottom: 2%;
+  right: 1%;
+  transform: rotate(180deg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath d='M100,100 Q120,80 140,100 T100,140 T60,100 T100,60 T160,100 T100,180 T20,100 T100,20' fill='none' stroke='%23BD9A45' stroke-width='1'/%3E%3C/svg%3E");
+}
+.section-dark .wrap { position: relative; z-index: 1; }
+.section-dark .hotel-arrow { background: var(--white); }
+.section-dark .hotel-arrow:hover { border-color: var(--gold); }
+@media (max-width: 620px) {
+  .section-dark::before,
+  .section-dark::after { width: 240px; height: 240px; }
+}
+
+/* ---------- Hotely / Destinace (oblasti) — horizontální scroll rail se
+   šipkami a textem přes fotku (reference: Black Tomato "Similar
+   experiences" karty — badge vlevo/vpravo nahoře, gradient overlay dole
+   s kickerem/názvem/cenou/CTA). Stejná třída .hotel-grid/.hotel-card
+   obsluhuje jak oblasti pod destinací, tak hotely pod oblastí — viz
+   [...slug].astro. Šipky ovládá public/js/dest-hotel-scroller.js. ---------- */
+.hotel-scroller { position: relative; margin-top: 46px; }
+.hotel-grid {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 14px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.hotel-grid.dragging { cursor: grabbing; }
+.hotel-grid::-webkit-scrollbar { display: none; }
 .hotel-card {
-  background: var(--white);
-  border: 1px solid var(--line);
+  position: relative;
+  flex: 0 0 380px;
+  scroll-snap-align: start;
+  aspect-ratio: 4 / 5;
   border-radius: 3px;
   overflow: hidden;
-  transition: border-color .3s var(--ease), box-shadow .3s var(--ease);
+  display: block;
+  color: inherit;
+  transition: box-shadow .3s var(--ease), transform .3s var(--ease);
 }
-.hotel-card:hover { border-color: var(--gold-soft); box-shadow: 0 18px 44px -30px rgba(33, 30, 24, 0.4); }
-.hotel-photo { width: 100%; height: 170px; object-fit: cover; background: var(--cream-2); }
+.hotel-card:hover { box-shadow: 0 18px 44px -20px rgba(33, 30, 24, 0.5); transform: translateY(-3px); }
+.hotel-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: var(--cream-2); display: block; }
 .hotel-photo-ph {
-  width: 100%; height: 170px;
+  position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
   background: var(--cream-2);
   color: var(--ink-soft);
@@ -115,13 +180,85 @@
   text-align: center;
   padding: 12px;
 }
-.hotel-body { padding: 20px 22px; }
-.hotel-name { font-family: var(--serif); font-size: 19px; margin: 0 0 4px; }
-.hotel-stars { color: var(--gold); font-size: 13px; letter-spacing: 2px; margin-bottom: 8px; }
-.hotel-place { font-size: 13px; color: var(--ink-soft); margin-bottom: 14px; }
-.hotel-price { font-size: 15px; }
-.hotel-price strong { color: var(--gold-deep); font-family: var(--serif); font-size: 18px; }
-.hotel-price span { color: var(--ink-soft); font-size: 13px; }
+.hotel-card-badge {
+  position: absolute;
+  top: 14px; left: 14px;
+  z-index: 1;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(20, 18, 12, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: var(--gold-soft);
+  font-size: 11px;
+  font-family: var(--sans);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.hotel-card-overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 46px 18px 18px;
+  background: linear-gradient(180deg, rgba(18, 14, 9, 0) 0%, rgba(18, 14, 9, 0.55) 45%, rgba(15, 12, 8, 0.88) 100%);
+  color: var(--cream);
+}
+.hotel-card-kicker {
+  margin: 0 0 4px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+}
+.hotel-card-title {
+  margin: 0 0 6px;
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.15;
+  color: var(--cream);
+}
+.hotel-card-price { margin: 0 0 10px; font-size: 13px; color: rgba(250, 248, 243, 0.85); }
+.hotel-card-cta {
+  display: inline-block;
+  padding: 7px 14px;
+  border: 1px solid rgba(250, 248, 243, 0.55);
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background .3s var(--ease), border-color .3s var(--ease);
+}
+.hotel-card:hover .hotel-card-cta { background: rgba(250, 248, 243, 0.14); border-color: var(--gold-soft); }
+
+.hotel-arrow {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--ink);
+  font-size: 16px;
+  cursor: pointer;
+  transition: border-color .3s var(--ease), opacity .3s var(--ease);
+}
+.hotel-arrow:hover { border-color: var(--gold); }
+.hotel-arrow:disabled { opacity: 0; pointer-events: none; }
+.hotel-arrow-prev { left: -22px; }
+.hotel-arrow-next { right: -22px; }
+@media (max-width: 900px) {
+  .hotel-arrow { display: none; }
+}
+@media (max-width: 620px) {
+  .hotel-card { flex-basis: 260px; }
+}
 
 /* ---------- Kdy jet / počasí po měsících ---------- */
 .weather-note { max-width: 720px; margin: 0 auto 30px; text-align: center; color: var(--ink-soft); font-size: 14px; }
@@ -153,6 +290,18 @@
 .experience-item h3 { font-family: var(--serif); font-size: 19px; margin: 0 0 8px; }
 .experience-item p { color: var(--ink-soft); font-size: 15px; margin: 0; }
 
+/* ---------- Pozice člena týmu (o-nas.astro) — role dodané klientem,
+   na starém webu žádná ekvivalentní třída neexistovala. ---------- */
+.team-position {
+  margin: -8px 0 12px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+
 /* ---------- Sekce nadpisy (opakovaný vzor) ---------- */
 .section-head { max-width: 680px; margin: 0 auto 18px; text-align: center; }
 .section-head .display { margin-bottom: 16px; }
@@ -182,6 +331,7 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
   margin: 0 auto;
   padding: 0 32px;
   display: flex;
+  justify-content: center;
   gap: 8px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -241,4 +391,144 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
 @media (max-width: 620px) {
   .dest-map { height: 340px; }
   .dest-toc-link { padding: 13px 4px; margin-right: 18px; font-size: 12.5px; }
+  .dest-toc-inner { justify-content: flex-start; }
+}
+
+/* ============================================================
+   PATIČKA — reálné firemní/právní údaje (sloupec navíc vedle
+   brand/nav/kontakt v .footer-grid, viz web/CLAUDE.md a
+   Base.astro). Rozšiřuje mřížku o čtvrtý sloupec.
+   ============================================================ */
+.footer-grid { grid-template-columns: 1.2fr 0.8fr 0.8fr 1.3fr; }
+.footer-legal {
+  padding-top: 6px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+}
+.footer-legal p { margin: 0 0 14px; }
+.footer-legal p:last-child { margin-bottom: 0; }
+.footer-legal a { color: rgba(255, 255, 255, 0.72); transition: color .35s var(--ease); }
+.footer-legal a:hover { color: var(--gold-soft); }
+.footer-legal-notice strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+@media (max-width: 860px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   HERO FOTOSLIDER — detail destinace/oblasti (srpen 2026 redesign).
+   Nahrazuje statickou .dest-head-bg fotku sadou 2-4 prokládaných
+   snímků z galerie s crossfade (dest-hero-slider.js) a jemnějším
+   přechodem než starý .dest-head-bg::after (ten zůstává beze změny
+   pro starý statický web, viz destinace/seychely.html).
+   ============================================================ */
+.dest-head-slider.dest-head-photo { min-height: 88vh; padding-bottom: 90px; }
+.dest-hero-slider {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+.dest-hero-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 55%;
+  opacity: 0;
+  transition: opacity 1.4s var(--ease);
+}
+.dest-hero-slide.is-active { opacity: 1; }
+.dest-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(18, 14, 9, 0.18) 0%,
+    rgba(18, 14, 9, 0.12) 38%,
+    rgba(14, 11, 7, 0.58) 100%);
+}
+.dest-hero-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 1;
+}
+.dest-hero-dot {
+  width: 22px;
+  height: 3px;
+  border: none;
+  border-radius: 2px;
+  padding: 0;
+  background: rgba(250, 248, 243, 0.4);
+  cursor: pointer;
+  transition: background .3s var(--ease);
+}
+.dest-hero-dot.is-active { background: var(--gold-soft); }
+.dest-hero-dot:hover { background: rgba(250, 248, 243, 0.7); }
+
+/* ---------- Hero akce: CTA + cenová pilulka (nahrazuje starou tmavou
+   .dest-price-badge krabičku — subtilnější, "modernější" na přání klienta) */
+.dest-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 26px;
+}
+.dest-price-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: rgba(250, 248, 243, 0.94);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.dest-price-pill .price-value {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 14.5px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.dest-price-pill .price-unit {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.dest-price-pill-muted { background: rgba(250, 248, 243, 0.75); }
+.dest-price-pill-muted .price-value { color: var(--gold-deep); font-weight: 500; }
+.dest-price-note {
+  margin: 14px auto 0;
+  max-width: 480px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(250, 248, 243, 0.68);
+  text-align: center;
+}
+@media (max-width: 620px) {
+  .dest-head-slider.dest-head-photo { min-height: 76vh; }
+  .dest-hero-dots { bottom: 18px; }
+}
+
+/* ============================================================
+   ÚRYVEK — krátký perex nad popisem destinace (.dest-about, viz výš).
+   ============================================================ */
+.dest-excerpt {
+  max-width: 700px;
+  margin: 0 auto 48px;
+  text-align: center;
+  color: var(--ink-soft);
 }

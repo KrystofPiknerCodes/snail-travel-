@@ -4,13 +4,15 @@ nazev: Calheta
 nadrazena: madeira
 kontinent: EU
 
+hlavni_foto: /assets/madeira/calheta.jpg
+
 perex: >
   Přímořské městečko na jihozápadě Madeiry s umělou pláží — jedna z mála
   míst na ostrově, kde jde na pláž bez lávových skalisek.
 
 chybi:
   - "Delší popis Calhety od klienta — na živém webu ani v podkladech k Madeiře samostatný text není, plnohodnotný popis chybí."
-  - "Vlastní fotka Calhety (teď stránka běží bez hero fotky, viz hlavni_foto)."
+  - "Fotka je zatím jen stock (Pexels, pobřežní útesy Portugalsko, ne přímo Calheta) pro ukázku karty s fotkou — nahradit vlastní fotkou z zájezdu."
   - "Poloha hotelu Calheta Beach — viz poznámka u hotelu, přes OSM se nepodařilo spolehlivě dohledat."
 ---
 

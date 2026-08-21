@@ -87,7 +87,16 @@ const destinaceCollection = defineCollection({
     nadrazena: z.string().optional(),
     kontinent: z.enum(['EU', 'AF', 'AS', 'NA', 'SA', 'OC']),
 
-    perex: z.string(),
+    // Přeneseno ze starého `destinace.html` (`li.is-featured`) při migraci
+    // katalogu zemí srpen 2026 — jen řídí velikost/prioritu karty ve výpisce
+    // `/destinace`, nemá jiný vliv na obsah stránky samotné destinace.
+    vybrana: z.boolean().default(false),
+
+    // Nepovinné — u drtivé většiny migrovaných zemí (viz migrace srpen 2026,
+    // ~107 zemí z destinace.html) zatím žádný perex neexistuje v žádném
+    // zdroji dat. Šablona ([...slug].astro) bez něj ukáže placeholder
+    // "⚠ Doplnit od klienta", stejný princip jako u ostatních chybějících polí.
+    perex: z.string().optional(),
     // Nepovinné kvůli záznamům typu 'oblast', které zatím nemusí mít vlastní
     // hero fotku — šablona bez ní ukáže placeholder.
     hlavni_foto: z.string().optional(),
@@ -147,6 +156,29 @@ const destinaceCollection = defineCollection({
       .default([]),
 
     ref_tag: z.string().optional(), // klíč do window.SNAIL_REF_QUOTES / reference.html?dest=
+
+    // Golfová hřiště destinace/oblasti — přidáno při plnění Botswany (srpen
+    // 2026, viz report v content.config.ts historii / CLAUDE.md), podle
+    // entity "Golfové hřiště" z docs/admin-predpoklady.md (sekce 2): název,
+    // počet jamek, vzdálenost od hotelu, green fee ano/ne, foto. Zvoleno
+    // jako pole objektů přímo na Destinaci/Oblasti (stejný princip jako
+    // `hotely` kdysi u Madeiry), NE jako nová kolekce `golf` — hřiště nemají
+    // (na rozdíl od hotelů) vlastní podstránku ani netřeba je zatím filtrovat
+    // napříč destinacemi, takže samostatná kolekce by dnes jen přidala
+    // zbytečnou vrstvu. Pokud v budoucnu přibude potřeba (mapa hřišť napříč
+    // zeměmi, filtr "hřiště do 5 km od hotelu" apod.), přesunout stejným
+    // způsobem, jakým se hotely vytáhly z Destinace do vlastní kolekce.
+    golf: z
+      .array(
+        z.object({
+          nazev: z.string(),
+          jamky: z.number().optional(), // počet jamek — u Botswany známo pro všechna hřiště
+          vzdalenost_hotel: z.string().optional(), // zatím nikdy neznáme, viz docs/admin-predpoklady.md
+          green_fee_v_cene: z.boolean().optional(),
+          foto: z.string().optional(),
+        })
+      )
+      .default([]),
 
     // Co na stránce ještě chybí doplnit od klienta — vykreslí se jako
     // viditelné "⚠ Doplnit od klienta" bloky / poznámka pod sekcemi.
