@@ -12,8 +12,12 @@
 
   var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Stránky v podsložce (destinace/*.html) potřebují ../ prefix k assets/
-  var basePath = /\/destinace\//.test(window.location.pathname) ? "../" : "";
+  // Base cesta se odvozuje z <script> tagu, kterým se popup.js načetl —
+  // funguje jak na starém statickém webu (relativní ../ hloubka podle
+  // podsložky), tak na Astro verzi nasazené na libovolném podadresáři
+  // (GitHub Pages base path), protože script tag už tu předponu má v src.
+  var thisScript = document.currentScript;
+  var basePath = thisScript ? thisScript.src.replace(/js\/popup\.js.*$/, "") : "";
 
   // Ikony (inline SVG, currentColor)
   var icoClose = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>';
