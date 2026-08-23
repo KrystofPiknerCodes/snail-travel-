@@ -49,7 +49,10 @@
 
     if (!q) {
       index.forEach(({ li }) => { li.classList.remove('is-hidden', 'is-match'); });
-      blocks.forEach(b => b.classList.remove('is-empty'));
+      blocks.forEach(b => {
+        b.classList.remove('is-empty');
+        b.querySelector('.country-grid')?.classList.remove('is-filtering');
+      });
       hint.textContent = '';
       return;
     }
@@ -66,7 +69,11 @@
       }
     });
 
-    blocks.forEach(b => b.classList.toggle('is-empty', !(perBlock.get(b) > 0)));
+    blocks.forEach(b => {
+      b.classList.toggle('is-empty', !(perBlock.get(b) > 0));
+      // Hledání musí najít i destinace sbalené za "Zobrazit všechny destinace".
+      b.querySelector('.country-grid')?.classList.add('is-filtering');
+    });
 
     if (total === 0) {
       hint.innerHTML = 'Nic jsme nenašli — napište nám a připravíme cestu na míru. <a href="index.html#kontakt">Kontakt</a>';
@@ -115,6 +122,23 @@
       });
     }
   }
+
+  // ---- Show more/less per continent ------------------------------------
+  blocks.forEach(block => {
+    const grid = block.querySelector('.country-grid');
+    const toggle = block.querySelector('.country-grid-toggle');
+    if (!grid || !toggle) return;
+    const label = toggle.querySelector('.btn-ghost-label');
+    const moreText = label ? label.textContent : '';
+    toggle.addEventListener('click', () => {
+      const open = grid.classList.toggle('is-expanded');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (label) label.textContent = open ? 'Zobrazit méně destinací' : moreText;
+      if (!open) {
+        block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
 
   // ---- Map tile → smooth scroll (keeps URL clean-ish) -----------------
   mapTiles.forEach(tile => {

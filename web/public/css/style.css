@@ -1639,6 +1639,31 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .country-grid li.is-match a::after { opacity: 1; }
 .continent-block.is-empty { display: none; }
 
+/* Show more/less — jen prvních VIDITELNYCH destinací na kontinent je vidět
+   rovnou, zbytek je za tlačítkem .country-grid-toggle (web/src/pages/destinace/index.astro).
+   .is-filtering (nastaví destinations.js při aktivním hledání) odkryje i skryté
+   položky, ať hledání najde i to, co je sbalené. */
+.country-grid li.is-more { display: none; }
+.country-grid.is-expanded li.is-more,
+.country-grid.is-filtering li.is-more { display: block; }
+
+.country-grid-cta { margin-top: 28px; }
+.country-grid-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--sans);
+}
+.country-grid-toggle::after {
+  content: "";
+  width: 9px; height: 9px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform .35s var(--ease);
+}
+.country-grid-toggle[aria-expanded="true"]::after { transform: rotate(-135deg); }
+
 /* CTA band */
 .dest-cta-band {
   background: var(--ink);
