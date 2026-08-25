@@ -795,8 +795,8 @@ body.menu-open .mobile-nav {
 .pillars { background: var(--cream); }
 .pillar-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(36px, 5vw, 72px);
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(32px, 4vw, 56px);
 }
 .pillar { text-align: left; }
 .pillar-icon {
@@ -962,8 +962,8 @@ body.menu-open .mobile-nav {
   position: absolute;
   inset: -15% 0;
   background:
-    linear-gradient(rgba(20,15,8,.62), rgba(20,15,8,.62)),
-    url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80") center/cover no-repeat,
+    linear-gradient(rgba(20,15,8,.5), rgba(20,15,8,.5)),
+    url("/assets/footer-bg.jpg") center/cover no-repeat,
     radial-gradient(circle at 40% 30%, var(--gold-deep), #14110b);
   will-change: transform;
 }
@@ -1098,6 +1098,7 @@ body.menu-open .mobile-nav {
    ============================================================ */
 @media (max-width: 1024px) {
   .dest-slider { --cols: 2; }
+  .pillar-grid { grid-template-columns: repeat(2, 1fr); gap: 44px; }
   .bento {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(8, 168px);
