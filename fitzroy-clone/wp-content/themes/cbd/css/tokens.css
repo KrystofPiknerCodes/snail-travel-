@@ -1,0 +1,218 @@
+/* Self-hosted fonts (2026-08-15 performance pass): the exact latin/latin-ext woff2
+   files Google served for css2?family=Bebas+Neue&family=Roboto+Flex:opsz,wght@8..144,
+   300;8..144,400;8..144,700 - same variable font, same metrics, zero third-party
+   connections and no render-blocking fonts.googleapis stylesheet. Templates preload
+   the two latin files. Weights 300/400/700 all live in the one variable file. */
+@font-face {
+  font-family: 'Bebas Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(../fonts/bebas-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Bebas Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(../fonts/bebas-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Roboto Flex';
+  font-style: normal;
+  font-weight: 300 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(../fonts/robotoflex-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Roboto Flex';
+  font-style: normal;
+  font-weight: 300 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(../fonts/robotoflex-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/**
+ * Fitzroy design system — design tokens (WP0)
+ * Source of truth: Hugo's Figma foundations, captured exact via REST 2026-06-11.
+ * Cached spec: figma-cache/wp0-foundations/{colours,type-scale,grids,buttons}.md
+ *
+ * Breakpoints (Gate 1 approved 2026-06-11): mobile <768 / tablet 768-1279 / desktop >=1280.
+ * Type scale is mobile-first here: :root holds mobile values, then media queries
+ * step up at tablet (>=768) and desktop (>=1280). Components read var(--fs-*).
+ *
+ * No Tailwind. Figma reference code is React+Tailwind; converted to plain custom properties.
+ */
+
+:root {
+	/* ---- Brand colours (exact hexes from Figma fills) ---- */
+	--c-gold: #b19f70;          /* Primary/Gold 100% */
+	--c-sand: #f9f5f2;          /* Primary/Sand 1 */
+	--c-ink: #15292c;           /* dark sections + primary button hover */
+	--c-black: #231f20;         /* warm black */
+	--c-teal: #5cd3cb;          /* accent: carousel arrows, highlights */
+
+	/* Gold tint used for focus rings */
+	--c-gold-30: rgba(177, 159, 112, 0.3);
+
+	/* ---- Status colours (BEST-JUDGEMENT — verify with Hugo) ---- */
+	--c-status-yellow: #feef7c; /* likely traffic-light table */
+	--c-status-blue: #daf3ff;   /* likely image placeholder / highlight */
+
+	/* ---- Neutrals: black opacity steps ---- */
+	--c-black-07: rgba(0, 0, 0, 0.07);
+	--c-black-10: rgba(0, 0, 0, 0.10);
+	--c-black-20: rgba(0, 0, 0, 0.20);
+	--c-black-30: rgba(0, 0, 0, 0.30);
+	--c-black-60: rgba(0, 0, 0, 0.60);
+	--c-black-80: rgba(0, 0, 0, 0.80);
+	--c-black-90: rgba(0, 0, 0, 0.90);
+
+	/* ---- Neutrals: white opacity steps ---- */
+	--c-white: #ffffff;
+	--c-white-15: rgba(255, 255, 255, 0.15);
+	--c-white-30: rgba(255, 255, 255, 0.30);
+	--c-white-60: rgba(255, 255, 255, 0.60);
+	--c-white-80: rgba(255, 255, 255, 0.80);
+	--c-white-90: rgba(255, 255, 255, 0.90);
+
+	/* ---- Grey ramp (UI/borders/dividers) ---- */
+	/* Near-dupes d7/d9/da consolidated to a single divider token (--c-grey-divider). */
+	--c-grey-light: #d9d9d9;    /* consolidated d7d7d7 / d9d9d9 / dadada */
+	--c-grey-divider: var(--c-grey-light);
+	--c-grey-mid: #c8c4c4;
+	--c-grey: #c0c0c0;
+	--c-grey-bb: #bbbbbb;
+	--c-grey-dark: #aaaaaa;
+
+	/* ---- Typography: families ---- */
+	--font-title: 'Bebas Neue', sans-serif;          /* loaded in header.php */
+	--font-body: 'Roboto Flex', sans-serif;          /* variable: Light 300 / Bold 700 */
+	--fw-light: 300;
+	--fw-regular: 400;
+	--fw-bold: 700;
+
+	/* ---- Type scale — MOBILE defaults (size / line-height) ---- */
+	/* Titles (Bebas Neue) */
+	--fs-display: 80px;   --lh-display: 70px;
+	--fs-h1: 54px;        --lh-h1: 46px;
+	--fs-h2: 46px;        --lh-h2: 42px;
+	--fs-h3: 40px;        --lh-h3: 38px;
+	--fs-h4: 36px;        --lh-h4: 34px;
+	--fs-h5: 32px;        --lh-h5: 32px;
+	/* Body (Roboto Flex) */
+	--fs-body-xl: 18px;   --lh-body-xl: 30px;
+	--fs-body-lg: 16px;   --lh-body-lg: 28px;
+	--fs-body: 14px;      --lh-body: 24px;
+	--fs-body-sm: 12px;   --lh-body-sm: 16px;
+	/* Overline / uppercase (Roboto Flex 400, uppercase, +5 letter-spacing) */
+	--fs-overline: 14px;  --lh-overline: 24px;
+	--ls-overline: 0.05em;
+
+	/* ---- Spacing scale (base unit 8px) ---- */
+	--sp-1: 4px;
+	--sp-2: 8px;
+	--sp-3: 16px;
+	--sp-4: 24px;
+	--sp-5: 32px;
+	--sp-6: 48px;
+	--sp-7: 64px;
+	--sp-8: 88px;
+	--sp-9: 104px;
+
+	/* ---- Layout grid ---- */
+	--grid-columns: 2;          /* mobile */
+	--grid-gutter: 16px;        /* constant across breakpoints */
+	--grid-margin: 24px;        /* outer margin, mobile */
+	--bp-tablet: 768px;
+	--bp-desktop: 1280px;
+}
+
+/* ---- Tablet (>=768): titles match mobile; body XL + overline step up ---- */
+@media (min-width: 768px) {
+	:root {
+		--fs-body-xl: 20px;   --lh-body-xl: 32px;
+		--fs-overline: 16px;  --lh-overline: 26px;
+
+		--grid-columns: 12;
+		--grid-margin: 80px;
+	}
+}
+
+/* ---- Desktop (>=1280): full type scale ---- */
+@media (min-width: 1280px) {
+	:root {
+		--fs-display: 114px;  --lh-display: 100px;
+		--fs-h1: 72px;        --lh-h1: 66px;
+		--fs-h2: 62px;        --lh-h2: 58px;
+		--fs-h3: 50px;        --lh-h3: 50px;
+		--fs-h4: 42px;        --lh-h4: 42px;
+		--fs-h5: 36px;        --lh-h5: 40px;
+
+		--fs-body-xl: 26px;   --lh-body-xl: 40px;
+		--fs-body-lg: 18px;   --lh-body-lg: 30px;
+		--fs-body: 16px;      --lh-body: 26px;
+		--fs-body-sm: 12px;   --lh-body-sm: 16px;
+		--fs-overline: 16px;  --lh-overline: 26px;
+
+		--grid-margin: 104px;
+	}
+}
+
+/* ------------------------------------------------------------------
+   Contextual internal links (.ftzlink), added 2026-08-23.
+   NOT IN HUGO'S DESIGN: the Figma file has no in-body link state because
+   the site had no in-body links. Logged for Hugo in design-changes.json.
+   Deliberately restrained: the text keeps its own colour so paragraphs do
+   not turn into a rash of coloured words, and carries a gold underline so
+   it is identifiable as a link without relying on colour alone (WCAG 1.4.1).
+   ------------------------------------------------------------------ */
+/* The SAME treatment is applied to any link already written into body copy. Measured
+   2026-08-23: the five editorial links in the Mgahinga article rendered at weight 300
+   with no underline and the paragraph's own colour, so they were invisible as links,
+   and once the autolinker started styling its own they sat unmarked beside marked ones
+   in the same sentence. Nothing here changes where a link goes, only whether a reader
+   can see it is one. */
+a.ftzlink,
+a.ftzlink:visited,
+.ldbody__p a,
+.armain__desc a,
+.arhero__body a,
+.bthero__body a,
+.btmonths__body a {
+	color: inherit;
+	/* Body copy sits at weight 300, so 500 is a genuine half-step: firmer than the
+	   sentence around it without reading as bold. Roboto Flex is variable (300-700),
+	   so this is a real weight, not a browser-synthesised fake. Paul, 2026-08-23:
+	   "a faint bold, not a big thick over-the-top bold". Dial to 400 if it is too much. */
+	font-weight: 500;
+	text-decoration: underline;
+	text-decoration-color: var(--c-gold, #b19f70);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
+	transition: color .18s ease, text-decoration-color .18s ease;
+}
+a.ftzlink:hover, a.ftzlink:focus-visible,
+.ldbody__p a:hover, .ldbody__p a:focus-visible,
+.armain__desc a:hover, .armain__desc a:focus-visible,
+.arhero__body a:hover, .arhero__body a:focus-visible,
+.bthero__body a:hover, .bthero__body a:focus-visible,
+.btmonths__body a:hover, .btmonths__body a:focus-visible {
+	color: var(--c-gold, #b19f70);
+	text-decoration-color: var(--c-gold, #b19f70);
+}
+a.ftzlink:focus-visible,
+.ldbody__p a:focus-visible,
+.armain__desc a:focus-visible,
+.arhero__body a:focus-visible,
+.bthero__body a:focus-visible,
+.btmonths__body a:focus-visible {
+	outline: 2px solid var(--c-gold, #b19f70);
+	outline-offset: 2px;
+}
