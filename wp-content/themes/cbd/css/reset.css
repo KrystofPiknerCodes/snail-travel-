@@ -1,0 +1,99 @@
+/**
+ * Clean-room reset for the WP2 fidelity test (/home-v2/).
+ * Minimal, modern. This is the ONLY reset on the page: no legacy theme CSS loads
+ * here (see inc/enqueue.php cbd_home_v2_cleanroom + ITERATION-LOG.md). Nothing in
+ * here styles for looks; it only zeroes the browser defaults so the page CSS is the
+ * single source of geometry.
+ */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
+  /* In-page anchor / jump links scroll smoothly, with a little breathing room above the target
+     heading (the nav is not sticky, so this is just a small offset). v2 clean-room only. */
+  scroll-behavior: smooth; scroll-padding-top: 24px; }
+
+/* ---- The browser's own tap highlight (Paul, 2026-08-23) ---------------------------------------
+   On a touch screen Chrome paints rgba(51,181,229,.4) over whatever the finger lands on and keeps
+   it up while the finger moves, so a scroll that starts on a card flashes the whole card. That is
+   an Android system blue and it appears nowhere in Hugo's palette. It has always done this to the
+   destination, article and lodge cards; it became impossible to miss on 2026-08-22 when the whole
+   home trip card became a link, taking the highlighted rectangle from the "View Safari" line at
+   252 by 10 pixels to the full card at 300 by 576, in the row people scroll most. Paul: "they now
+   kind of flash blue... it's distracting". Measured before this rule: 79 of 79 card-sized links on
+   8 page types painted it (tools/shot/_tapflash_magnus.js).
+   The property inherits, so the root covers every element on every template. Nothing loses its
+   feedback that had any designed: the accordion heads already turned this off for themselves on
+   2026-07-12 at Paul's request, and the burger drawer's rows and phone pill carry Hugo's own gold
+   tap state on touchstart with a 130ms fade (js/home-v2.js). A tapped card is confirmed by the page
+   changing, which is how the site already behaved everywhere the highlight was a sliver. */
+html { -webkit-tap-highlight-color: transparent; }
+/* Reduced motion, properly (2026-08-15): visitors who ask their OS for less motion get
+   near-instant transitions and animations EVERYWHERE, not just calm anchor scrolling. The
+   0.01ms (not 0/none) keeps transitionend firing, which the accordions rely on. The strips'
+   programmatic scrolls already read this preference in JS. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+body { margin: 0; }
+h1, h2, h3, h4, h5, h6, p, figure, blockquote, ul, ol, dl, dd { margin: 0; }
+ul[role="list"], ol[role="list"] { list-style: none; }
+ul, ol { padding: 0; }
+img, picture, svg, video { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { margin: 0; padding: 0; background: none; border: 0; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+svg { fill: currentColor; }
+/* ICON SIZE SAFETY NET (structural, Paul 2026-06-29). The v2 clean-room (inc/enqueue.php
+   cbd_home_v2_cleanroom) dequeues components/icons.css, so v2 pages have no base `.ic` size: any
+   icon whose per-section width rule was forgotten falls back to the SVG default 300x150 (the
+   recurring giant-icon bug, seen on the best-time hero). reset.css loads on EVERY v2 page BEFORE the
+   per-page CSS, so this is the always-present sane default; a per-section width rule (equal class-
+   level specificity, loaded later) still overrides it. Credit/caption camera chips (`__pin` icons)
+   are pinned to the 14px chip size by naming convention, so a new credit caption is correct with no
+   per-section rule at all. Kept at class-level specificity (not `svg.ic`) so this never beats a
+   deliberate per-section size. */
+.ic { width: 24px; height: 24px; }
+[class*="__pin"].ic { width: 14px; height: 14px; color: #b19f70; flex: none; }
+
+/* ---------------------------------------------------------------------------
+   .lo-img — the real <img> that replaces a CSS background paint on a photo slot
+   (pre-launch sweep item 1, 2026-08-13; Google cannot index a background image).
+
+   It lives in the reset because this is the one stylesheet every clean-room page
+   loads, so destination, area, stories, lodge and best-time share a single
+   definition. Nothing later in the cascade targets an img inside these hosts
+   (checked across reset / home-v2 / area-v2 / destination-v2 / articles-v2), so
+   one class selector here is enough.
+
+   Fills its host exactly as background-size:cover; background-position:center
+   did, so a converted slot changes no pixel. Hosts must be positioned and free
+   of an ::before overlay: measure with tools/shot/_bghost_magnus.js first.
+
+   css/pages/lodge-v2.css carries an identical copy from the 2026-07-05 lodge
+   conversion; that one is now redundant and can go next time it is edited.
+   --------------------------------------------------------------------------- */
+.lo-img { position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center; display: block; border: 0; }
+/* honeypot link for automated copying (see inc/opfoot-v2.php), never visible or focusable */
+.fz-trap{position:absolute !important;left:0;top:0;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);opacity:0;pointer-events:none}   /* 2026-08-17: clip-path instead of left:-10000px so the responsive sweep stops reading it as overflow */
+
+/* ---- Movement people did not ask for (Paul, 2026-08-22) ---------------------------------------
+   Some visitors get motion sickness from animation and say so in their operating system settings.
+   Nothing on this site listened: measured 22 August, zero prefers-reduced-motion rules existed in
+   any stylesheet. This is the standard, conservative version: animations and transitions collapse
+   to almost nothing rather than being removed, so anything that depends on a transition ending
+   still fires its event and no component breaks. The parts CSS cannot reach, the scripted smooth
+   scrolls and Embla's animated slide changes, are handled in js/home-v2.js (reducedMotion()). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

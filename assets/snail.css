@@ -1,0 +1,232 @@
+/* Snail Travel overrides on top of the Fitzroy clone — kept separate from the
+   original theme CSS so it stays easy to diff/revert. */
+
+.v2nav__logo--snail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.v2nav__logo--snail .v2nav__logo-mark {
+  height: 42px;
+  width: auto;
+  flex: none;
+  display: block;
+}
+.v2nav__logo-text {
+  font-family: "Cinzel", Georgia, serif;
+  font-weight: 500;
+  font-size: 17px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: currentColor;
+  white-space: nowrap;
+}
+.v2nav.is-light .v2nav__logo-text { color: #000; }
+
+.v2hero__title--snail { max-width: 480px; }
+@media (min-width: 1280px) { .v2hero__title--snail { max-width: 640px; } }
+
+/* no caption on this photo, so drop the theme's dark gradient + label slot */
+.v2collage__a--plain::after { content: none; }
+
+/* Single-photo variant: the theme's .v2collage is built for two overlapping portrait
+   photos (absolute-positioned at fixed px per breakpoint) -- fighting that layout for
+   one landscape photo caused more problems than it solved. Instead collapse it back to
+   plain flow and let one wide (16:9, the photo's own ratio) image fill the slot. */
+.v2collage--single { position: static; width: 100%; height: auto; aspect-ratio: auto; }
+.v2collage--single .v2collage__a {
+  position: static; flex: none;
+  width: 100%; height: auto; aspect-ratio: 16 / 9;
+}
+
+/* Fitzroy's decorative topo-map watermark (why-map.svg) behind the copy block is a
+   leftover Figma asset from their brand, not ours -- with no destination-map meaning
+   left, it just reads as a stray unfinished shape. Drop it. */
+.v2why2__mapwrap { display: none; }
+
+/* Destinations carousel (desktop): the theme's own desktop layout is a 900px-tall
+   composition of absolutely-positioned pieces at fixed px (text left, cards
+   pinned to a "left:593px" offset with no right edge to stop at, progress bar
+   underneath). It fought us at every turn -- a stray flex-basis bug even made
+   the cards render 40px narrower than their own box-shadow assumed -- and a
+   fixed px offset can never guarantee "exactly 3 cards, no peek" across
+   different viewport widths anyway.
+   Simpler and more robust: drop the absolute composition entirely and keep the
+   same centred flex-column the theme already uses at mobile/tablet, just at
+   a bigger scale -- text centred on top, then a centred row of exactly 3 cards
+   (sized by calc(), like .dest-slider on the main site), then a centred
+   arrow-button-arrow footer. Matches how the Astro version does it, in this
+   template's own square/gold visual language. */
+@media (min-width: 1280px) {
+  .v2dest { display: flex; flex-direction: column; align-items: center; height: auto; padding: 104px 24px; }
+  .v2dest__text { position: static; align-self: center; width: auto; max-width: 640px; text-align: center; gap: 24px; }
+  .v2dest__title { font-size: 44px; line-height: 44px; }
+
+  .v2dest__carousel {
+    position: static; width: 100%;
+    --cols: 3; --gap: 16px; --card-w: 340px;
+  }
+  .v2dest__track {
+    position: static; left: auto; top: auto; padding: 0; scroll-padding-left: 0;
+    max-width: calc(var(--cols) * var(--card-w) + (var(--cols) - 1) * var(--gap));
+    margin: 0 auto; overflow-x: auto; scroll-snap-type: x mandatory;
+  }
+  /* Same flex-basis bug as before (theme sets width, never touches the base
+     rule's flex:0 0 300px, so a definite flex-basis wins and cards silently
+     render narrower than intended) -- fixed here alongside the width. */
+  .v2dcard { flex: 0 0 var(--card-w); width: var(--card-w); height: 572px; }
+
+  .v2dest__foot {
+    position: static; left: auto; top: auto; width: auto;
+    display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 24px;
+  }
+  /* Snail Travel's own arrow-button colour (main site .dest-arrow: transparent +
+     gold outline, fills gold on hover) instead of Fitzroy's solid dark-ink fill --
+     kept square (border-radius:0) to stay in this template's own sharp-cornered
+     shape language, matching .v2btn--ghost right next to it. */
+  .v2dest__arrow-wrap button {
+    width: 52px; height: 52px; border-radius: 0;
+    background: transparent; border: 1px solid var(--c-gold);
+    display: flex; align-items: center; justify-content: center;
+    transition: background-color .3s ease, border-color .3s ease;
+  }
+  .v2dest__arrow-wrap button:hover { background: var(--c-gold); }
+  .v2dest__arrow-wrap .ic { width: 15px; height: 11px; color: var(--c-gold); fill: none; transition: color .3s ease; }
+  .v2dest__arrow-wrap button:hover .ic { color: var(--c-sand); }
+  .v2dest__arrow-wrap button[aria-label^="Previous"] .ic { transform: rotate(180deg); }
+}
+
+/* Same gold-outline arrow-button treatment on the "nejžádanější destinace" carousel's
+   arrows (was Fitzroy's solid dark-ink fill), so both carousels match. */
+.v2insp__arrows-h button {
+  background: transparent; border: 1px solid var(--c-gold);
+  transition: background-color .3s ease;
+}
+.v2insp__arrows-h button:hover { background: var(--c-gold); }
+.v2insp__arrows-h .ic { transition: color .3s ease; }
+.v2insp__arrows-h button:hover .ic { color: var(--c-sand); }
+
+/* "zobrazit" circle that appears inside the destination photo on hover -- was sand-fill
+   with dark text, matching the rest of the gold treatment on this section instead. */
+.v2trip__viewbtn { background: var(--c-gold); }
+.v2trip__viewbtn span { color: var(--c-sand); }
+
+/* Cleanup pass: two more faint decorative Fitzroy assets, same reasoning as the why-map.svg
+   watermark removed from §2 -- a topo-map texture behind the destinations section, and a
+   5%/10% photo+texture watermark behind the (now repurposed) quote/pillars section. Neither
+   means anything without Fitzroy's Africa branding, so drop them instead of shipping their
+   photography for a barely-visible effect. */
+.v2insp::after { display: none; }
+.v2quote::before, .v2quote::after { display: none; }
+
+/* "All destinations" ghost button, replacing the removed progress-bar footer.
+   Square corners + the same uppercase/tracked-out typography as .v2btn--gold
+   elsewhere in this template (a pill button, like the main site's .btn-ghost,
+   read as off-brand here -- everything in this clone is sharp-cornered). */
+.v2btn--ghost {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 18px 26px; border-radius: 0;
+  border: 1px solid var(--c-gold); color: var(--c-gold);
+  background: transparent; font-weight: 400; font-size: 14px; line-height: 24px;
+  letter-spacing: 1.68px; text-transform: uppercase; text-decoration: none;
+  transition: background-color .3s ease, color .3s ease;
+}
+.v2btn--ghost:hover { background: var(--c-gold); color: var(--c-sand); }
+
+/* Section background, lifted from the Astro site's .section-dark recipe
+   (web/public/css/destinace-detail.css): a soft diagonal gradient plus two
+   hand-drawn gold spirals in the corners, echoing the snail-shell logo instead
+   of a generic pattern. Same idea as the topo-map watermark we removed from
+   §2, but this one is actually ours. */
+.v2dest { position: relative; overflow: hidden; background: linear-gradient(120deg, #DBE2E6 0%, #E9E1D2 100%); }
+.v2dest::before,
+.v2dest::after {
+  content: ""; position: absolute; z-index: 0;
+  width: 307px; height: 307px;
+  background-repeat: no-repeat; background-size: contain;
+  opacity: 0.85; pointer-events: none;
+}
+.v2dest::before {
+  top: 2%; left: 1%; transform: rotate(180deg) scaleX(1.3);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23BD9A45' stroke-width='1.2'%3E%3Cpath d='M100 100 C 100 60, 140 60, 140 100 C 140 150, 70 150, 70 90 C 70 30, 160 30, 160 100 C 160 180, 30 180, 30 90'/%3E%3Cpath d='M100 105 C 100 65, 140 65, 140 105 C 140 155, 75 155, 75 95 C 75 35, 155 35, 155 105 C 155 175, 35 175, 35 95' opacity='0.6'/%3E%3C/g%3E%3C/svg%3E");
+}
+.v2dest::after {
+  bottom: 2%; right: 1%; transform: rotate(180deg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath d='M100,100 Q120,80 140,100 T100,140 T60,100 T100,60 T160,100 T100,180 T20,100 T100,20' fill='none' stroke='%23BD9A45' stroke-width='1'/%3E%3C/svg%3E");
+}
+/* z-index only -- these already get position:absolute (desktop) or are flex items
+   (mobile/tablet) from the theme itself; adding position:relative here would clobber
+   that absolute positioning and collapse the whole desktop layout. */
+.v2dest__text, .v2dest__carousel, .v2dest__foot { z-index: 1; }
+@media (max-width: 620px) {
+  .v2dest::before, .v2dest::after { width: 192px; height: 192px; }
+}
+
+.v2insp__heading span { color: var(--c-gold); }
+
+/* Footer: swap Fitzroy's baked "dune + FITZROY wordmark" composite backdrop (a single
+   asset whose geometry the padding-top hack above was tuned to clear) for a normal cover
+   photo + dark scrim for text contrast. The old padding-top values only make sense for
+   that specific asset's shape, so they're reset here too. */
+.opfoot__bg {
+  background-image: linear-gradient(rgba(15,12,8,.55), rgba(15,12,8,.4)), url("footer-bg.jpg");
+  background-size: cover; background-position: center; background-repeat: no-repeat;
+}
+.opfoot__inner { padding: 64px 24px 0; }
+@media (min-width: 768px) { .opfoot__inner { padding: 88px 32px 0; } }
+@media (min-width: 1280px) { .opfoot__inner { padding: 120px 32px 0; } }
+
+.opfoot__intro {
+  margin: 16px 0 0; max-width: 420px; text-align: center;
+  font-family: "Roboto Flex", sans-serif; font-weight: 300; font-size: 15px; line-height: 24px;
+  color: var(--c-sand);
+}
+
+/* Textarea field: the floating-label trick above is built for single-line <input> (fixed
+   25px height, label absolutely centred over it) -- doesn't translate to a multi-line
+   control, so this variant just uses a plain static label over a bordered box instead. */
+.opfoot__field--textarea {
+  height: auto; border-bottom: none; margin-top: 32px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.opfoot__field--textarea .opfoot__label { position: static; }
+.opfoot__field--textarea textarea {
+  position: static; display: block; width: 100%; min-height: 90px; resize: vertical;
+  border: 1px solid rgba(249,245,242,.4); background: rgba(0,0,0,.15); box-sizing: border-box;
+  color: var(--c-sand); font-family: "Roboto Flex", sans-serif; font-weight: 300; font-size: 14px;
+  padding: 10px 12px;
+}
+.opfoot__field--textarea textarea:focus { outline: none; border-color: var(--c-gold); }
+.opfoot__field--textarea textarea::placeholder { color: transparent; }
+
+/* "Cestování bez kompromisů" pillars, replacing the fake Fitzroy testimonial in the
+   .v2quote slot -- same photo+text side-by-side shape and spacing the theme already
+   built for that section, just swapping the blockquote for three icon pillars (ported
+   from the Astro site's #proc-snail, same copy/icons, this template's own typography). */
+.v2quote--pillars .v2quote__kicker {
+  margin: 0; font-weight: 400; font-size: 12px; line-height: 22px;
+  letter-spacing: 1.44px; text-transform: uppercase; color: var(--c-gold);
+}
+.v2quote--pillars .v2quote__pillarstitle {
+  margin: 0; font-family: "Bebas Neue", sans-serif; font-weight: 400;
+  font-size: 32px; line-height: 32px; color: rgba(0,0,0,.8);
+}
+.v2quote--pillars .v2quote__pillarstitle span { color: var(--c-gold); }
+.v2quote--pillars .v2quote__pillars { display: flex; flex-direction: column; gap: 32px; }
+.v2quote--pillars .v2quote__pillar { display: flex; flex-direction: column; gap: 10px; }
+.v2quote--pillars .v2quote__pillaricon { width: 28px; height: 28px; color: var(--c-gold); flex: none; }
+.v2quote--pillars .v2quote__pillar h3 {
+  margin: 0; font-family: "Bebas Neue", sans-serif; font-weight: 400;
+  font-size: 22px; line-height: 22px; color: rgba(0,0,0,.85);
+}
+.v2quote--pillars .v2quote__pillar p { margin: 0; font-weight: 300; font-size: 15px; line-height: 24px; color: var(--c-ink); }
+@media (min-width: 768px) {
+  .v2quote--pillars .v2quote__pillarstitle { font-size: 40px; line-height: 38px; }
+  /* 4 pillars now (added "Osobní vztah") -- a single row got cramped in the shared-with-photo
+     text column, so wrap to a 2x2 grid instead of forcing all four side by side. */
+  .v2quote--pillars .v2quote__pillars { flex-direction: row; flex-wrap: wrap; gap: 32px 24px; }
+  .v2quote--pillars .v2quote__pillar { flex: 1 1 calc(50% - 12px); }
+}
+@media (min-width: 1280px) {
+  .v2quote--pillars .v2quote__pillarstitle { font-size: 48px; line-height: 46px; }
+}
