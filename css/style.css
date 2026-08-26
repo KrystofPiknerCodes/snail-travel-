@@ -963,7 +963,7 @@ body.menu-open .mobile-nav {
   inset: -15% 0;
   background:
     linear-gradient(rgba(20,15,8,.5), rgba(20,15,8,.5)),
-    url("/assets/footer-bg.jpg") center/cover no-repeat,
+    url("../assets/footer-bg.jpg") center/cover no-repeat,
     radial-gradient(circle at 40% 30%, var(--gold-deep), #14110b);
   will-change: transform;
 }
