@@ -112,8 +112,8 @@ export function buildBreadcrumb(
 ): Crumb[] {
   const kontinent = resolveKontinent(entry, chain);
   const crumbs: Crumb[] = [
-    { label: 'Hlavní strana', href: '/' },
-    { label: 'Destinace', href: '/destinace' },
+    { label: 'Hlavní strana', href: '.' },
+    { label: 'Destinace', href: 'destinace' },
   ];
   if (kontinent && KONTINENT_NAZEV[kontinent]) {
     crumbs.push({ label: KONTINENT_NAZEV[kontinent] });
@@ -121,7 +121,7 @@ export function buildBreadcrumb(
   let acc: string[] = [];
   for (const ancestor of chain) {
     acc = [...acc, ancestor.id];
-    crumbs.push({ label: ancestor.data.nazev, href: `/destinace/${acc.join('/')}` });
+    crumbs.push({ label: ancestor.data.nazev, href: `destinace/${acc.join('/')}` });
   }
   crumbs.push({ label: entry.data.nazev });
   return crumbs;

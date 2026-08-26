@@ -32,6 +32,12 @@ const KONTINENTY = [
 // první, zbytek abecedně za nimi.
 const VIDITELNYCH = 10;
 
+// GitHub Pages běží pod podadresářem (viz astro.config.mjs SITE_BASE) — Base.astro
+// řeší statické cesty přes <base>, ale absolutní cesty uložené přímo v obsahu
+// (např. hlavni_foto: "/assets/...") a dynamicky skládané odkazy je potřeba
+// zbavit úvodního lomítka ručně, ať zůstanou relativní vůči <base>.
+const rel = (p: string) => p.replace(/^\//, '');
+
 function poKontinentu(kod: string) {
   return destinace
     .filter((d) => d.data.kontinent === kod)
@@ -117,10 +123,10 @@ function poKontinentu(kod: string) {
           <ul class="country-grid reveal" data-delay="1" id={gridId}>
             {zeme.map((d, i) => (
               <li class={`${d.data.vybrana ? 'is-featured ' : ''}${i >= VIDITELNYCH ? 'is-more' : ''}`}>
-                <a href={`/destinace/${d.id}`}>
+                <a href={`destinace/${d.id}`}>
                   <img
                     class="country-photo"
-                    src={d.data.hlavni_foto}
+                    src={rel(d.data.hlavni_foto)}
                     alt={d.data.nazev}
                     loading="lazy"
                     width="400"
@@ -149,16 +155,16 @@ function poKontinentu(kod: string) {
       <div class="dest-cta-inner reveal">
         <h2 class="display">Nenašli jste svou destinaci?</h2>
         <p>Rádi ji připravíme na míru. Napište nám, kam vás to láká — ozveme se do&nbsp;48&nbsp;hodin.</p>
-        <a href="/#kontakt" class="btn btn-pill">Naplánovat cestu</a>
+        <a href="#kontakt" class="btn btn-pill">Naplánovat cestu</a>
       </div>
     </div>
   </section>
 
 </Base>
 
-<script is:inline src="/js/ref-counts.js?v=1"></script>
-<script is:inline src="/js/dest-refs.js?v=2"></script>
-<script is:inline src="/js/destinations.js?v=4"></script>
+<script is:inline src="js/ref-counts.js?v=1"></script>
+<script is:inline src="js/dest-refs.js?v=2"></script>
+<script is:inline src="js/destinations.js?v=4"></script>
 <script is:inline src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 <script is:inline src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
-<script is:inline src="/js/globe.js?v=4"></script>
+<script is:inline src="js/globe.js?v=4"></script>

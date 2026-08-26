@@ -73,7 +73,11 @@ const { Content } = await render(entry as any);
 const priceFormatter = new Intl.NumberFormat('cs-CZ');
 const breadcrumb = buildBreadcrumb(entry, chain);
 const kontinent = resolveKontinent(entry, chain);
-const basePath = '/destinace/' + [...chain.map((c) => c.id), entry.id].join('/');
+const basePath = 'destinace/' + [...chain.map((c) => c.id), entry.id].join('/');
+// GitHub Pages běží pod podadresářem (SITE_BASE, viz astro.config.mjs) — Base.astro
+// nastavuje <base>, takže interní odkazy/obrázky musí být relativní (bez úvodního
+// lomítka); absolutní cesty uložené v obsahu (např. hlavni_foto) je potřeba očistit.
+const rel = (p: string) => p.replace(/^\//, '');
 
 // ---- Destinace i Oblast sdílejí stejná data (obě žijí v kolekci `destinace`) ----
 const d = kind !== 'hotel' ? (entry as DestEntry).data : null;
@@ -183,7 +187,7 @@ const pageDescription =
       <section class="section" id="info">
         <div class="wrap">
           {h!.foto ? (
-            <img src={h!.foto} alt={h!.nazev} loading="lazy" style="width:100%; max-height:520px; object-fit:cover; border-radius:3px;" />
+            <img src={rel(h!.foto)} alt={h!.nazev} loading="lazy" style="width:100%; max-height:520px; object-fit:cover; border-radius:3px;" />
           ) : (
             <div class="hotel-photo-ph" style="height:320px;">⚠ Foto hotelu chybí — doplnit od klienta</div>
           )}
@@ -219,8 +223,8 @@ const pageDescription =
               &nbsp;·&nbsp;
               <a href="tel:+420602552624">+420&nbsp;602&nbsp;552&nbsp;624</a>
             </p>
-            <a href="/#kontakt" class="btn btn-pill">Naplánovat cestu</a>
-            <p style="margin-top:18px;"><a href={`/destinace/${[...chain.map((c) => c.id)].join('/')}`}>&larr; Zpět na {chain[chain.length - 1]?.data.nazev}</a></p>
+            <a href="#kontakt" class="btn btn-pill">Naplánovat cestu</a>
+            <p style="margin-top:18px;"><a href={`destinace/${[...chain.map((c) => c.id)].join('/')}`}>&larr; Zpět na {chain[chain.length - 1]?.data.nazev}</a></p>
           </div>
         </div>
       </section>
@@ -262,7 +266,7 @@ const pageDescription =
                   return (
                     <a class="hotel-card" href={`${basePath}/${o.id}`}>
                       {o.data.hlavni_foto ? (
-                        <img class="hotel-photo" src={o.data.hlavni_foto} alt={o.data.nazev} loading="lazy" />
+                        <img class="hotel-photo" src={rel(o.data.hlavni_foto)} alt={o.data.nazev} loading="lazy" />
                       ) : (
                         <div class="hotel-photo-ph">⚠ Foto oblasti chybí — doplnit od klienta</div>
                       )}
@@ -285,7 +289,7 @@ const pageDescription =
                 {hotelyPrime.map((hotel) => (
                   <a class="hotel-card" href={`${basePath}/${hotel.id}`}>
                     {hotel.data.foto ? (
-                      <img class="hotel-photo" src={hotel.data.foto} alt={hotel.data.nazev} loading="lazy" />
+                      <img class="hotel-photo" src={rel(hotel.data.foto)} alt={hotel.data.nazev} loading="lazy" />
                     ) : (
                       <div class="hotel-photo-ph">⚠ Foto hotelu chybí — doplnit od klienta</div>
                     )}
@@ -329,7 +333,7 @@ const pageDescription =
             <div class="dest-gallery reveal" data-delay="1">
               {d!.galerie.map((img) => (
                 <div class="gallery-item">
-                  <img src={img.src} alt={img.alt} loading="lazy" />
+                  <img src={rel(img.src)} alt={img.alt} loading="lazy" />
                 </div>
               ))}
             </div>
@@ -453,7 +457,7 @@ const pageDescription =
             <div class="ref-grid" data-ref-grid></div>
 
             <div class="ref-inline-more reveal">
-              <a class="btn btn-ghost" data-ref-all href="/reference.html">Všechny reference na&nbsp;{d!.nazev}</a>
+              <a class="btn btn-ghost" data-ref-all href="reference">Všechny reference na&nbsp;{d!.nazev}</a>
             </div>
           </div>
         </section>
@@ -485,9 +489,9 @@ const pageDescription =
               &nbsp;·&nbsp;
               <a href="tel:+420602552624">+420&nbsp;602&nbsp;552&nbsp;624</a>
             </p>
-            <a href="/#kontakt" class="btn btn-pill">Naplánovat cestu</a>
+            <a href="#kontakt" class="btn btn-pill">Naplánovat cestu</a>
             {chain.length > 0 && (
-              <p style="margin-top:18px;"><a href={`/destinace/${chain.map((c) => c.id).join('/')}`}>&larr; Zpět na {chain[chain.length - 1].data.nazev}</a></p>
+              <p style="margin-top:18px;"><a href={`destinace/${chain.map((c) => c.id).join('/')}`}>&larr; Zpět na {chain[chain.length - 1].data.nazev}</a></p>
             )}
           </div>
         </div>
@@ -498,6 +502,6 @@ const pageDescription =
 </Base>
 
 {kind !== 'hotel' && d?.galerie && d.galerie.length > 1 && (
-  <script is:inline src="/js/dest-hero-slider.js"></script>
+  <script is:inline src="js/dest-hero-slider.js"></script>
 )}
-{kind !== 'hotel' && <script is:inline src="/js/dest-hotel-scroller.js"></script>}
+{kind !== 'hotel' && <script is:inline src="js/dest-hotel-scroller.js"></script>}
