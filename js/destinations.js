@@ -13,6 +13,40 @@
 
   if (!input || !blocks.length) return;
 
+  // ---- Show more/less per continent -------------------------------------
+  // Jen prvních VISIBLE destinací na kontinent je vidět rovnou (vlajkové
+  // země s .is-featured mezi nimi vždy), zbytek je za tlačítkem
+  // .country-grid-toggle. Search (níže) odkryje i sbalené položky.
+  const VISIBLE = 10;
+  blocks.forEach(block => {
+    const grid = block.querySelector('.country-grid');
+    if (!grid) return;
+    const items = Array.from(grid.children);
+    if (items.length <= VISIBLE) return;
+    const featured = items.filter(li => li.classList.contains('is-featured'));
+    const rest = items.filter(li => !li.classList.contains('is-featured'));
+    const slots = Math.max(0, VISIBLE - featured.length);
+    rest.forEach((li, i) => { if (i >= slots) li.classList.add('is-more'); });
+
+    const toggle = block.querySelector('.country-grid-toggle');
+    if (!toggle) return;
+    const label = toggle.querySelector('.btn-ghost-label');
+    const loc = toggle.dataset.loc || '';
+    if (label) label.textContent = `Zobrazit všechny destinace ${loc} (${items.length})`.replace(/\s+/g, ' ').trim();
+    toggle.addEventListener('click', () => {
+      const open = grid.classList.toggle('is-expanded');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (label) {
+        label.textContent = open
+          ? 'Zobrazit méně destinací'
+          : `Zobrazit všechny destinace ${loc} (${items.length})`.replace(/\s+/g, ' ').trim();
+      }
+      if (!open) {
+        block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
   // ---- Auto count countries per continent ------------------------------
   const counts = {};
   blocks.forEach(block => {
@@ -49,7 +83,10 @@
 
     if (!q) {
       index.forEach(({ li }) => { li.classList.remove('is-hidden', 'is-match'); });
-      blocks.forEach(b => b.classList.remove('is-empty'));
+      blocks.forEach(b => {
+        b.classList.remove('is-empty');
+        b.querySelector('.country-grid')?.classList.remove('is-filtering');
+      });
       hint.textContent = '';
       return;
     }
@@ -66,7 +103,11 @@
       }
     });
 
-    blocks.forEach(b => b.classList.toggle('is-empty', !(perBlock.get(b) > 0)));
+    blocks.forEach(b => {
+      b.classList.toggle('is-empty', !(perBlock.get(b) > 0));
+      // Hledání musí najít i destinace sbalené za "Zobrazit všechny destinace".
+      b.querySelector('.country-grid')?.classList.add('is-filtering');
+    });
 
     if (total === 0) {
       hint.innerHTML = 'Nic jsme nenašli — napište nám a připravíme cestu na míru. <a href="index.html#kontakt">Kontakt</a>';

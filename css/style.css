@@ -1524,14 +1524,19 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   grid-auto-flow: dense;
-  gap: 10px;
+  gap: 14px;
 }
 .country-grid li { margin: 0; position: relative; }
-.country-grid li.is-featured { grid-column: span 2; }
-.country-grid li.is-featured a { aspect-ratio: 8 / 5; }
-.country-grid li.is-featured .country-name { font-size: 19px; }
+/* Vlajkové destinace se dřív roztahovaly na 2 sloupce — u kolekce sbalené
+   na pevných 10 kartách to dělalo nesymetrický poslední řádek (různý počet
+   featured na kontinent). Teď mají stejnou velikost, jen trvalý zlatý
+   rámeček, ať mřížka vždy vyjde na rovné řádky. */
+.country-grid li.is-featured a {
+  box-shadow: 0 0 0 1.5px var(--gold-soft), 0 1px 2px rgba(20, 18, 12, 0.08);
+}
+.country-grid li.is-featured .country-name { font-size: 17px; }
 .country-grid a {
   position: relative;
   display: block;
@@ -1574,7 +1579,7 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   bottom: 10px;
   z-index: 2;
   font-family: var(--serif);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.25;
   color: var(--cream);
 }
@@ -1639,6 +1644,31 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .country-grid li.is-match a::after { opacity: 1; }
 .continent-block.is-empty { display: none; }
 
+/* Show more/less — jen prvních 10 destinací na kontinent (vlajkové/is-featured
+   vždy mezi nimi) je vidět rovnou, zbytek je za tlačítkem .country-grid-toggle
+   (js/destinations.js). .is-filtering (aktivní hledání) odkryje i skryté
+   položky, ať hledání najde i to, co je sbalené. */
+.country-grid li.is-more { display: none; }
+.country-grid.is-expanded li.is-more,
+.country-grid.is-filtering li.is-more { display: block; }
+
+.country-grid-cta { display: flex; justify-content: center; margin-top: 30px; }
+.country-grid-cta .btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--sans);
+}
+.country-grid-cta .btn-ghost::after {
+  content: "";
+  width: 9px; height: 9px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform .35s var(--ease);
+}
+.country-grid-cta .btn-ghost[aria-expanded="true"]::after { transform: rotate(-135deg); }
+
 /* CTA band */
 .dest-cta-band {
   background: var(--ink);
@@ -1659,8 +1689,8 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   .dest-head { padding-top: calc(100px + 4vh); }
   .dest-map { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .continent-label { font-size: 12px; letter-spacing: 0.04em; }
-  .country-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-  .country-name { font-size: 13px; left: 9px; right: 9px; bottom: 8px; }
+  .country-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .country-name { font-size: 14px; left: 9px; right: 9px; bottom: 8px; }
   .country-grid .country-refs { top: 6px; right: 6px; padding: 3px 7px; font-size: 10px; }
   .country-refs-w { display: none; }
   .country-grid li.is-featured .country-refs-w { display: inline; }

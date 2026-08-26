@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css?v=43" />
+<link rel="stylesheet" href="css/style.css?v=44" />
 </head>
 <body class="page-light">
 
@@ -112,7 +112,7 @@
         <h2 class="display">Kontinent u&nbsp;dosahu</h2>
         <p class="continent-sub">Vyberte si, kam chcete jet na dovolenou podle&nbsp;země.</p>
       </header>
-      <ul class="country-grid reveal" data-delay="1">
+      <ul class="country-grid reveal" data-delay="1" id="grid-kontinent-evropa">
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/albanie.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-albanie.svg'" alt="Albánie" loading="lazy" width="400" height="500" /><span class="country-name">Albánie</span></a></li>
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/andorra.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-andorra.svg'" alt="Andorra" loading="lazy" width="400" height="500" /><span class="country-name">Andorra</span></a></li>
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/anglie.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-anglie.svg'" alt="Anglie" loading="lazy" width="400" height="500" /><span class="country-name">Anglie</span></a></li>
@@ -153,6 +153,11 @@
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/svycarsko.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-svycarsko.svg'" alt="Švýcarsko" loading="lazy" width="400" height="500" /><span class="country-name">Švýcarsko</span></a></li>
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/turecko.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-turecko.svg'" alt="Turecko" loading="lazy" width="400" height="500" /><span class="country-name">Turecko</span></a></li>
       </ul>
+      <div class="country-grid-cta">
+        <button class="btn btn-ghost country-grid-toggle" type="button" aria-expanded="false" aria-controls="grid-kontinent-evropa" data-loc="v&nbsp;Evropě">
+          <span class="btn-ghost-label">Zobrazit všechny destinace</span>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -163,7 +168,7 @@
         <h2 class="display">Divoké kontinentální srdce</h2>
         <p class="continent-sub">Vyberte si, kam chcete jet na dovolenou podle&nbsp;země.</p>
       </header>
-      <ul class="country-grid reveal" data-delay="1">
+      <ul class="country-grid reveal" data-delay="1" id="grid-kontinent-afrika">
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/botswana.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-botswana.svg'" alt="Botswana" loading="lazy" width="400" height="500" /><span class="country-name">Botswana</span></a></li>
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/egypt.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-egypt.svg'" alt="Egypt" loading="lazy" width="400" height="500" /><span class="country-name">Egypt</span></a></li>
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/jihoafricka-republika.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-jihoafricka-republika.svg'" alt="Jihoafrická republika" loading="lazy" width="400" height="500" /><span class="country-name">Jihoafrická republika</span></a></li>
@@ -183,6 +188,11 @@
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/zanzibar.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-zanzibar.svg'" alt="Zanzibar" loading="lazy" width="400" height="500" /><span class="country-name">Zanzibar</span></a></li>
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/zimbabwe.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-zimbabwe.svg'" alt="Zimbabwe" loading="lazy" width="400" height="500" /><span class="country-name">Zimbabwe</span></a></li>
       </ul>
+      <div class="country-grid-cta">
+        <button class="btn btn-ghost country-grid-toggle" type="button" aria-expanded="false" aria-controls="grid-kontinent-afrika" data-loc="v&nbsp;Africe">
+          <span class="btn-ghost-label">Zobrazit všechny destinace</span>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -193,7 +203,7 @@
         <h2 class="display">Vůně a&nbsp;barvy Východu</h2>
         <p class="continent-sub">Vyberte si, kam chcete jet na dovolenou podle&nbsp;země.</p>
       </header>
-      <ul class="country-grid reveal" data-delay="1">
+      <ul class="country-grid reveal" data-delay="1" id="grid-kontinent-asie">
         <li class="is-featured"><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/bali.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-bali.svg'" alt="Bali" loading="lazy" width="400" height="500" /><span class="country-name">Bali</span></a></li>
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/bhutan.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-bhutan.svg'" alt="Bhútán" loading="lazy" width="400" height="500" /><span class="country-name">Bhútán</span></a></li>
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/cina.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-cina.svg'" alt="Čína" loading="lazy" width="400" height="500" /><span class="country-name">Čína</span></a></li>
@@ -220,6 +230,11 @@
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/uzbekistan.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-uzbekistan.svg'" alt="Uzbekistán" loading="lazy" width="400" height="500" /><span class="country-name">Uzbekistán</span></a></li>
         <li><a href="index.html#kontakt"><img class="country-photo" src="assets/countries/vietnam.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-vietnam.svg'" alt="Vietnam" loading="lazy" width="400" height="500" /><span class="country-name">Vietnam</span></a></li>
       </ul>
+      <div class="country-grid-cta">
+        <button class="btn btn-ghost country-grid-toggle" type="button" aria-expanded="false" aria-controls="grid-kontinent-asie" data-loc="v&nbsp;Asii">
+          <span class="btn-ghost-label">Zobrazit všechny destinace</span>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -326,7 +341,7 @@
 <script src="js/main.js?v=7"></script>
 <script src="js/ref-counts.js?v=1"></script>
 <script src="js/dest-refs.js?v=2"></script>
-<script src="js/destinations.js?v=3"></script>
+<script src="js/destinations.js?v=4"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 <script src="js/globe.js?v=4"></script>
