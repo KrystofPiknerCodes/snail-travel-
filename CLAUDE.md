@@ -156,6 +156,10 @@ správně — je to jen `gen-refs.py`/`gen-search-index.py`, co zůstaly pozadu.
       ukázat „normální lidi", zvýšit důvěryhodnost) — čekáme na podklady od klienta,
       nefabrikovat.
 - [ ] Nahradit stockové fotky destinací fotkami z vlastních zájezdů klienta.
+- [ ] Sehnat fotky do dlaždic Golf a Formule 1 v sekci Zážitky s poměrem stran
+      blízkým 3:2 — `assets/zaz-golf.jpg` (1600×1463) a `assets/zaz-f1.jpg`
+      (1600×877) na to nesedí, dočasně mají `data-fit="cover"` v `index.astro`
+      (mírné oříznutí místo celé fotky) — po výměně ten atribut odstranit.
 - [ ] Doplnit tvrdé signály existence (pojištění proti úpadku, IČO, počet
       klientů) na `o-nas.astro`.
 - [ ] Rozšířit content kolekci o další destinace/oblasti/hotely — vzor hotový

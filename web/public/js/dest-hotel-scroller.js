@@ -6,8 +6,9 @@
 (function () {
   var slider = document.getElementById('hotelScroller');
   if (!slider) return;
+  if (slider.hasAttribute('data-embla')) return; // dest-embla.js drives this one instead
 
-  var card = slider.querySelector('.hotel-card');
+  var card = slider.querySelector('.hotel-card, .tile');
   function step() {
     var w = card ? card.getBoundingClientRect().width : 272;
     var gap = parseFloat(getComputedStyle(slider).columnGap || getComputedStyle(slider).gap || 20) || 20;
@@ -17,9 +18,13 @@
   var arrPrev = document.querySelector('.hotel-arrow-prev');
   var arrNext = document.querySelector('.hotel-arrow-next');
 
+  // Homepage destination slider advances a full page of cards per click (data-scroll-by
+  // on #hotelScroller, e.g. "4"); detail-page hotel/area rows have no such attribute and
+  // keep the original one-card-at-a-time step.
+  var scrollBy = parseInt(slider.dataset.scrollBy, 10) || 1;
   document.querySelectorAll('.hotel-arrow').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      slider.scrollBy({ left: step() * parseInt(btn.dataset.dir, 10), behavior: 'smooth' });
+      slider.scrollBy({ left: step() * scrollBy * parseInt(btn.dataset.dir, 10), behavior: 'smooth' });
     });
   });
 

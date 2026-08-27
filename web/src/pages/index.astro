@@ -70,58 +70,76 @@ import Base from '../layouts/Base.astro';
       </header>
 
     <div class="hotel-scroller reveal">
-      <div class="hotel-grid" id="hotelScroller">
-        <a class="hotel-card" href="destinace/seychely">
-          <img class="hotel-photo" src="assets/dest-seychely.jpg" onerror="this.onerror=null;this.src='assets/ph-seychely.svg'" alt="Pláž na Seychelách" loading="lazy" />
-          <div class="hotel-card-overlay">
-            <h3 class="hotel-card-title">Seychely</h3>
-            <p class="hotel-card-price">Žulové útesy a&nbsp;tyrkysové laguny</p>
-            <span class="hotel-card-cta">Zobrazit nabídky</span>
+      <div class="hotel-grid" id="hotelScroller" data-embla="3">
+        <a class="tile" href="destinace/seychely">
+          <div class="tile-media"><img class="tile-img" src="assets/dest-seychely.jpg" onerror="this.onerror=null;this.src='assets/ph-seychely.svg'" alt="Pláž na Seychelách" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-body">
+            <h3 class="tile-title">Seychely</h3>
+            <p class="tile-desc">Žulové útesy a&nbsp;tyrkysové laguny</p>
           </div>
         </a>
 
-        <a class="hotel-card" href="#kontakt">
-          <img class="hotel-photo" src="assets/dest-bali.jpg" onerror="this.onerror=null;this.src='assets/ph-bali.svg'" alt="Chrám na Bali" loading="lazy" />
-          <div class="hotel-card-overlay">
-            <h3 class="hotel-card-title">Bali</h3>
-            <p class="hotel-card-price">Chrámy, rýžové terasy a&nbsp;duše ostrova</p>
-            <span class="hotel-card-cta">Zobrazit nabídky</span>
+        <a class="tile" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/dest-bali.jpg" onerror="this.onerror=null;this.src='assets/ph-bali.svg'" alt="Chrám na Bali" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-body">
+            <h3 class="tile-title">Bali</h3>
+            <p class="tile-desc">Chrámy, rýžové terasy a&nbsp;duše ostrova</p>
           </div>
         </a>
 
-        <a class="hotel-card" href="#kontakt">
-          <img class="hotel-photo" src="assets/dest-azory.jpg" onerror="this.onerror=null;this.src='assets/ph-azory.svg'" alt="Zelené kopce a pobřeží Azor" loading="lazy" />
-          <div class="hotel-card-overlay">
-            <h3 class="hotel-card-title">Azorské ostrovy</h3>
-            <p class="hotel-card-price">Zelené krátery uprostřed Atlantiku</p>
-            <span class="hotel-card-cta">Zobrazit nabídky</span>
+        <a class="tile" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/dest-azory.jpg" onerror="this.onerror=null;this.src='assets/ph-azory.svg'" alt="Zelené kopce a pobřeží Azor" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-body">
+            <h3 class="tile-title">Azorské ostrovy</h3>
+            <p class="tile-desc">Zelené krátery uprostřed Atlantiku</p>
           </div>
         </a>
 
-        <a class="hotel-card" href="destinace/madeira">
-          <img class="hotel-photo" src="assets/dest-madeira.jpg" onerror="this.onerror=null;this.src='assets/ph-madeira.svg'" alt="Dramatické útesy Madeiry" loading="lazy" />
-          <div class="hotel-card-overlay">
-            <h3 class="hotel-card-title">Madeira</h3>
-            <p class="hotel-card-price">Dramatické útesy a&nbsp;věčné jaro</p>
-            <span class="hotel-card-cta">Zobrazit nabídky</span>
+        <a class="tile" href="destinace/madeira">
+          <div class="tile-media"><img class="tile-img" src="assets/dest-madeira.jpg" onerror="this.onerror=null;this.src='assets/ph-madeira.svg'" alt="Dramatické útesy Madeiry" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-body">
+            <h3 class="tile-title">Madeira</h3>
+            <p class="tile-desc">Dramatické útesy a&nbsp;věčné jaro</p>
           </div>
         </a>
 
-        <a class="hotel-card" href="#kontakt">
-          <img class="hotel-photo" src="assets/dest-maledivy.jpg" onerror="this.onerror=null;this.src='assets/ph-maledivy.svg'" alt="Vodní vily na Maledivách" loading="lazy" />
-          <div class="hotel-card-overlay">
-            <h3 class="hotel-card-title">Maledivy</h3>
-            <p class="hotel-card-price">Vily nad&nbsp;křišťálovou lagunou</p>
-            <span class="hotel-card-cta">Zobrazit nabídky</span>
+        <a class="tile" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/dest-maledivy.jpg" onerror="this.onerror=null;this.src='assets/ph-maledivy.svg'" alt="Vodní vily na Maledivách" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-body">
+            <h3 class="tile-title">Maledivy</h3>
+            <p class="tile-desc">Vily nad&nbsp;křišťálovou lagunou</p>
           </div>
         </a>
 
-        <a class="hotel-card" href="#kontakt">
-          <img class="hotel-photo" src="assets/dest-mauritius.jpg" onerror="this.onerror=null;this.src='assets/ph-mauritius.svg'" alt="Pláž na Mauriciu" loading="lazy" />
-          <div class="hotel-card-overlay">
-            <h3 class="hotel-card-title">Mauritius</h3>
-            <p class="hotel-card-price">Bílé pláže a&nbsp;korálové útesy</p>
-            <span class="hotel-card-cta">Zobrazit nabídky</span>
+        <a class="tile" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/dest-mauritius.jpg" onerror="this.onerror=null;this.src='assets/ph-mauritius.svg'" alt="Pláž na Mauriciu" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-body">
+            <h3 class="tile-title">Mauritius</h3>
+            <p class="tile-desc">Bílé pláže a&nbsp;korálové útesy</p>
+          </div>
+        </a>
+
+        <a class="tile" data-fit="cover" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/dest-turecko.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-turecko.svg'" alt="Skalní útvary v Kapadokii za úsvitu" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-body">
+            <h3 class="tile-title">Turecko</h3>
+            <p class="tile-desc">Kapadokie za úsvitu a&nbsp;tyrkysové pobřeží Egejského moře</p>
+          </div>
+        </a>
+
+        <a class="tile" data-fit="cover" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/dest-italie.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-italie.svg'" alt="Koloseum v Římě" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-body">
+            <h3 class="tile-title">Itálie</h3>
+            <p class="tile-desc">Řím, Toskánsko a&nbsp;pobřeží, které si budete pamatovat</p>
+          </div>
+        </a>
+
+        <a class="tile" data-fit="cover" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/dest-portugalsko.jpg" onerror="this.onerror=null;this.src='assets/countries/ph-portugalsko.svg'" alt="Zámek v portugalské Sintře" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-body">
+            <h3 class="tile-title">Portugalsko</h3>
+            <p class="tile-desc">Sintra, Lisabon a&nbsp;pobřeží plné světla</p>
           </div>
         </a>
       </div>
@@ -135,7 +153,9 @@ import Base from '../layouts/Base.astro';
     </div>
   </section>
 
-  <script is:inline src="js/dest-hotel-scroller.js"></script>
+  <script is:inline src="js/embla-carousel.umd.js"></script>
+  <script is:inline src="js/dest-embla.js?v=4"></script>
+  <script is:inline src="js/dest-hotel-scroller.js?v=3"></script>
 
   <!-- ============ PROČ SNAIL TRAVEL / PILÍŘE ============ -->
   <section class="section pillars" id="proc-snail">
@@ -194,25 +214,25 @@ import Base from '../layouts/Base.astro';
       </header>
 
       <div class="bento reveal">
-        <a class="tile" data-size="lg" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-golf.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-golf.svg'" alt="Golfové hřiště s výhledem na moře" loading="lazy" width="1200" height="800" />
+        <a class="tile" data-fit="cover" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-golf.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-golf.svg'" alt="Golfové hřiště s výhledem na moře" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Golf</p>
             <div class="tile-rule"></div>
-            <h3 class="tile-title">Golfové rezidence u&nbsp;moře</h3>
+            <h3 class="tile-title">Golf</h3>
             <p class="tile-desc">Hřiště s&nbsp;výhledem, který odvádí pozornost od&nbsp;skóre.</p>
           </div>
         </a>
-        <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-f1.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-f1.svg'" alt="Formule 1 na okruhu" loading="lazy" width="1200" height="800" />
+        <a class="tile" data-fit="cover" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-f1.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-f1.svg'" alt="Formule 1 na okruhu" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Formule 1</p>
-            <h3 class="tile-title">Víkend v&nbsp;paddocku</h3>
+            <h3 class="tile-title">Formule 1</h3>
             <p class="tile-desc">Adrenalin z&nbsp;první řady, bez front a&nbsp;davu.</p>
           </div>
         </a>
         <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-euro.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-euro.svg'" alt="Evropská metropole za soumraku" loading="lazy" width="1200" height="800" />
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-euro.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-euro.svg'" alt="Eiffelova věž a Paříž za slunečného dne" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">City break</p>
             <h3 class="tile-title">Eurovíkendy</h3>
@@ -220,15 +240,15 @@ import Base from '../layouts/Base.astro';
           </div>
         </a>
         <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-poznavani.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-poznavani.svg'" alt="Poznávací cesta historickým místem" loading="lazy" width="1200" height="800" />
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-poznavani.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-poznavani.svg'" alt="Poznávací cesta historickým místem" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Poznávání</p>
-            <h3 class="tile-title">Poznávací cesty</h3>
+            <h3 class="tile-title">Poznávání</h3>
             <p class="tile-desc">Historie a&nbsp;kultura se&nbsp;soukromým průvodcem.</p>
           </div>
         </a>
         <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-svatby.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-svatby.svg'" alt="Svatba v zahraničí" loading="lazy" width="1200" height="800" />
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-svatby.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-svatby.svg'" alt="Svatba v zahraničí" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Svatby</p>
             <h3 class="tile-title">Svatební cesty</h3>
@@ -236,110 +256,109 @@ import Base from '../layouts/Base.astro';
           </div>
         </a>
         <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-wellness.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-wellness.svg'" alt="Luxusní wellness resort" loading="lazy" width="1200" height="800" />
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-wellness.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-wellness.svg'" alt="Luxusní wellness resort" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Wellness</p>
-            <h3 class="tile-title">Wellness &amp; lázně</h3>
+            <h3 class="tile-title">Wellness</h3>
             <p class="tile-desc">Dny beze spěchu, věnované jen sobě.</p>
-          </div>
-        </a>
-        <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-lety.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-lety.svg'" alt="Soukromé letadlo" loading="lazy" width="1200" height="800" />
-          <div class="tile-body">
-            <p class="tile-cat">Private jet</p>
-            <h3 class="tile-title">Privátní lety</h3>
-            <p class="tile-desc">Nebe bez front, bez čekání, bez kompromisů.</p>
-          </div>
-        </a>
-        <a class="tile" data-size="lg" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-safari.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-safari.svg'" alt="Safari v africké savaně" loading="lazy" width="1200" height="800" />
-          <div class="tile-body">
-            <p class="tile-cat">Safari</p>
-            <div class="tile-rule"></div>
-            <h3 class="tile-title">Soukromá safari</h3>
-            <p class="tile-desc">Buš, tichem rušená jen křikem ptáků, a&nbsp;stan, který nikdo jiný nesdílí.</p>
-          </div>
-        </a>
-        <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-allinclusive.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-allinclusive.svg'" alt="Luxusní all inclusive resort" loading="lazy" width="1200" height="800" />
-          <div class="tile-body">
-            <p class="tile-cat">All inclusive</p>
-            <h3 class="tile-title">All inclusive bez&nbsp;kompromisů</h3>
-            <p class="tile-desc">Luxus, kde se nic neřeší — jen si vybíráte, co&nbsp;dál.</p>
-          </div>
-        </a>
-        <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-vily.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-vily.svg'" alt="Soukromá vila u moře" loading="lazy" width="1200" height="800" />
-          <div class="tile-body">
-            <p class="tile-cat">Vily</p>
-            <h3 class="tile-title">Vily s&nbsp;vlastním servisem</h3>
-            <p class="tile-desc">Dům, který se stará o&nbsp;všechno kromě vzpomínek.</p>
           </div>
         </a>
       </div>
 
       <div class="bento bento-extra" id="bentoExtra">
         <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-vlaky.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-vlaky.svg'" alt="Luxusní vlak" loading="lazy" width="1200" height="800" />
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-lety.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-lety.svg'" alt="Soukromé letadlo" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-body">
+            <p class="tile-cat">Private jet</p>
+            <h3 class="tile-title">Privátní lety</h3>
+            <p class="tile-desc">Nebe bez front, bez čekání, bez kompromisů.</p>
+          </div>
+        </a>
+        <a class="tile" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-safari.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-safari.svg'" alt="Safari v africké savaně" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-body">
+            <p class="tile-cat">Safari</p>
+            <h3 class="tile-title">Safari</h3>
+            <p class="tile-desc">Buš, tichem rušená jen křikem ptáků, a&nbsp;stan, který nikdo jiný nesdílí.</p>
+          </div>
+        </a>
+        <a class="tile" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-allinclusive.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-allinclusive.svg'" alt="Luxusní all inclusive resort" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-body">
+            <p class="tile-cat">All inclusive</p>
+            <h3 class="tile-title">All inclusive</h3>
+            <p class="tile-desc">Luxus, kde se nic neřeší — jen si vybíráte, co&nbsp;dál.</p>
+          </div>
+        </a>
+        <a class="tile" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-vily.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-vily.svg'" alt="Soukromá vila u moře" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-body">
+            <p class="tile-cat">Vily</p>
+            <h3 class="tile-title">Luxusní vily</h3>
+            <p class="tile-desc">Dům, který se stará o&nbsp;všechno kromě vzpomínek.</p>
+          </div>
+        </a>
+        <a class="tile" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-vlaky.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-vlaky.svg'" alt="Luxusní vlak" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Luxusní vlaky</p>
-            <h3 class="tile-title">Vlakem napříč kontinenty</h3>
+            <h3 class="tile-title">Luxusní vlaky</h3>
             <p class="tile-desc">Krajina plyne za oknem, čas plyne jinak.</p>
           </div>
         </a>
         <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-plavby.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-plavby.svg'" alt="Soukromá jachta na moři" loading="lazy" width="1200" height="800" />
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-plavby.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-plavby.svg'" alt="Soukromá jachta na moři" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Yachting</p>
-            <h3 class="tile-title">Moře jako soukromá cesta</h3>
+            <h3 class="tile-title">Luxusní plavby</h3>
             <p class="tile-desc">Ne&nbsp;turistická trasa — vaše vlastní souřadnice.</p>
           </div>
         </a>
         <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-rodina.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-rodina.svg'" alt="Rodinná dovolená" loading="lazy" width="1200" height="800" />
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-rodina.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-rodina.svg'" alt="Rodinná dovolená" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Rodina</p>
-            <h3 class="tile-title">Rodinné cesty na&nbsp;míru</h3>
+            <h3 class="tile-title">Cestování s&nbsp;dětmi</h3>
             <p class="tile-desc">Dobrodružství pro všechny generace najednou.</p>
           </div>
         </a>
         <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-lyzovani.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-lyzovani.svg'" alt="Heli-skiing v horách" loading="lazy" width="1200" height="800" />
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-lyzovani.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-lyzovani.svg'" alt="Heli-skiing v horách" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Heli-skiing</p>
-            <h3 class="tile-title">Lyžování mimo sjezdovky</h3>
+            <h3 class="tile-title">Heliskiing</h3>
             <p class="tile-desc">Svah, který jste si sami objevili.</p>
           </div>
         </a>
         <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-gastronomie.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-gastronomie.svg'" alt="Degustace vína a gastronomie" loading="lazy" width="1200" height="800" />
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-gastronomie.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-gastronomie.svg'" alt="Degustace vína a gastronomie" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Gastronomie</p>
-            <h3 class="tile-title">Gastronomie &amp; víno</h3>
+            <h3 class="tile-title">Gastronomie</h3>
             <p class="tile-desc">Chutě, které vyprávějí příběh místa.</p>
           </div>
         </a>
         <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-adults.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-adults.svg'" alt="Adults only resort" loading="lazy" width="1200" height="800" />
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-adults.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-adults.svg'" alt="Adults only resort" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Adults only</p>
-            <h3 class="tile-title">Klid jen pro dospělé</h3>
+            <h3 class="tile-title">Adults only</h3>
             <p class="tile-desc">Ticho, které nenaruší nikdo jiný než vlny.</p>
           </div>
         </a>
-        <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-wow.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-wow.svg'" alt="Neobvyklý wow hotel" loading="lazy" width="1200" height="800" />
+        <a class="tile" data-fit="cover" href="#kontakt">
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-wow.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-wow.svg'" alt="Bazén s výhledem na moře ve wow hotelu" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">WOW hotely</p>
-            <h3 class="tile-title">Ledové a&nbsp;stromové domy</h3>
+            <h3 class="tile-title">WOW hotely</h3>
             <p class="tile-desc">Nocleh, který je sám o&nbsp;sobě zážitkem.</p>
           </div>
         </a>
         <a class="tile" href="#kontakt">
-          <img class="tile-img" src="assets/zaz-events.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-events.svg'" alt="VIP vstupenky na akci" loading="lazy" width="1200" height="800" />
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-events.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-events.svg'" alt="VIP vstupenky na akci" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Vstupenky</p>
-            <h3 class="tile-title">Koncerty &amp; sportovní zážitky</h3>
+            <h3 class="tile-title">Vstupenky na&nbsp;akce</h3>
             <p class="tile-desc">Nejlepší místa na akce, kam se běžně nedostanete.</p>
           </div>
         </a>
