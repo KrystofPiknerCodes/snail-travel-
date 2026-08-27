@@ -1,5 +1,5 @@
 /* ============================================================
-   SNAIL TRAVEL — kontaktní karta v rohu (Barbora Blaschke)
+   SNAIL TRAVEL — kontaktní karta v rohu (Bára Blaschke)
    Nenápadná karta vpravo dole (žádné ztmavení / blokování stránky).
    Vysune se po 15 s (jednou za návštěvu), zavírá se zlatým křížkem,
    znovu se otevře launcherem v rohu. Bez závislostí.
@@ -34,26 +34,26 @@
   overlay.innerHTML =
     '<div class="cpop">' +
       '<button class="cpop-close" type="button" aria-label="Zavřít">' + icoClose + '</button>' +
-      '<img class="cpop-photo" src="' + basePath + 'assets/barbora.jpg" alt="Barbora Blaschke" ' +
+      '<img class="cpop-photo" src="' + basePath + 'assets/barbora.jpg" alt="Bára Blaschke" ' +
         'onerror="this.onerror=null;this.src=\'' + basePath + 'assets/logo-mark.png\';this.classList.add(\'is-fallback\')" />' +
       '<p class="kicker">Váš osobní kontakt</p>' +
-      '<h2 class="cpop-title" id="cpopTitle">Naplánujte cestu<br />s&nbsp;Barborou</h2>' +
-      '<p class="cpop-text">Nechte se provést světem beze spěchu. Barbora vám ráda ' +
+      '<h2 class="cpop-title" id="cpopTitle">Naplánujte cestu<br />s&nbsp;Bárou</h2>' +
+      '<p class="cpop-text">Nechte se provést světem beze spěchu. Bára vám ráda ' +
         'připraví cestu na&nbsp;míru — nezávazně a&nbsp;diskrétně.</p>' +
-      '<p class="cpop-person">Barbora Blaschke</p>' +
+      '<p class="cpop-person">Bára Blaschke</p>' +
       '<p class="cpop-role">Travel designer</p>' +
       '<div class="cpop-lines">' +
         '<a href="mailto:barbora@snailtravel.cz">' + icoMail + 'barbora@snailtravel.cz</a>' +
         '<a href="tel:+420602552624">' + icoPhone + '+420&nbsp;602&nbsp;552&nbsp;624</a>' +
       '</div>' +
-      '<a class="btn btn-solid" href="mailto:barbora@snailtravel.cz">Napsat Barboře</a>' +
+      '<a class="btn btn-solid" href="mailto:barbora@snailtravel.cz">Napsat Báře</a>' +
     '</div>';
 
   // --- Launcher (znovuotevření) ---
   var launcher = document.createElement("button");
   launcher.className = "cpop-launcher";
   launcher.type = "button";
-  launcher.setAttribute("aria-label", "Otevřít kontakt na Barboru");
+  launcher.setAttribute("aria-label", "Otevřít kontakt na Báru");
   launcher.innerHTML = icoChat + '<span>Kontakt</span>';
 
   document.body.appendChild(overlay);
