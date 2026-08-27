@@ -125,10 +125,13 @@ booking/SEO mechaniky bez vyžádání.
 
 Založena **1998**, butiková CK, „kvalita před kvantitou". Snail Travel International
 a.s., Veleslavínova 6, 110 00 Praha 1. Tým (5 lidí, bez rolí — klient je zatím
-neuvedl): Kristina Králová, Barbora Blaschke, Marcela Hynštová, Jitka Weiss,
-Pavla Piknerová. Kontaktní karta na webu (`popup.js`) je Barbora Blaschke,
-`barbora@snailtravel.cz`, `+420 602 552 624` — reálné údaje, na rozdíl od
-placeholderů v patičce/kontaktu (`cesty@snailtravel.cz`, `+420 000 000 000`).
+neuvedl), na webu abecedně: Bára Blaschke, Jitka Weiss, Kristina Králová, Marcela
+Hynštová, Pavla Piknerová. Kontaktní karta na webu (`popup.js`) je Bára Blaschke
+(interní e-mail/login `barbora@snailtravel.cz` zůstává beze změny — **jde jen o
+zobrazované jméno**, klient si přeje familiární tón „Bára" místo „Barbora"),
+`+420 602 552 624` — reálné údaje, na rozdíl od placeholderů v patičce/kontaktu
+(`cesty@snailtravel.cz`, `+420 000 000 000`). Citáty v `references-data.js`/
+`ref-quotes.js` jsou reálné citace klientů a psali "Barbora" — needitovat je.
 
 ## Generovaná data — POZOR, teď rozjeté jen na root, ne na `web/`
 
@@ -149,6 +152,9 @@ správně — je to jen `gen-refs.py`/`gen-search-index.py`, co zůstaly pozadu.
 - [ ] Přepsat `tools/gen-refs.py` a `tools/gen-search-index.py`, ať píšou (i)
       čtou přímo `web/` — viz sekce výše.
 - [ ] Doplnit role/pozice členů týmu na `o-nas.astro` (klient zatím neuvedl).
+- [ ] Přidat fotky z akcí do sekce O nás (Kristýnin požadavek 27.8.2026 — chce
+      ukázat „normální lidi", zvýšit důvěryhodnost) — čekáme na podklady od klienta,
+      nefabrikovat.
 - [ ] Nahradit stockové fotky destinací fotkami z vlastních zájezdů klienta.
 - [ ] Doplnit tvrdé signály existence (pojištění proti úpadku, IČO, počet
       klientů) na `o-nas.astro`.

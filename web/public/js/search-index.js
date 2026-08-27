@@ -141,7 +141,7 @@ window.SNAIL_SEARCH_INDEX = [
   {"t": "Silhouette", "s": "Seychely", "c": "Ostrov", "u": "destinace/seychely.html", "n": "silhouette seychely "},
   {"t": "Platte Island", "s": "Seychely", "c": "Ostrov", "u": "destinace/seychely.html", "n": "platte island seychely "},
   {"t": "Kristina Králová", "s": "Náš tým", "c": "Tým", "u": "o-nas.html#tym", "n": "kristina kralova nas tym kristina@snailtravel.cz"},
-  {"t": "Barbora Blaschke", "s": "Náš tým", "c": "Tým", "u": "o-nas.html#tym", "n": "barbora blaschke nas tym barbora@snailtravel.cz bara"},
+  {"t": "Bára Blaschke", "s": "Náš tým", "c": "Tým", "u": "o-nas.html#tym", "n": "bara blaschke barbora blaschke nas tym barbora@snailtravel.cz"},
   {"t": "Marcela Hynštová", "s": "Náš tým", "c": "Tým", "u": "o-nas.html#tym", "n": "marcela hynstova nas tym marcela@snailtravel.cz marcelka"},
   {"t": "Jitka Weiss", "s": "Náš tým", "c": "Tým", "u": "o-nas.html#tym", "n": "jitka weiss nas tym jitka@snailtravel.cz"},
   {"t": "Pavla Piknerová", "s": "Náš tým", "c": "Tým", "u": "o-nas.html#tym", "n": "pavla piknerova nas tym pavla@snailtravel.cz"},
