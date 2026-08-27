@@ -815,119 +815,112 @@ body.menu-open .mobile-nav {
 /* ---- Experiences (bento grid) ---- */
 .experiences { background: var(--cream-2); }
 
-.bento {
+/* Fixed 3-column grid (not auto-fill) so 6/12 tiles always resolve to whole rows --
+   symmetric, no ragged last row. Every tile is exactly as tall as its own photo
+   (fixed aspect-ratio, never cropped) + caption plate below. */
+.bento, .bento-extra {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 200px);
-  gap: 16px;
-  grid-template-areas:
-    "golf golf f1        euro"
-    "golf golf poznavani svatby"
-    "wellness lety safari safari"
-    "allinc   vily safari safari";
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
-.bento .tile:nth-child(1)  { grid-area: golf; }
-.bento .tile:nth-child(2)  { grid-area: f1; }
-.bento .tile:nth-child(3)  { grid-area: euro; }
-.bento .tile:nth-child(4)  { grid-area: poznavani; }
-.bento .tile:nth-child(5)  { grid-area: svatby; }
-.bento .tile:nth-child(6)  { grid-area: wellness; }
-.bento .tile:nth-child(7)  { grid-area: lety; }
-.bento .tile:nth-child(8)  { grid-area: safari; }
-.bento .tile:nth-child(9)  { grid-area: allinc; }
-.bento .tile:nth-child(10) { grid-area: vily; }
-
 .bento-extra {
-  grid-template-rows: repeat(2, 200px);
-  grid-template-areas:
-    "vlaky plavby rodina lyzovani"
-    "gastronomie adults wow events";
   margin-top: 16px;
   overflow: hidden;
   max-height: 0;
   opacity: 0;
   transition: max-height .7s var(--ease), opacity .5s var(--ease), margin-top .7s var(--ease);
 }
-.bento-extra.is-open { max-height: 900px; opacity: 1; }
-.bento-extra .tile:nth-child(1) { grid-area: vlaky; }
-.bento-extra .tile:nth-child(2) { grid-area: plavby; }
-.bento-extra .tile:nth-child(3) { grid-area: rodina; }
-.bento-extra .tile:nth-child(4) { grid-area: lyzovani; }
-.bento-extra .tile:nth-child(5) { grid-area: gastronomie; }
-.bento-extra .tile:nth-child(6) { grid-area: adults; }
-.bento-extra .tile:nth-child(7) { grid-area: wow; }
-.bento-extra .tile:nth-child(8) { grid-area: events; }
+.bento-extra.is-open { max-height: 3000px; opacity: 1; }
 
+/* Kristýna confirmed 27.8.2026: she means the old live site's own zážitky tiles
+   (snailtravel.cz/zazitky) -- whole photo visible, then a light plate below with a
+   centered gold title. Rebuilt here in the current type/color system rather than
+   copied 1:1 (old tiles: white plate, thin Playfair Display 300, a permanently
+   visible flat button under the title). One deliberate change from the old site,
+   per Krystof: the "Zobrazit nabídky" button moves off the plate and onto the photo
+   itself, appearing on hover instead of sitting there permanently. */
 .tile {
-  position: relative;
   overflow: hidden;
   border-radius: 3px;
+  border: 1px solid rgba(189, 154, 69, .35);
   display: flex;
-  align-items: flex-end;
-  isolation: isolate;
-  color: var(--white);
+  flex-direction: column;
+  color: var(--ink);
   text-decoration: none;
-  background: var(--ink);
+  background: var(--cream);
 }
+.tile-media { position: relative; overflow: hidden; flex: none; }
 .tile-img {
-  position: absolute;
-  inset: 0;
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  aspect-ratio: 3 / 2;
+  object-fit: contain;
+  background: var(--cream-2);
   transition: transform 1.1s var(--ease);
 }
 .tile:hover .tile-img { transform: scale(1.06); }
-.tile::after {
+/* zaz-golf.jpg (1600x1463, near-square) and zaz-f1.jpg (1600x877, very wide) don't
+   have a real replacement available yet -- temporary crop instead of the usual
+   full-photo contain, so they don't sit in a sea of empty letterboxing. Swap for a
+   3:2-friendly photo and drop data-fit="cover" from those two tiles when one exists. */
+.tile[data-fit="cover"] .tile-img { object-fit: cover; }
+.tile-media::after {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 1;
-  background: linear-gradient(180deg, rgba(20, 16, 10, 0) 40%, rgba(18, 14, 9, .8) 100%);
+  background: rgba(20, 16, 10, 0);
+  transition: background-color .3s var(--ease);
 }
-.tile-body { position: relative; z-index: 2; padding: 22px 24px; width: 100%; }
-.tile-cat {
+.tile:hover .tile-media::after { background: rgba(20, 16, 10, .25); }
+.tile-cta {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateY(6px);
+  padding: 9px 18px;
+  background: var(--gold);
+  color: var(--white);
   font-family: var(--sans);
-  font-size: 10.5px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--gold-soft);
-  margin: 0 0 6px;
   font-weight: 600;
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  text-indent: .12em;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 100px;
+  opacity: 0;
+  transition: opacity .3s var(--ease), transform .3s var(--ease);
+  pointer-events: none;
 }
+.tile:hover .tile-cta { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
+.tile-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 22px 24px 26px;
+  width: 100%;
+  text-align: center;
+  background: var(--cream);
+  border-top: 1px solid var(--gold);
+}
+.tile-cat { display: none; }
 .tile-title {
   font-family: var(--serif);
   font-weight: 500;
   margin: 0;
-  line-height: 1.15;
-  font-size: 21px;
+  line-height: 1.2;
+  min-height: 2.4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
 }
-.tile[data-size="lg"] .tile-title { font-size: 30px; }
-.tile-desc {
-  font-family: var(--serif-2);
-  font-style: italic;
-  font-weight: 500;
-  color: var(--cream-2);
-  margin: 8px 0 0;
-  font-size: 15.5px;
-  line-height: 1.4;
-  max-width: 36ch;
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height .5s var(--ease), opacity .4s ease, margin-top .5s var(--ease);
-}
-.tile[data-size="lg"] .tile-desc { max-height: 80px; opacity: 1; }
-.tile:hover .tile-desc { max-height: 80px; opacity: 1; }
-.tile-rule {
-  width: 26px; height: 1.5px;
-  background: var(--gold);
-  margin: 0 0 12px;
-  transform-origin: left;
-  transform: scaleX(.55);
-  transition: transform .5s var(--ease);
-}
-.tile:hover .tile-rule { transform: scaleX(1); }
+.tile-desc { display: none; }
+.tile-rule { display: none; }
 
 .experiences .cta-row { display: flex; justify-content: center; margin-top: 46px; }
 .experiences .btn-ghost {
@@ -1099,29 +1092,6 @@ body.menu-open .mobile-nav {
 @media (max-width: 1024px) {
   .dest-slider { --cols: 2; }
   .pillar-grid { grid-template-columns: repeat(2, 1fr); gap: 44px; }
-  .bento {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(8, 168px);
-    grid-template-areas:
-      "golf golf"
-      "golf golf"
-      "f1        euro"
-      "poznavani svatby"
-      "wellness  lety"
-      "safari safari"
-      "safari safari"
-      "allinc vily";
-  }
-  .bento-extra {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(4, 168px);
-    grid-template-areas:
-      "vlaky plavby"
-      "rodina lyzovani"
-      "gastronomie adults"
-      "wow events";
-  }
-  .bento-extra.is-open { max-height: 1500px; }
 }
 @media (max-width: 860px) {
   .nav, .nav-cta { display: none; }
@@ -1140,6 +1110,7 @@ body.menu-open .mobile-nav {
   .dest-arrows { display: none; }
   .dest-foot { justify-content: center; }
   .dest-slider { scroll-snap-type: x proximity; }
+  .bento, .bento-extra { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 540px) {
   .wrap, .header-inner, .hero-content { padding-left: 22px; padding-right: 22px; }
@@ -1151,22 +1122,7 @@ body.menu-open .mobile-nav {
   .dest-slider { padding-left: 22px; padding-right: 22px; scroll-padding-left: 22px; }
   .dest-card { width: 78vw; }
   body { font-size: 16px; }
-  .bento, .bento-extra {
-    grid-template-columns: 1fr;
-    grid-template-rows: none;
-  }
-  .bento {
-    grid-template-areas:
-      "golf" "f1" "euro" "poznavani" "svatby"
-      "wellness" "lety" "safari" "allinc" "vily";
-  }
-  .bento-extra {
-    grid-template-areas:
-      "vlaky" "plavby" "rodina" "lyzovani"
-      "gastronomie" "adults" "wow" "events";
-  }
-  .bento .tile, .bento-extra .tile { height: 220px; }
-  .bento-extra.is-open { max-height: 2200px; }
+  .bento, .bento-extra { grid-template-columns: 1fr; }
 }
 
 /* ============================================================
