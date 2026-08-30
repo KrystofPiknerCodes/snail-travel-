@@ -235,11 +235,11 @@
 .hotel-card:hover .hotel-card-cta { background: rgba(250, 248, 243, 0.14); border-color: var(--gold-soft); }
 
 /* Homepage "Destinace" grid (index.astro, .dest-bento) -- reuses the .bento layout
-   and .tile card system from #zazitky (style.css) 1:1 for equal tile size, per
-   Krystof 30.8.2026 (nahradit karty se šipkami normální mřížkou pod sebou).
-   Destination photos are native 4:5 portrait (1000x1250), so .tile-img's usual
-   3:2 is overridden here to match instead of letterboxing them. */
-.dest-bento .tile-media, .dest-bento .tile-img { aspect-ratio: 4 / 5; }
+   and .tile card system from #zazitky (style.css) 1:1, including the 3:2 tile-img
+   box, per Krystof 30.8.2026 (nahradit karty se šipkami normální mřížkou pod sebou,
+   stejně velké dlaždice jako Zážitky). Destination photos are native 4:5 portrait
+   (1000x1250) so every tile carries data-fit="cover" to fill the 3:2 box instead
+   of letterboxing. */
 
 .hotel-arrow {
   position: absolute;
