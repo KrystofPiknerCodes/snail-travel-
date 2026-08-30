@@ -1110,7 +1110,7 @@ body.menu-open .mobile-nav {
   .dest-arrows { display: none; }
   .dest-foot { justify-content: center; }
   .dest-slider { scroll-snap-type: x proximity; }
-  .bento, .bento-extra { grid-template-columns: repeat(2, 1fr); }
+  .bento, .bento-extra, .dest-bento { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 540px) {
   .wrap, .header-inner, .hero-content { padding-left: 22px; padding-right: 22px; }
@@ -1122,7 +1122,7 @@ body.menu-open .mobile-nav {
   .dest-slider { padding-left: 22px; padding-right: 22px; scroll-padding-left: 22px; }
   .dest-card { width: 78vw; }
   body { font-size: 16px; }
-  .bento, .bento-extra { grid-template-columns: 1fr; }
+  .bento, .bento-extra, .dest-bento { grid-template-columns: 1fr; }
 }
 
 /* ============================================================

@@ -69,8 +69,7 @@ import Base from '../layouts/Base.astro';
         <h2 class="display">Kam vás vezmeme</h2>
       </header>
 
-    <div class="hotel-scroller reveal">
-      <div class="hotel-grid" id="hotelScroller" data-embla="3">
+    <div class="bento dest-bento reveal">
         <a class="tile" href="destinace/seychely">
           <div class="tile-media"><img class="tile-img" src="assets/dest-seychely.jpg" onerror="this.onerror=null;this.src='assets/ph-seychely.svg'" alt="Pláž na Seychelách" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
@@ -142,9 +141,6 @@ import Base from '../layouts/Base.astro';
             <p class="tile-desc">Sintra, Lisabon a&nbsp;pobřeží plné světla</p>
           </div>
         </a>
-      </div>
-      <button type="button" class="hotel-arrow hotel-arrow-prev" data-dir="-1" aria-label="Předchozí destinace">&larr;</button>
-      <button type="button" class="hotel-arrow hotel-arrow-next" data-dir="1" aria-label="Další destinace">&rarr;</button>
     </div>
 
     <div class="dest-foot reveal">
@@ -152,10 +148,6 @@ import Base from '../layouts/Base.astro';
     </div>
     </div>
   </section>
-
-  <script is:inline src="js/embla-carousel.umd.js"></script>
-  <script is:inline src="js/dest-embla.js?v=4"></script>
-  <script is:inline src="js/dest-hotel-scroller.js?v=3"></script>
 
   <!-- ============ PROČ SNAIL TRAVEL / PILÍŘE ============ -->
   <section class="section pillars" id="proc-snail">
