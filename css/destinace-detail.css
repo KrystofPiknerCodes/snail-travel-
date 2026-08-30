@@ -158,12 +158,6 @@
 }
 .hotel-grid.dragging { cursor: grabbing; }
 .hotel-grid::-webkit-scrollbar { display: none; }
-/* Embla mode (homepage slider, dest-embla.js): the grid becomes Embla's flex
-   "container" -- its own native scrolling is switched off in favour of Embla's
-   drag/transform, and dest-embla.js wraps it in a .emblavp "viewport" (the thing
-   that actually clips). */
-.hotel-grid[data-embla] { overflow: visible; scroll-snap-type: none; padding-bottom: 0; }
-.emblavp { overflow: hidden; }
 .hotel-card {
   position: relative;
   flex: 0 0 380px;
@@ -240,27 +234,12 @@
 }
 .hotel-card:hover .hotel-card-cta { background: rgba(250, 248, 243, 0.14); border-color: var(--gold-soft); }
 
-/* Homepage "Destinace" slider only (scoped via .hotel-grid ancestor so this never
-   touches .hotel-card on destination-detail pages) -- reuses the .tile card system
-   from #zazitky (style.css) instead of the gradient-over-photo .hotel-card pattern,
-   per Krystof 27.8.2026. Destination photos are native 4:5 portrait (1000x1250), so
-   .tile-img's usual 3:2 is overridden here to match instead of letterboxing them.
-   Scope for the rest of .hotel-card (detail-page hotel/area cards) intentionally
-   not decided yet -- see CLAUDE.md. */
-.hotel-grid .tile { flex: 0 0 320px; scroll-snap-align: start; }
-.hotel-grid .tile-media, .hotel-grid .tile-img { aspect-ratio: 4 / 5; }
-@media (max-width: 620px) {
-  .hotel-grid .tile { flex-basis: 260px; }
-}
-/* Embla mode only (dest-embla.js wraps each card in one of these): sizing/snap moves
-   from .tile itself to this plain wrapper -- see dest-embla.js for why. Width is fluid
-   (exactly 3 per row, not a fixed px card size) so the 4th card never sits half-cropped
-   at the edge -- Krystof flagged that peek as looking broken, not intentional (27.8.2026). */
-.embla-slide { flex: 0 0 calc((100% - 2 * 20px) / 3); scroll-snap-align: start; }
-.hotel-grid[data-embla] .tile { flex: none; width: 100%; }
-@media (max-width: 620px) {
-  .embla-slide { flex-basis: calc(100% - 40px); }
-}
+/* Homepage "Destinace" grid (index.astro, .dest-bento) -- reuses the .bento layout
+   and .tile card system from #zazitky (style.css) 1:1, including the 3:2 tile-img
+   box, per Krystof 30.8.2026 (nahradit karty se šipkami normální mřížkou pod sebou,
+   stejně velké dlaždice jako Zážitky). Destination photos are native 4:5 portrait
+   (1000x1250) so every tile carries data-fit="cover" to fill the 3:2 box instead
+   of letterboxing. */
 
 .hotel-arrow {
   position: absolute;
