@@ -19,12 +19,31 @@ pokud o to uživatel výslovně nepožádá — každá běžná úprava jde do 
   Astro default, ne 4137 jako u starého statického webu).
 - Produkční build: `cd web && npm run build` → `web/dist/`. `npm run preview`
   pro lokální náhled buildu.
-- **Nasazení**: GitHub Pages, branch `gh-pages` existuje na originu. `astro.config.mjs`
-  čte `SITE_BASE` z env (prázdné = `/` pro dev/lokální build; při GH Pages podadresáři
+- **Nasazení**: GitHub Pages, branch `gh-pages`, `source.path = /` (ověřeno přes
+  `gh api repos/KrystofPiknerCodes/snail-travel-/pages`), živé na
+  `https://krystofpiknercodes.github.io/snail-travel-/`. `astro.config.mjs` čte
+  `SITE_BASE` z env (prázdné = `/` pro dev/lokální build; při GH Pages podadresáři
   se nastaví na `/snail-travel-/`), aby Vite/Astro správně prefixovaly assety (např.
-  dynamické importy Leafletu v `MapaOblasti.astro`). Přesný deploy příkaz (jak se
-  `dist/` dostane na branch `gh-pages`) není v repu zdokumentovaný — než se najde/napíše
-  skript, ověřit postup s Krystofem před prvním ručním nasazením.
+  dynamické importy Leafletu v `MapaOblasti.astro`).
+  **Postup ručního nasazení** (ověřeno 30.8.2026, žádný skript v repu zatím není):
+  1. `cd web && MSYS_NO_PATHCONV=1 SITE_BASE=/snail-travel-/ npm run build` — v
+     Git Bash na Windows **je nutné** `MSYS_NO_PATHCONV=1`, jinak MSYS automaticky
+     přepíše `/snail-travel-/` na Windows cestu (`/C:/Program Files/Git/snail-travel-/`)
+     a `<base href>` v buildu vyjde rozbité — ověřit `grep '<base' web/dist/index.html`
+     ukazuje čistě `/snail-travel-/`, než se nasadí dál.
+  2. `git worktree add ../snail-travel-ghp origin/gh-pages && cd ../snail-travel-ghp
+     && git checkout -B gh-pages origin/gh-pages` (samostatný worktree, ať se
+     nekříží s prací na `main`).
+  3. Smazat vše kromě `.git` ve worktree, zkopírovat tam čerstvý `web/dist/`
+     (build z kroku 1 už obsahuje `.nojekyll`, nekopírovat ho zvlášť).
+  4. `git add -A && git commit -m "Deploy: sync gh-pages s aktuálním Astro buildem
+     (main @ <sha)" && git push origin gh-pages`.
+  5. Uklidit worktree (`git worktree remove ../snail-travel-ghp`) — na Windows se
+     někdy trefí do `Permission denied`/`Device or resource busy` (soubor krátce
+     drženej AV/indexerem), stačí to za pár vteřin zopakovat.
+  6. GH Pages rebuild trvá řádově sekundy až nižší desítky sekund — ověřit
+     `curl -s https://krystofpiknercodes.github.io/snail-travel-/ | grep ...`
+     na něco, co se právě změnilo.
 - **Cache-busting** stejným principem jako dřív u statiky — query `?v=` na
   `<link>`/`<script>` v `web/src/layouts/Base.astro` (`style.css`, `main.js`,
   `search-index.js`, `header-search.js`, `popup.js`, `ref-quotes.js`,
@@ -170,8 +189,8 @@ správně — je to jen `gen-refs.py`/`gen-search-index.py`, co zůstaly pozadu.
 - [ ] Kontaktní formulář napojit na backend/službu (teď jen simuluje úspěch).
 - [ ] Finální hero video od klienta → přepsat `web/public/assets/hero.mp4`
       (a zvýšit `?v=`). Zvážit kompresi.
-- [ ] Zdokumentovat/naskriptovat reálný postup nasazení na `gh-pages` branch
-      (teď se to dělá manuálně, přesný příkaz není zapsaný nikde v repu).
+- [ ] Naskriptovat nasazení na `gh-pages` branch (postup zdokumentovaný výše
+      v sekci Nasazení, 30.8.2026, ale pořád se dělá ručně krok za krokem).
 - [ ] Golf web (`snailtravelgolf.cz`) je live a odkazovaný z hlavičky/patičky —
       ověřit, jestli má/potřebuje vlastní systém obsahu, nebo je to zatím
       samostatný statický web mimo tohle repo.
