@@ -18,7 +18,8 @@
     AS: { label: 'Asie',                   anchor: '#kontinent-asie'           },
     NA: { label: 'Střední a Severní Amerika', anchor: '#kontinent-amerika-sever' },
     SA: { label: 'Jižní Amerika',          anchor: '#kontinent-amerika-jih'    },
-    OC: { label: 'Austrálie a Oceánie',    anchor: '#kontinent-australie'      }
+    OC: { label: 'Austrálie a Oceánie',    anchor: '#kontinent-australie'      },
+    AA: { label: 'Antarktida',             anchor: '#kontinent-antarktida'     }
   };
 
   // Country (Natural Earth "name" property) → continent code
@@ -73,7 +74,10 @@
     'Australia':'OC','Fiji':'OC','French Polynesia':'OC','Kiribati':'OC','Marshall Is.':'OC',
     'Micronesia':'OC','N. Mariana Is.':'OC','Nauru':'OC','New Caledonia':'OC','New Zealand':'OC',
     'Palau':'OC','Papua New Guinea':'OC','Samoa':'OC','Solomon Is.':'OC','Tonga':'OC','Tuvalu':'OC',
-    'Vanuatu':'OC'
+    'Vanuatu':'OC',
+
+    // Antarctica
+    'Antarctica':'AA'
   };
 
   // ---- Set up SVG + projection -----------------------------------------

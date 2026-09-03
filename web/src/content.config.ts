@@ -85,7 +85,7 @@ const destinaceCollection = defineCollection({
     // Vazba na rodiče (slug jiného záznamu v této kolekci), NEBO volný text
     // bez vazby, když rodič v kolekci vlastní záznam nemá — viz komentář výš.
     nadrazena: z.string().optional(),
-    kontinent: z.enum(['EU', 'AF', 'AS', 'NA', 'SA', 'OC']),
+    kontinent: z.enum(['EU', 'AF', 'AS', 'NA', 'SA', 'OC', 'AA']),
 
     // Přeneseno ze starého `destinace.html` (`li.is-featured`) při migraci
     // katalogu zemí srpen 2026 — jen řídí velikost/prioritu karty ve výpisce

@@ -1,7 +1,7 @@
 ---
 typ: destinace
 nazev: Antarktida
-kontinent: SA
+kontinent: AA
 
 hlavni_foto: /assets/countries/antarktida.jpg
 

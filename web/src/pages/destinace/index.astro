@@ -24,13 +24,14 @@ const KONTINENTY = [
   { kod: 'NA', id: 'kontinent-amerika-sever', trida: 'alt', kicker: 'Destinace · Střední &amp; Severní Amerika', nadpis: 'Od kaňonů po karibské pláže', vLokaci: 've Střední a Severní Americe' },
   { kod: 'SA', id: 'kontinent-amerika-jih', trida: '', kicker: 'Destinace · Jižní Amerika', nadpis: 'Andy, Amazonie, konec světa', vLokaci: 'v Jižní Americe' },
   { kod: 'OC', id: 'kontinent-australie', trida: 'alt', kicker: 'Destinace · Austrálie a Oceánie', nadpis: 'Ostrovy na konci mapy', vLokaci: 'v Austrálii a Oceánii' },
+  { kod: 'AA', id: 'kontinent-antarktida', trida: '', kicker: 'Destinace · Antarktida', nadpis: 'Bílý kontinent na kraji světa', vLokaci: 'v Antarktidě' },
 ] as const;
 
 // Kolik destinací na kontinent se ukáže rovnou — zbytek jde za tlačítko
 // "Zobrazit všechny destinace", ať mřížka nepůsobí jako nekonečný výpis všech
 // zemí. Vybrané destinace (vybrana: true — to, co chceme prodávat) jdou vždy
 // první, zbytek abecedně za nimi.
-const VIDITELNYCH = 10;
+const VIDITELNYCH = 6;
 
 // GitHub Pages běží pod podadresářem (viz astro.config.mjs SITE_BASE) — Base.astro
 // řeší statické cesty přes <base>, ale absolutní cesty uložené přímo v obsahu
@@ -68,8 +69,9 @@ function poKontinentu(kod: string) {
           <circle cx="11" cy="11" r="7" />
           <path d="M20 20 L16 16" />
         </svg>
-        <input type="search" id="destSearch" placeholder="Hledat destinaci — např. Bali, Madeira, Keňa…" autocomplete="off" spellcheck="false" />
+        <input type="search" id="destSearch" placeholder="Hledat destinaci — např. Bali, Madeira, Keňa…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="destSearchResults" />
         <button type="button" class="dest-search-clear" id="destSearchClear" aria-label="Vymazat">×</button>
+        <div class="dest-search-results" id="destSearchResults" role="listbox" aria-label="Nalezené destinace"></div>
       </form>
       <p class="dest-search-hint" id="destSearchHint" aria-live="polite"></p>
     </div>
@@ -124,15 +126,20 @@ function poKontinentu(kod: string) {
             {zeme.map((d, i) => (
               <li class={`${d.data.vybrana ? 'is-featured ' : ''}${i >= VIDITELNYCH ? 'is-more' : ''}`}>
                 <a href={`destinace/${d.id}`}>
-                  <img
-                    class="country-photo"
-                    src={rel(d.data.hlavni_foto)}
-                    alt={d.data.nazev}
-                    loading="lazy"
-                    width="400"
-                    height="500"
-                  />
-                  <span class="country-name">{d.data.nazev}</span>
+                  <div class="country-media">
+                    <img
+                      class="country-photo"
+                      src={rel(d.data.hlavni_foto)}
+                      alt={d.data.nazev}
+                      loading="lazy"
+                      width="400"
+                      height="500"
+                    />
+                    <span class="country-cta">Zobrazit nabídky</span>
+                  </div>
+                  <div class="country-body">
+                    <span class="country-name">{d.data.nazev}</span>
+                  </div>
                 </a>
               </li>
             ))}
@@ -164,7 +171,7 @@ function poKontinentu(kod: string) {
 
 <script is:inline src="js/ref-counts.js?v=1"></script>
 <script is:inline src="js/dest-refs.js?v=2"></script>
-<script is:inline src="js/destinations.js?v=4"></script>
+<script is:inline src="js/destinations.js?v=5"></script>
 <script is:inline src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 <script is:inline src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 <script is:inline src="js/globe.js?v=4"></script>
