@@ -6,6 +6,13 @@ kontinent: EU
 
 hlavni_foto: /assets/madeira/santo-da-serra.jpg
 
+# Souřadnice z OSM Nominatim (přesná shoda "Santo António da Serra"), září
+# 2026 — pro sekci "Mapa" (jeden špendlík, poloha oblasti). K ověření.
+mapa:
+  lat: 32.7242334
+  lng: -16.8205291
+  zoom: 13
+
 perex: >
   Náhorní plošina na východě Madeiry, domov 27jamkového golfového hřiště
   Santo da Serra — jednoho ze dvou hřišť na ostrově, kde se pravidelně hraje

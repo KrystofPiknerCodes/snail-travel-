@@ -1,0 +1,53 @@
+---
+// Cenová kategorie hotelu — badge "$$$" + vysvětlivka (najetí myší na
+// desktopu, klik na mobilu — obsluhuje public/js/price-tag.js, protože
+// značka se často vyskytuje uvnitř klikatelné karty (.hotel-card odkaz) a
+// vysvětlivka musí umět "uniknout" z jejího overflow:hidden — proto se
+// panel při otevření portáluje do <body>, ne pozicuje relativně ke kartě).
+//
+// Vždy <span role="button">, nikdy <button> — na kartách/mapě je značka
+// vnořená do <a>, vnořený <button> by byl neplatné HTML a kolidoval by
+// s navigací karty.
+import { cenovaKategorie, VSECHNY_KATEGORIE } from '../lib/cena';
+
+export interface Props {
+  cenaOd?: number;
+  variant?: 'hero' | 'karta' | 'mapa';
+}
+
+const { cenaOd, variant = 'karta' } = Astro.props;
+const kategorie = typeof cenaOd === 'number' ? cenovaKategorie(cenaOd) : null;
+---
+
+{kategorie ? (
+  <span class="price-tag-wrap">
+    <span
+      class={`price-tag price-tag-${variant}`}
+      tabindex="0"
+      role="button"
+      aria-haspopup="true"
+      aria-expanded="false"
+      aria-label={`Cenová kategorie ${kategorie.uroven} z 5 — ${kategorie.popis}. Klikněte pro vysvětlení.`}
+    >
+      <span class="price-tag-symbol" aria-hidden="true">
+        <span class="price-tag-symbol-on">{kategorie.symbol}</span><span class="price-tag-symbol-off">{'$'.repeat(5 - kategorie.uroven)}</span>
+      </span>
+    </span>
+    <template>
+      <p class="price-tag-panel-title">Cenové kategorie za noc</p>
+      <ul class="price-tag-panel-list">
+        {VSECHNY_KATEGORIE.map((k) => (
+          <li class={k.uroven === kategorie!.uroven ? 'is-current' : ''}>
+            <span class="price-tag-panel-symbol" aria-hidden="true">{k.symbol}</span>
+            <span>{k.popis}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="price-tag-panel-note">
+        Ceny jsou orientační a liší se podle sezóny a obsazenosti. Přesnou cenu zjistíme při přípravě zájezdu na míru.
+      </p>
+    </template>
+  </span>
+) : (
+  <span class={`price-tag price-tag-${variant} price-tag-missing`}>⚠ Cena chybí</span>
+)}

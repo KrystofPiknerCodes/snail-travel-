@@ -24,7 +24,7 @@ pokud o to uživatel výslovně nepožádá — každá běžná úprava jde do 
   `https://krystofpiknercodes.github.io/snail-travel-/`. `astro.config.mjs` čte
   `SITE_BASE` z env (prázdné = `/` pro dev/lokální build; při GH Pages podadresáři
   se nastaví na `/snail-travel-/`), aby Vite/Astro správně prefixovaly assety (např.
-  dynamické importy Leafletu v `MapaOblasti.astro`).
+  dynamické importy Leafletu v `MapaMista.astro`).
   **Postup ručního nasazení** (ověřeno 30.8.2026, žádný skript v repu zatím není):
   1. `cd web && MSYS_NO_PATHCONV=1 SITE_BASE=/snail-travel-/ npm run build` — v
      Git Bash na Windows **je nutné** `MSYS_NO_PATHCONV=1`, jinak MSYS automaticky
@@ -53,8 +53,9 @@ pokud o to uživatel výslovně nepožádá — každá běžná úprava jde do 
   se importuje** — Astro `public/` se servíruje beze změny, prohlížeč jinak drží cache.
   Zvyšovat verzi až PO úpravě obsahu souboru, ne dopředu.
 - Externí knihovny: D3 v7 + topojson-client v3 + `world-atlas@2/countries-110m.json`
-  z CDN (jen na `/destinace`, glóbus), Leaflet z npm (`MapaOblasti.astro`, mapa
-  oblasti na detailu destinace — vědomě ne Google Maps/CDN, kvůli klíči/ceně/cookies).
+  z CDN (jen na `/destinace`, glóbus), Leaflet z npm (`MapaMista.astro`, mapa
+  polohy na detailu destinace/oblasti/hotelu — vědomě ne Google Maps/CDN, kvůli
+  klíči/ceně/cookies).
 
 ## Architektura Astro webu
 
@@ -86,8 +87,12 @@ pokud o to uživatel výslovně nepožádá — každá běžná úprava jde do 
     ukážou v šabloně placeholder „⚠ Doplnit od klienta"; pole `chybi` na
     destinaci je explicitní seznam toho, co ještě dodat.
 - **Sdílené komponenty**: `Rozcestnik.astro` (sticky kotevní nav na detailu
-  destinace, sestavená ze sekcí, co daná destinace reálně má), `MapaOblasti.astro`
-  (Leaflet mapa, vykreslí se, jen když má destinace/hotel vyplněné souřadnice).
+  destinace, sestavená ze sekcí, co daná destinace reálně má), `MapaMista.astro`
+  (Leaflet mapa s jedním špendlíkem — poloha TOHO KONKRÉTNÍHO místa, ne shluk
+  hotelů v okolí; použitá na destinaci, oblasti i hotelu, vykreslí se jen když
+  má dané místo vyplněné souřadnice — `mapa` u destinace/oblasti, `poloha` u
+  hotelu). Nahradila starší `MapaOblasti.astro` (zobrazovala všechny hotely
+  destinace najednou) — rozhodnutí Krystof, září 2026.
 - **Styly**: `web/public/css/style.css` (design system — CSS proměnné, hlavička/
   patička, `.country-grid`, atd. — historicky 1:1 kopie root `css/style.css`, dnes
   už se vyvíjí nezávisle, root kopii needitovat) + `web/public/css/destinace-detail.css`

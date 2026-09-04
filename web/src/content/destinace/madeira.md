@@ -12,29 +12,19 @@ perex: >
 
 hlavni_foto: /assets/madeira/madeira-hero.jpg
 
+# Fotky (mimo hero) staženy z Pexels (volně užitné, září 2026) — k nahrazení
+# vlastními fotkami klienta z jeho zájezdů, viz chybi níže.
 galerie:
   - src: /assets/madeira/madeira-hero.jpg
     alt: Pobřeží Madeiry s útesy nad Atlantikem
-  - src: /assets/countries/madeira.jpg
-    alt: Madeira — panorama ostrova
-  - src: /assets/madeira/belmond-reids-palace.jpg
-    alt: Belmond Reid's Palace, Funchal
-  - src: /assets/madeira/the-cliff-bay.jpg
-    alt: The Cliff Bay, Funchal
-
-cena_od:
-  znamo: true
-  hodnota: 990
-  jednotka: "osoba / noc"
-  zahrnuje: "se snídaní"
-  poznamka: >
-    Nejnižší dostupná cena (Valley View Hotel, Encumeada, ***). Konkrétní
-    cena se liší podle hotelu, termínu a typu pokoje — přesnou nabídku na
-    míru připraví naši specialisté.
-  zdroj: >
-    Reálná cena z ceníku na živém webu snailtravel.cz — zdrojová stránka má
-    v patičce rok 2019, ceny je proto potřeba s klientem ověřit jako aktuální
-    před nasazením.
+  - src: /assets/madeira/madeira-gallery-6.jpg
+    alt: Letecký pohled na červené útesy a terasovitá pole nad mořem
+  - src: /assets/madeira/madeira-gallery-3.jpg
+    alt: Dramatické pobřežní útesy Madeiry nad Atlantikem
+  - src: /assets/madeira/madeira-gallery-5.jpg
+    alt: Rybářský přístav Câmara de Lobos s vinicemi na svahu
+  - src: /assets/madeira/madeira-gallery-4.jpg
+    alt: Turistka na pobřežní stezce nad oceánem za soumraku
 
 # Vycentrování mapy oblasti na ostrov Madeira. Souřadnice z OpenStreetMap
 # Nominatim (dotaz "Madeira Portugal", hraniční relace ostrova/souostroví) —
@@ -48,55 +38,65 @@ kdy_jet_poznamka: >
   Orientační údaje — Madeira leží v Golfském proudu a má nadprůměrně mírné,
   téměř celoroční „jarní" klima, takže se dá navštívit kdykoli. Přesné
   teploty se rok od roku mírně liší.
+# Reálné klimatické normály, ne odhad/dojem (viz Krystofovo zadání září
+# 2026: "ne takhle napsané, ale reálné počasí"). Vzduch (průměrný denní
+# maximum) a srážky: IPMA (Instituto Português do Mar e da Atmosfera),
+# normál 1991-2020, přes anglickou Wikipedii (Funchal). Moře: měsíční
+# průměry z seatemperature.info (satelit + in-situ měření), kalibrováno
+# proti oficiální zprávě DREM/IPMA "Série retrospetiva da informação
+# meteorológica" (měrný bod Pontinha, Funchal, od 1987) — ta pro rok 2024
+# uvádí srpen 23,6 °C a březen/duben 19,3 °C jako nejnižší, řádově sedí s
+# čísly níž. Plný oficiální měsíční normál (víc let, ne jen rok 2024) se
+# veřejně nepodařilo dohledat — k doplnění, pokud ho klient má z první ruky.
 kdy_jet:
-  - mesic: Leden
-    teplota_vzduch: "16–19 °C"
+  - mesic: Led
+    teplota_vzduch: "20 °C"
     teplota_more: "19 °C"
-    doporuceni: Klidné období, méně turistů, ideální na turistiku po levádách.
-  - mesic: Únor
-    teplota_vzduch: "16–19 °C"
-    teplota_more: "18 °C"
-    doporuceni: Madeirský karneval — nejúchvatnější podívaná v roce.
-  - mesic: Březen
-    teplota_vzduch: "17–20 °C"
-    teplota_more: "18 °C"
-    doporuceni: Začátek jara, ostrov rozkvétá, příjemné teploty na chůzi.
-  - mesic: Duben
-    teplota_vzduch: "18–21 °C"
-    teplota_more: "18 °C"
-    doporuceni: Květinové slavnosti (pár týdnů po Velikonocích) ve Funchalu.
-  - mesic: Květen
-    teplota_vzduch: "19–22 °C"
+    srazky: "67 mm"
+  - mesic: Úno
+    teplota_vzduch: "20 °C"
     teplota_more: "19 °C"
-    doporuceni: Stabilní počasí, výborné podmínky na pěší trasy i golf.
-  - mesic: Červen
-    teplota_vzduch: "21–24 °C"
+    srazky: "72 mm"
+  - mesic: Bře
+    teplota_vzduch: "21 °C"
+    teplota_more: "18 °C"
+    srazky: "62 mm"
+  - mesic: Dub
+    teplota_vzduch: "21 °C"
+    teplota_more: "19 °C"
+    srazky: "45 mm"
+  - mesic: Kvě
+    teplota_vzduch: "22 °C"
     teplota_more: "20 °C"
-    doporuceni: Festival Atlántico (ohňostroje) — start letní sezóny.
-  - mesic: Červenec
-    teplota_vzduch: "22–25 °C"
+    srazky: "27 mm"
+  - mesic: Čvn
+    teplota_vzduch: "24 °C"
     teplota_more: "21 °C"
-    doporuceni: Nejteplejší měsíce, ideální na koupání a vodní sporty.
-  - mesic: Srpen
-    teplota_vzduch: "23–26 °C"
-    teplota_more: "22 °C"
-    doporuceni: Vrchol léta, přelom srpna a září startuje festival vína.
-  - mesic: Září
-    teplota_vzduch: "22–25 °C"
+    srazky: "8 mm"
+  - mesic: Čvc
+    teplota_vzduch: "25 °C"
     teplota_more: "23 °C"
-    doporuceni: Nejteplejší moře v roce, festival vína, méně turistů než v srpnu.
-  - mesic: Říjen
-    teplota_vzduch: "21–24 °C"
+    srazky: "2 mm"
+  - mesic: Srp
+    teplota_vzduch: "27 °C"
+    teplota_more: "23 °C"
+    srazky: "1 mm"
+  - mesic: Zář
+    teplota_vzduch: "27 °C"
+    teplota_more: "24 °C"
+    srazky: "23 mm"
+  - mesic: Říj
+    teplota_vzduch: "25 °C"
+    teplota_more: "23 °C"
+    srazky: "91 mm"
+  - mesic: Lis
+    teplota_vzduch: "23 °C"
     teplota_more: "22 °C"
-    doporuceni: Stále teplo, dobrá volba na potápění a whale watching.
-  - mesic: Listopad
-    teplota_vzduch: "19–22 °C"
-    teplota_more: "21 °C"
-    doporuceni: Přechod na podzim, klidnější ostrov, dobré na turistiku.
-  - mesic: Prosinec
-    teplota_vzduch: "17–20 °C"
+    srazky: "80 mm"
+  - mesic: Pro
+    teplota_vzduch: "21 °C"
     teplota_more: "20 °C"
-    doporuceni: Vánoční výzdoba Funchalu a novoroční ohňostroj patří k nejslavnějším na světě.
+    srazky: "95 mm"
 
 zazitky:
   - nazev: Pěší trasy podél levád
@@ -136,7 +136,7 @@ chybi:
   - "Ověřit u klienta aktuálnost hotelových cen — zdrojová data jsou z archivní verze webu s rokem 2019 v patičce."
   - "Itinerář den po dni (33 % klientů si ho žádá) — na živém webu není, potřeba od Kristiny/Barbory."
   - "Mapa oblasti — 7 z 8 hotelů má souřadnice předvyplněné z veřejného OSM Nominatim API, je ale potřeba je s klientem ověřit (živý web dával jen název místa, ne souřadnice). Hotel Calheta Beach se přes OSM nepodařilo spolehlivě dohledat — jeho polohu musí doplnit klient/redaktor."
-  - "Aktuální vlastní fotky z zájezdů na Madeiru (galerie teď kombinuje 2 fotky z archivu klienta a 1 stock fotku)."
+  - "Aktuální vlastní fotky z zájezdů na Madeiru — galerie teď je hero foto z archivu klienta + 4 fotky z Pexels (volně užitné), ne z reálných zájezdů."
   - "Podpis specialisty / \"byl jsem tam, ručím za to\" u hotelu — nápad z dotazníku (bod 4), zatím bez dat kdo z týmu Madeiru osobně ověřil."
 ---
 

@@ -32,6 +32,11 @@
   }
 
   // 1) Odeber odkazy na sekce, které na stránce chybí nebo se za běhu skryly.
+  // Klik neřešíme jako běžnou navigaci na `#id` — layout má <base href> kvůli
+  // GitHub Pages podadresáři (viz Base.astro/astro.config.mjs) a s ním se
+  // "holý" fragment odkaz vždy přepočítá vůči base URL (kořeni webu), ne
+  // vůči aktuální stránce. Bez preventDefault by tak klik na rozcestník
+  // odkud­koli mimo homepage skočil na homepage, ne na sekci téhle stránky.
   var links = Array.prototype.slice.call(toc.querySelectorAll('[data-toc-link]'));
   var activeLinks = [];
   links.forEach(function (link) {
@@ -41,6 +46,15 @@
       link.remove();
     } else {
       activeLinks.push(link);
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        var top = section.getBoundingClientRect().top + window.scrollY - (headerHeight() + toc.offsetHeight + 16);
+        window.scrollTo({ top: top, behavior: 'smooth' });
+        // Nikdy jen "#" + id — <base href> (viz komentář výš) by ten
+        // relativní fragment přepočítal vůči kořeni webu a URL by v adresním
+        // řádku ukázala "/#id" místo skutečné cesty téhle stránky.
+        if (history.pushState) history.pushState(null, '', location.pathname + location.search + '#' + id);
+      });
     }
   });
 

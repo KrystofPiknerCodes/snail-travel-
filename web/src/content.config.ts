@@ -7,12 +7,7 @@ import { glob } from 'astro/loaders';
 // Odchylky od návrhu v datovy-model.md, zjištěné při plnění reálným obsahem
 // Madeiry (viz report na konci úkolu, shrnuto i tady u polí):
 //
-// - Model navrhuje `cena_od` jako čisté číslo. Realita: klient (na živém webu)
-//   uvádí cenu VŽDY spolu s tím, co zahrnuje ("od 990 Kč, 1 noc/osoba se
-//   snídaní") — bez toho je číslo zavádějící (snídaně vs. all inclusive dělá
-//   v ceně řádový rozdíl). Proto `cena_od` je objekt {hodnota, jednotka,
-//   zahrnuje, poznamka}, ne holé číslo.
-// - Přidáno pole `zdroj` u ceny a u placeholderů obecně — model nepočítá
+// - Přidáno pole `zdroj` u placeholderů obecně — model nepočítá
 //   s tím, že u části obsahu musíme explicitně říct "odkud to víme" / "co
 //   chybí". Bez toho admin nerozezná ověřený údaj od dohadu.
 // - Přidáno `chybi` (seznam placeholderů) — nejde o pole v modelu vůbec,
@@ -58,10 +53,14 @@ import { glob } from 'astro/loaders';
 //   bez "Portugalsko"), takže je to žádoucí chování, ne mezera.
 // - Kvůli záznamům typu `oblast` (Funchal apod.), které nepotřebují celou
 //   šíři polí Destinace (počasí, zážitky, reference), jsou `hlavni_foto`,
-//   `galerie`, `cena_od`, `mapa`, `kdy_jet`, `zazitky`, `ref_tag` a `chybi`
+//   `galerie`, `mapa`, `kdy_jet`, `zazitky`, `ref_tag` a `chybi`
 //   teď VOLITELNÉ / s výchozí prázdnou hodnotou místo povinných — šablona
 //   sekci vynechá nebo ukáže placeholder, když pole chybí (stejný princip,
 //   jaký už měla `poloha`/`mapa`).
+// - Cena na úrovni Destinace/Oblasti odstraněna (rozhodnutí Krystof, září
+//   2026): "ceny budou pouze u hotelů". Hotel dál nese `cena_od` (interní
+//   podklad), ale na stránce se místo přesné částky zobrazuje jen cenová
+//   kategorie $ až $$$$$ — viz `web/src/lib/cena.ts` a `CenaTag.astro`.
 // - Hotel byl v modelu i v datovy-model.md od začátku samostatná entita —
 //   teď, když přibyla druhá úroveň (Oblast) a s ní důvod filtrovat/mapovat
 //   napříč destinacemi, se ten dluh vyplácí a hotely se z pole `hotely`
@@ -110,20 +109,6 @@ const destinaceCollection = defineCollection({
       )
       .default([]),
 
-    // Orientační cena "od" pro hero sekci — odvozená z nejlevnějšího hotelu,
-    // pokud reálná data máme. Nepovinné (typicky se plní jen u Destinace,
-    // ne u Oblasti) — chybí-li, stránka typu 'destinace' ukáže placeholder.
-    cena_od: z
-      .object({
-        znamo: z.boolean(),
-        hodnota: z.number().optional(),
-        jednotka: z.string().optional(), // "Kč / osoba / noc"
-        zahrnuje: z.string().optional(), // "se snídaní" / "all inclusive" / ...
-        poznamka: z.string().optional(),
-        zdroj: z.string().optional(),
-      })
-      .optional(),
-
     // Souřadnice + zoom pro vycentrování mapy oblasti. Volitelné — vyplňuje
     // redaktor v administraci. Bez nich se sekce "Mapa oblasti" nevykreslí.
     mapa: z
@@ -134,13 +119,16 @@ const destinaceCollection = defineCollection({
       })
       .optional(),
 
+    // Reálné klimatické normály (ne odhad/dojem) — viz zdroj v komentáři u
+    // madeira.md. `srazky` nepovinné, kdyby se u budoucí destinace nedalo
+    // dohledat.
     kdy_jet: z
       .array(
         z.object({
           mesic: z.string(),
           teplota_vzduch: z.string(),
           teplota_more: z.string(),
-          doporuceni: z.string(),
+          srazky: z.string().optional(),
         })
       )
       .default([]),
@@ -205,6 +193,17 @@ const hotelCollection = defineCollection({
     cena_jednotka: z.string().optional(),
     co_cena_zahrnuje: z.string().optional(),
     foto: z.string().optional(),
+    // Fotogalerie pro sekci "Fotografie hotelu" (PhotoSwiper.astro — jedna
+    // velká fotka + šipky). Volitelné, výchozí prázdné pole — bez fotek se
+    // sekce vykreslí jen s `foto` jako jediným snímkem (viz [...slug].astro).
+    galerie: z
+      .array(
+        z.object({
+          src: z.string(),
+          alt: z.string(),
+        })
+      )
+      .default([]),
     // Souřadnice hotelu pro špendlík na mapě oblasti. Volitelné — vyplňuje
     // redaktor v administraci. Bez nich se hotel na mapu nepřipne (radši
     // chybějící špendlík než špendlík na špatném místě).

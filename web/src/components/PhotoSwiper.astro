@@ -1,0 +1,31 @@
+---
+// Fotogalerie destinace/oblasti/hotelu — JEDNA velká fotka na šířku, šipky
+// vlevo/vpravo + swipe gestem, přímo uvnitř stránky (žádné zvětšení/lightbox
+// po kliknutí). Obsluhuje public/js/photo-swiper.js. Nahrazuje starou
+// mřížku `.dest-gallery` (rozhodnutí Krystof, září 2026).
+export interface Props {
+  images: Array<{ src: string; alt: string }>;
+  rel: (src: string) => string;
+}
+
+const { images, rel } = Astro.props;
+---
+
+{images.length > 0 && (
+  <div class="photo-swiper" data-photo-swiper>
+    <div class="photo-swiper-track">
+      {images.map((img) => (
+        <div class="photo-swiper-slide">
+          <img src={rel(img.src)} alt={img.alt} loading="lazy" />
+        </div>
+      ))}
+    </div>
+    {images.length > 1 && (
+      <>
+        <button type="button" class="photo-swiper-arrow photo-swiper-arrow-prev" aria-label="Předchozí fotka">&larr;</button>
+        <button type="button" class="photo-swiper-arrow photo-swiper-arrow-next" aria-label="Další fotka">&rarr;</button>
+        <div class="photo-swiper-counter"><span data-photo-swiper-current>1</span> / {images.length}</div>
+      </>
+    )}
+  </div>
+)}

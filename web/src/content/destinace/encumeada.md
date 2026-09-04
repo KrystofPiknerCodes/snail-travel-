@@ -6,6 +6,13 @@ kontinent: EU
 
 hlavni_foto: /assets/madeira/encumeada.jpg
 
+# Souřadnice z OSM Nominatim (přesná shoda názvu), září 2026 — pro sekci
+# "Mapa" (jeden špendlík, poloha oblasti — ne shluk hotelů). K ověření.
+mapa:
+  lat: 32.7225140
+  lng: -17.0297033
+  zoom: 13
+
 perex: >
   Horský průsmyk ve vnitrozemí Madeiry, na rozhraní severní a jižní části
   ostrova — výchozí bod pro pěší trasy podél levád do okolních hor.

@@ -6,6 +6,13 @@ kontinent: EU
 
 hlavni_foto: /assets/madeira/funchal-oblast.jpg
 
+# Souřadnice z OSM Nominatim (přesná shoda názvu), září 2026 — pro sekci
+# "Mapa" (jeden špendlík, poloha oblasti — ne shluk hotelů). K ověření.
+mapa:
+  lat: 32.6496497
+  lng: -16.9086783
+  zoom: 13
+
 perex: >
   Hlavní a přístavní město Madeiry, malebně rozložené v amfiteátru kopců nad
   Atlantikem. Má plážovou promenádu i historické centrum a je zázemím pro
