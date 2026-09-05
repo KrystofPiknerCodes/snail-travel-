@@ -180,17 +180,77 @@ a { color: inherit; text-decoration: none; }
 
 .nav {
   display: flex;
-  gap: 34px;
+  align-items: center;
+  gap: 28px;
 }
 .nav a {
   position: relative;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 400;
   letter-spacing: 0.05em;
+  white-space: nowrap;
   color: var(--white);
   padding: 4px 0;
   transition: color .4s var(--ease);
 }
+
+/* ---------- "Více" dropdown (vedlejší stránky) ---------- */
+.nav-more { position: relative; }
+.nav-more-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  color: var(--white);
+  cursor: pointer;
+  transition: color .4s var(--ease);
+}
+.nav-more-caret { font-size: 10px; transition: transform 0.25s var(--ease); }
+.nav-more-panel {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 6px);
+  margin-top: 10px;
+  min-width: 200px;
+  padding: 10px;
+  background: var(--cream);
+  border: 1px solid rgba(189, 154, 69, 0.35);
+  border-radius: 6px;
+  box-shadow: 0 18px 44px -20px rgba(33, 30, 24, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease), visibility 0.2s;
+}
+.nav-more-panel a {
+  padding: 9px 12px;
+  border-radius: 4px;
+  font-size: 13.5px;
+  letter-spacing: 0.01em;
+  color: var(--ink) !important;
+  text-shadow: none !important;
+  white-space: nowrap;
+}
+.nav-more-panel a:hover { background: var(--cream-2); }
+.nav-more-panel a::after { display: none; }
+.nav-more:hover .nav-more-panel,
+.nav-more:focus-within .nav-more-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+.nav-more:hover .nav-more-caret,
+.nav-more:focus-within .nav-more-caret { transform: rotate(180deg); }
 .nav a::after {
   content: "";
   position: absolute;
@@ -270,7 +330,7 @@ a { color: inherit; text-decoration: none; }
 }
 .site-header.scrolled .brand { color: var(--ink); }
 .site-header.scrolled .brand-mark { color: var(--gold-deep); }
-.site-header.scrolled .nav a { color: var(--ink); }
+.site-header.scrolled .nav a, .site-header.scrolled .nav-more-toggle { color: var(--ink); }
 .site-header.scrolled .nav-cta { background: var(--gold); color: var(--ink); }
 .site-header.scrolled .nav-cta:hover { background: var(--gold-deep); color: #fff; }
 .site-header.scrolled .menu-toggle span { background: var(--ink); }
@@ -1110,7 +1170,7 @@ body.menu-open .mobile-nav {
   .dest-arrows { display: none; }
   .dest-foot { justify-content: center; }
   .dest-slider { scroll-snap-type: x proximity; }
-  .bento, .bento-extra, .dest-bento { grid-template-columns: repeat(2, 1fr); }
+  .bento, .bento-extra, .dest-bento, .country-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 540px) {
   .wrap, .header-inner, .hero-content { padding-left: 22px; padding-right: 22px; }
@@ -1122,7 +1182,7 @@ body.menu-open .mobile-nav {
   .dest-slider { padding-left: 22px; padding-right: 22px; scroll-padding-left: 22px; }
   .dest-card { width: 78vw; }
   body { font-size: 16px; }
-  .bento, .bento-extra, .dest-bento { grid-template-columns: 1fr; }
+  .bento, .bento-extra, .dest-bento, .country-grid { grid-template-columns: 1fr; }
 }
 
 /* ============================================================
@@ -1133,7 +1193,7 @@ body.menu-open .mobile-nav {
 body.page-light { padding-top: 0; }
 body.page-light .site-header { background: rgba(250, 248, 243, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 1px 0 rgba(189, 154, 69, 0.25); }
 body.page-light .site-header .brand { color: var(--ink); }
-body.page-light .site-header .nav a { color: var(--ink); }
+body.page-light .site-header .nav a, body.page-light .site-header .nav-more-toggle { color: var(--ink); }
 body.page-light .site-header .nav-cta { background: var(--gold); color: var(--ink); }
 body.page-light .site-header .nav-cta:hover { background: var(--gold-deep); color: #fff; }
 body.page-light .menu-toggle span { background: var(--ink); }
@@ -1265,6 +1325,65 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 }
 .dest-search-clear:hover { background: var(--gold-soft); color: var(--ink); }
 .dest-search.has-value .dest-search-clear { display: inline-flex; }
+
+/* Dropdown s okamžitými výsledky — stejný vzor jako .hsearch-results
+   v hlavičce (js/header-search.js), jen zúžený na destinace a zabudovaný
+   přímo pod polem místo fullscreen overlaye. */
+.dest-search-results {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 20px 50px -20px rgba(33, 30, 24, 0.28);
+  overflow-y: auto;
+  max-height: min(50vh, 420px);
+  text-align: left;
+  z-index: 5;
+}
+.dest-search-results.is-open { display: block; }
+.dest-search-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 20px;
+  border-bottom: 1px solid rgba(230, 222, 207, 0.6);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background .2s var(--ease);
+}
+.dest-search-item:last-child { border-bottom: none; }
+.dest-search-item.is-active,
+.dest-search-item:hover { background: var(--cream-2); }
+.dest-search-item-title {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.3;
+  color: var(--ink);
+}
+.dest-search-item-title mark { background: none; color: var(--gold-deep); font-weight: 600; }
+.dest-search-item-sub {
+  flex: none;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 11px;
+  background: var(--white);
+}
+.dest-search-empty {
+  margin: 0;
+  padding: 18px 20px;
+  font-size: 14px;
+  color: var(--ink-soft);
+  text-align: center;
+}
 
 .dest-search-hint {
   text-align: center;
@@ -1467,7 +1586,7 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .continent-block { padding: 80px 0 90px; }
 .continent-block.alt { background: var(--cream-2); }
 .continent-head { text-align: center; margin-bottom: 44px; }
-.continent-head .kicker { margin-bottom: 16px; }
+.continent-head .kicker { font-size: 15px; margin-bottom: 16px; }
 .continent-head .display { margin-bottom: 14px; font-size: clamp(1.8rem, 3.6vw, 2.6rem); }
 .continent-sub {
   font-family: var(--serif-2);
@@ -1476,75 +1595,103 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   margin: 0;
 }
 
+/* Sjednoceno s .bento/.tile na homepage (srpen 2026) — stejná kompozice
+   karty (foto nahoře cover-fit + krémová plocha s názvem pod ním, tenký
+   zlatý rámeček, CTA pilulka při hoveru), pevná 3sloupcová mřížka místo
+   auto-fill, ať jsou karty vždy stejně velké bez ohledu na počet položek
+   v posledním řádku. */
 .country-grid {
   list-style: none;
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  grid-auto-flow: dense;
-  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 .country-grid li { margin: 0; position: relative; }
-/* Vlajkové destinace se dřív roztahovaly na 2 sloupce — u kolekce sbalené
-   na pevných VIDITELNYCH kartách (viz index.astro) to dělalo nesymetrický
-   poslední řádek (různý počet featured na kontinent). Teď mají stejnou
-   velikost, jen trvalý zlatý rámeček, ať mřížka vždy vyjde na rovné řádky. */
-.country-grid li.is-featured a {
-  box-shadow: 0 0 0 1.5px var(--gold-soft), 0 1px 2px rgba(20, 18, 12, 0.08);
-}
-.country-grid li.is-featured .country-name { font-size: 17px; }
 .country-grid a {
   position: relative;
-  display: block;
-  aspect-ratio: 4 / 5;
-  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 3px;
+  border: 1px solid rgba(189, 154, 69, .35);
   overflow: hidden;
-  isolation: isolate;
-  box-shadow: 0 1px 2px rgba(20, 18, 12, 0.08);
+  background: var(--cream);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color .3s var(--ease);
 }
+.country-grid a:hover,
+.country-grid a:focus-visible { border-color: var(--gold); outline: none; }
+/* Vlajkové destinace (vybrana: true) dostávají trvalý zlatý rámeček navíc
+   k hoverové změně barvy, ať jsou v mřížce vidět bez najetí myší. */
+.country-grid li.is-featured a { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-soft); }
+
+.country-media { position: relative; overflow: hidden; aspect-ratio: 3 / 2; }
 .country-photo {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .6s var(--ease);
+  object-position: center;
+  transition: transform 1.1s var(--ease);
 }
-.country-grid a::before {
+.country-media::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,0.72) 100%);
-  z-index: 1;
-  transition: opacity .35s var(--ease);
-}
-.country-grid a::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 2px var(--gold);
-  opacity: 0;
-  transition: opacity .3s var(--ease);
-  z-index: 2;
-}
-.country-name {
-  position: absolute;
-  left: 14px;
-  right: 14px;
-  bottom: 12px;
-  z-index: 2;
-  font-family: var(--serif);
-  font-size: 17px;
-  line-height: 1.25;
-  color: var(--cream);
+  background: rgba(20, 16, 10, 0);
+  transition: background-color .3s var(--ease);
 }
 .country-grid a:hover .country-photo,
-.country-grid a:focus-visible .country-photo { transform: scale(1.08); }
-.country-grid a:hover::after,
-.country-grid a:focus-visible::after { opacity: 1; }
-.country-grid a:focus-visible { outline: none; }
+.country-grid a:focus-visible .country-photo { transform: scale(1.06); }
+.country-grid a:hover .country-media::after,
+.country-grid a:focus-visible .country-media::after { background: rgba(20, 16, 10, .25); }
+
+.country-cta {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateY(6px);
+  padding: 9px 18px;
+  background: var(--gold);
+  color: var(--white);
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  text-indent: .12em;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 100px;
+  opacity: 0;
+  transition: opacity .3s var(--ease), transform .3s var(--ease);
+  pointer-events: none;
+  z-index: 1;
+}
+.country-grid a:hover .country-cta,
+.country-grid a:focus-visible .country-cta { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
+
+.country-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 20px 20px;
+  text-align: center;
+  border-top: 1px solid var(--gold);
+}
+.country-name {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+.country-grid li.is-featured .country-name { font-size: 19px; }
 
 /* Odznak s počtem klientských referencí (js/dest-refs.js).
    Selektor musí být .country-grid .country-refs — jinak ho přebije
@@ -1589,7 +1736,6 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   transform: translateY(-1px);
   outline: none;
 }
-/* .country-grid li.is-featured a nese aspect-ratio 8/5 — na odznak nesmí. */
 .country-grid li.is-featured .country-refs {
   aspect-ratio: auto;
   font-size: 11.5px;
@@ -1598,7 +1744,7 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 
 /* Search highlight/dim */
 .country-grid li.is-hidden { display: none; }
-.country-grid li.is-match a::after { opacity: 1; }
+.country-grid li.is-match a { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-soft); }
 .continent-block.is-empty { display: none; }
 
 /* Show more/less — jen prvních VIDITELNYCH destinací na kontinent je vidět
@@ -1646,8 +1792,9 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   .dest-head { padding-top: calc(100px + 4vh); }
   .dest-map { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .continent-label { font-size: 12px; letter-spacing: 0.04em; }
-  .country-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-  .country-name { font-size: 13px; left: 9px; right: 9px; bottom: 8px; }
+  .country-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .country-name { font-size: 16px; }
+  .country-body { padding: 12px 14px 14px; }
   .country-grid .country-refs { top: 6px; right: 6px; padding: 3px 7px; font-size: 10px; }
   .country-refs-w { display: none; }
   .country-grid li.is-featured .country-refs-w { display: inline; }
@@ -2137,4 +2284,78 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 
 @media (prefers-reduced-motion: reduce) {
   .cpop-close:hover { transform: none; }
+}
+
+/* ---------- Kulaté ikony s tenkou linkou — sdílený vzhled se stávajícími
+   ikonami v hlavičce (js/header-search.js, ICON_SEARCH/ICON_PHONE): stejný
+   princip (stroke="currentColor", stroke-width 1.5), jen v kruhovém rámečku
+   pro použití v obsahu stránky (feature list, dokumenty). ---------- */
+.icon-circle {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--gold-soft);
+  color: var(--gold-deep);
+}
+.icon-circle svg { display: block; }
+
+/* ---------- Dokumenty ke stažení (dulezite-informace.astro) ---------- */
+.doc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+.doc-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px;
+  background: var(--cream);
+  border: 1px solid rgba(189, 154, 69, 0.35);
+  border-radius: 3px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.doc-card:hover { border-color: var(--gold); box-shadow: 0 18px 44px -30px rgba(33, 30, 24, 0.4); }
+.doc-card-main { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.doc-card-icon { width: 40px; height: 40px; }
+.doc-card-icon svg { width: 18px; height: 18px; }
+.doc-card-text { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.doc-card-title { font-family: var(--serif); font-size: 1.05rem; line-height: 1.3; }
+.doc-card-format {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+.doc-card-arrow { flex: none; font-size: 20px; color: var(--gold-deep); }
+.doc-card.is-disabled {
+  opacity: 0.55;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ---------- Feature list (vip-sluzby.astro) — stejný princip jako
+   .experience-grid/.experience-item na detailu destinace (Zážitky/Golf),
+   jen bez fixní mřížky 3 sloupců, ať dlouhé odstavce dýchají. ---------- */
+.feature-list { display: flex; flex-direction: column; gap: 40px; max-width: 780px; margin: 0 auto; }
+.feature-item { display: flex; align-items: flex-start; gap: 22px; }
+.feature-item .icon-circle { width: 52px; height: 52px; margin-top: 4px; }
+.feature-item .icon-circle svg { width: 24px; height: 24px; }
+.feature-item h3 {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  margin: 0 0 10px;
+}
+.feature-item p { color: var(--ink-soft); margin: 0; }
+@media (max-width: 560px) {
+  .feature-item { gap: 16px; }
+  .feature-item .icon-circle { width: 44px; height: 44px; }
+  .feature-item .icon-circle svg { width: 20px; height: 20px; }
 }

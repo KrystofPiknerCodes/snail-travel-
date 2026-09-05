@@ -96,7 +96,6 @@ window.SNAIL_SEARCH_INDEX = [
   {"t": "USA", "s": "Severní Amerika", "c": "Destinace", "u": "destinace.html?q=USA#kontinent-amerika-sever", "n": "usa severni amerika spojene staty americke amerika new york kalifornie florida"},
   {"t": "Antarktida", "s": "Jižní Amerika", "c": "Destinace", "u": "destinace.html?q=Antarktida#kontinent-amerika-jih", "n": "antarktida jizni amerika "},
   {"t": "Argentina", "s": "Jižní Amerika", "c": "Destinace", "u": "destinace.html?q=Argentina#kontinent-amerika-jih", "n": "argentina jizni amerika "},
-  {"t": "Arktida", "s": "Jižní Amerika", "c": "Destinace", "u": "destinace.html?q=Arktida#kontinent-amerika-jih", "n": "arktida jizni amerika "},
   {"t": "Brazílie", "s": "Jižní Amerika", "c": "Destinace", "u": "destinace.html?q=Brazílie#kontinent-amerika-jih", "n": "brazilie jizni amerika "},
   {"t": "Ekvádor", "s": "Jižní Amerika", "c": "Destinace", "u": "destinace.html?q=Ekvádor#kontinent-amerika-jih", "n": "ekvador jizni amerika "},
   {"t": "Galapágy", "s": "Jižní Amerika", "c": "Destinace", "u": "destinace.html?q=Galapágy#kontinent-amerika-jih", "n": "galapagy jizni amerika "},
