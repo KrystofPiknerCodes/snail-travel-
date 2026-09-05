@@ -180,17 +180,77 @@ a { color: inherit; text-decoration: none; }
 
 .nav {
   display: flex;
-  gap: 34px;
+  align-items: center;
+  gap: 28px;
 }
 .nav a {
   position: relative;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 400;
   letter-spacing: 0.05em;
+  white-space: nowrap;
   color: var(--white);
   padding: 4px 0;
   transition: color .4s var(--ease);
 }
+
+/* ---------- "Více" dropdown (vedlejší stránky) ---------- */
+.nav-more { position: relative; }
+.nav-more-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  color: var(--white);
+  cursor: pointer;
+  transition: color .4s var(--ease);
+}
+.nav-more-caret { font-size: 10px; transition: transform 0.25s var(--ease); }
+.nav-more-panel {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 6px);
+  margin-top: 10px;
+  min-width: 200px;
+  padding: 10px;
+  background: var(--cream);
+  border: 1px solid rgba(189, 154, 69, 0.35);
+  border-radius: 6px;
+  box-shadow: 0 18px 44px -20px rgba(33, 30, 24, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease), visibility 0.2s;
+}
+.nav-more-panel a {
+  padding: 9px 12px;
+  border-radius: 4px;
+  font-size: 13.5px;
+  letter-spacing: 0.01em;
+  color: var(--ink) !important;
+  text-shadow: none !important;
+  white-space: nowrap;
+}
+.nav-more-panel a:hover { background: var(--cream-2); }
+.nav-more-panel a::after { display: none; }
+.nav-more:hover .nav-more-panel,
+.nav-more:focus-within .nav-more-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+.nav-more:hover .nav-more-caret,
+.nav-more:focus-within .nav-more-caret { transform: rotate(180deg); }
 .nav a::after {
   content: "";
   position: absolute;
@@ -270,7 +330,7 @@ a { color: inherit; text-decoration: none; }
 }
 .site-header.scrolled .brand { color: var(--ink); }
 .site-header.scrolled .brand-mark { color: var(--gold-deep); }
-.site-header.scrolled .nav a { color: var(--ink); }
+.site-header.scrolled .nav a, .site-header.scrolled .nav-more-toggle { color: var(--ink); }
 .site-header.scrolled .nav-cta { background: var(--gold); color: var(--ink); }
 .site-header.scrolled .nav-cta:hover { background: var(--gold-deep); color: #fff; }
 .site-header.scrolled .menu-toggle span { background: var(--ink); }
@@ -1133,7 +1193,7 @@ body.menu-open .mobile-nav {
 body.page-light { padding-top: 0; }
 body.page-light .site-header { background: rgba(250, 248, 243, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 1px 0 rgba(189, 154, 69, 0.25); }
 body.page-light .site-header .brand { color: var(--ink); }
-body.page-light .site-header .nav a { color: var(--ink); }
+body.page-light .site-header .nav a, body.page-light .site-header .nav-more-toggle { color: var(--ink); }
 body.page-light .site-header .nav-cta { background: var(--gold); color: var(--ink); }
 body.page-light .site-header .nav-cta:hover { background: var(--gold-deep); color: #fff; }
 body.page-light .menu-toggle span { background: var(--ink); }
@@ -2224,4 +2284,78 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 
 @media (prefers-reduced-motion: reduce) {
   .cpop-close:hover { transform: none; }
+}
+
+/* ---------- Kulaté ikony s tenkou linkou — sdílený vzhled se stávajícími
+   ikonami v hlavičce (js/header-search.js, ICON_SEARCH/ICON_PHONE): stejný
+   princip (stroke="currentColor", stroke-width 1.5), jen v kruhovém rámečku
+   pro použití v obsahu stránky (feature list, dokumenty). ---------- */
+.icon-circle {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--gold-soft);
+  color: var(--gold-deep);
+}
+.icon-circle svg { display: block; }
+
+/* ---------- Dokumenty ke stažení (dulezite-informace.astro) ---------- */
+.doc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+.doc-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px;
+  background: var(--cream);
+  border: 1px solid rgba(189, 154, 69, 0.35);
+  border-radius: 3px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.doc-card:hover { border-color: var(--gold); box-shadow: 0 18px 44px -30px rgba(33, 30, 24, 0.4); }
+.doc-card-main { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.doc-card-icon { width: 40px; height: 40px; }
+.doc-card-icon svg { width: 18px; height: 18px; }
+.doc-card-text { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.doc-card-title { font-family: var(--serif); font-size: 1.05rem; line-height: 1.3; }
+.doc-card-format {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+.doc-card-arrow { flex: none; font-size: 20px; color: var(--gold-deep); }
+.doc-card.is-disabled {
+  opacity: 0.55;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ---------- Feature list (vip-sluzby.astro) — stejný princip jako
+   .experience-grid/.experience-item na detailu destinace (Zážitky/Golf),
+   jen bez fixní mřížky 3 sloupců, ať dlouhé odstavce dýchají. ---------- */
+.feature-list { display: flex; flex-direction: column; gap: 40px; max-width: 780px; margin: 0 auto; }
+.feature-item { display: flex; align-items: flex-start; gap: 22px; }
+.feature-item .icon-circle { width: 52px; height: 52px; margin-top: 4px; }
+.feature-item .icon-circle svg { width: 24px; height: 24px; }
+.feature-item h3 {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  margin: 0 0 10px;
+}
+.feature-item p { color: var(--ink-soft); margin: 0; }
+@media (max-width: 560px) {
+  .feature-item { gap: 16px; }
+  .feature-item .icon-circle { width: 44px; height: 44px; }
+  .feature-item .icon-circle svg { width: 20px; height: 20px; }
 }

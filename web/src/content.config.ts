@@ -168,6 +168,28 @@ const destinaceCollection = defineCollection({
       )
       .default([]),
 
+    // "Poznávejte" — kultura, atmosféra, tipy na památky/atrakce a svátky/
+    // festivaly. Přidáno září 2026 podle obsahu ze živého webu (viz Madeira),
+    // volitelné a sbalené do akordeonu na stránce (klik odkryje), ať dlouhý
+    // text nezabírá místo návštěvníkovi, kterého zajímá hlavně ubytování.
+    poznavejte: z
+      .object({
+        text: z.string(),
+        tipy: z.array(z.string()).default([]),
+        svatky: z.array(z.string()).default([]),
+      })
+      .optional(),
+
+    // "Relaxujte" — pláže/koupání, moře, gastronomie. Stejný akordeonový
+    // princip jako `poznavejte`. Golfová hřiště NEJDOU sem — mají už vlastní
+    // pole `golf` výš a vlastní sekci na stránce, sem by jen duplikovala.
+    relaxujte: z
+      .object({
+        text: z.string(),
+        mista_koupani: z.array(z.string()).default([]),
+      })
+      .optional(),
+
     // Co na stránce ještě chybí doplnit od klienta — vykreslí se jako
     // viditelné "⚠ Doplnit od klienta" bloky / poznámka pod sekcemi.
     chybi: z.array(z.string()).default([]),

@@ -168,6 +168,121 @@
 .dest-about { max-width: 760px; margin: 0 auto; text-align: center; }
 .dest-about .lead { color: var(--ink-soft); }
 
+/* ---------- Info — dvousloupcový úvod (nadpis vlevo, text vpravo s
+   "Přečíst více"), inspirováno referenčním designem (Fitzroy). Sbaleno na
+   pevnou výšku s odstínem dole, dokud návštěvník neklikne — js/dest-collapse.js
+   jen přepíná .is-open, veškerá animace/vzhled je na CSS. ---------- */
+.dest-intro {
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) 1fr;
+  gap: 12px 56px;
+  align-items: start;
+}
+.dest-intro-head h2 {
+  margin-top: 10px;
+  /* Přepis globálního .display — ten škáluje podle šířky VIEWPORTU (až
+     3.6rem), ne podle úzkého sloupce, kde tu sedí. Na delší perex (věta
+     nebo dvě, ne krátký claim jako u referenčního designu) by to nafouklo
+     nadpis na obrazovku vysokou hromadu textu. */
+  font-size: clamp(1.4rem, 1.8vw, 1.9rem);
+  line-height: 1.3;
+}
+.dest-intro-body { position: relative; }
+.dest-intro-text { color: var(--ink-soft); }
+.dest-intro-text p { margin: 0 0 1em; }
+.dest-intro-text p:last-child { margin-bottom: 0; }
+.dest-intro-body:not(.is-open) .dest-intro-text {
+  max-height: 190px;
+  overflow: hidden;
+  position: relative;
+}
+.dest-intro-body:not(.is-open) .dest-intro-text::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, rgba(250, 248, 243, 0), var(--cream));
+}
+.dest-intro-body.is-open .dest-intro-text { max-height: none; }
+.dest-intro-more {
+  display: inline-block;
+  margin-top: 16px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  cursor: pointer;
+}
+.dest-intro-more:hover { color: var(--ink); }
+@media (max-width: 720px) {
+  .dest-intro { grid-template-columns: 1fr; gap: 20px; }
+}
+
+/* ---------- Poznávejte / Relaxujte — akordeon, úplně sbalený ve výchozím
+   stavu (na rozdíl od Info výš, kde je vidět aspoň kus textu). Stejný
+   js/dest-collapse.js mechanismus, jen CSS chování je "0 → celá výška"
+   místo odstínu. ---------- */
+.dest-accordion-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.dest-accordion-trigger h2 {
+  margin: 0;
+  /* Přepis globálního .display (až 3.6rem) — bez kickeru nad sebou by tu
+     jinak stálo osamocené jedno slovo v plné hero velikosti. */
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+}
+.dest-accordion-chevron {
+  flex: none;
+  font-family: var(--sans);
+  font-size: 20px;
+  color: var(--gold-deep);
+  transition: transform 0.3s ease;
+}
+.dest-accordion.is-open .dest-accordion-chevron { transform: rotate(180deg); }
+.dest-accordion-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.dest-accordion.is-open .dest-accordion-panel { max-height: 2600px; }
+.dest-accordion-inner { padding-top: 28px; max-width: 800px; }
+.dest-accordion-inner > p { color: var(--ink-soft); }
+.dest-accordion-lists {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 32px;
+  margin-top: 28px;
+  max-width: none;
+}
+.dest-accordion-col h3 {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin: 0 0 12px;
+}
+.dest-accordion-col ul { margin: 0; padding-left: 18px; }
+.dest-accordion-col li { margin-bottom: 8px; color: var(--ink-soft); }
+@media (max-width: 620px) {
+  .dest-accordion-lists { grid-template-columns: 1fr; gap: 24px; }
+}
+
 /* ---------- Fotogalerie — jedna velká fotka + šipky, žádný lightbox
    (PhotoSwiper.astro / public/js/photo-swiper.js). Používá se u
    destinace/oblasti (sekce Fotogalerie) i u hotelu (sekce Fotografie
@@ -305,17 +420,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   margin: 0 auto;
   font-family: var(--sans);
-  font-size: 13.5px;
+  font-size: 20px;
+  font-weight: 600;
   color: var(--gold-deep);
 }
 .live-weather-dot {
-  width: 7px; height: 7px;
+  width: 9px; height: 9px;
   border-radius: 50%;
   background: var(--gold);
   flex: none;
+}
+.live-weather-credit {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ink-soft);
+  text-decoration: underline;
 }
 .live-weather.is-loaded .live-weather-dot {
   animation: live-weather-pulse 2.4s ease-in-out infinite;

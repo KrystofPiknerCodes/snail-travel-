@@ -2,7 +2,7 @@
 export interface Props {
   title: string;
   description?: string;
-  activeNav?: 'o-nas' | 'destinace' | 'reference' | 'zazitky' | 'kontakt' | '';
+  activeNav?: 'o-nas' | 'destinace' | 'reference' | 'zazitky' | 'kontakt' | 'vip-sluzby' | 'dulezite-informace' | '';
   /** Homepage má full-bleed video hero — hlavička tam začíná průhledná a
    * po odscrollování zezlátne/zkrémovatí (řídí js/main.js přes .scrolled).
    * Ostatní stránky nemají hero pod hlavičkou, takže zůstávají "page-light"
@@ -29,8 +29,8 @@ const {
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css?v=61" />
-<link rel="stylesheet" href="css/destinace-detail.css?v=19" />
+<link rel="stylesheet" href="css/style.css?v=64" />
+<link rel="stylesheet" href="css/destinace-detail.css?v=24" />
 </head>
 <body class:list={[{ 'page-light': !transparentHero }]}>
 
@@ -49,6 +49,20 @@ const {
       <a href="#zazitky" class={activeNav === 'zazitky' ? 'is-active' : ''}>Zážitky</a>
       <a href="#kontakt" class={activeNav === 'kontakt' ? 'is-active' : ''}>Kontakt</a>
       <a href="https://www.snailtravelgolf.cz/" target="_blank" rel="noopener">Golf</a>
+      <!-- "Více" — rozbalovací menu pro vedlejší stránky (VIP služby, Podmínky,
+           časem další), ať hlavní řádek nenarůstá do nekonečna. Čistě CSS
+           (:hover/:focus-within) — nad 860px (kde tohle menu vůbec existuje,
+           viz media query níž) jde prakticky vždy o myš/trackpad, žádné JS
+           navíc netřeba. -->
+      <div class="nav-more">
+        <button type="button" class="nav-more-toggle" aria-haspopup="true">
+          Více <span class="nav-more-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="nav-more-panel">
+          <a href="vip-sluzby" class={activeNav === 'vip-sluzby' ? 'is-active' : ''}>VIP služby</a>
+          <a href="dulezite-informace" class={activeNav === 'dulezite-informace' ? 'is-active' : ''}>Důležité informace</a>
+        </div>
+      </div>
     </nav>
 
     <a href="#kontakt" class="btn btn-pill nav-cta">Naplánovat cestu</a>
@@ -66,6 +80,8 @@ const {
   <a href="reference">Reference</a>
   <a href="#filozofie">Filozofie</a>
   <a href="#zazitky">Zážitky</a>
+  <a href="vip-sluzby">VIP služby</a>
+  <a href="dulezite-informace">Důležité informace</a>
   <a href="#kontakt">Kontakt</a>
   <a href="https://www.snailtravelgolf.cz/" target="_blank" rel="noopener">Golf</a>
   <a href="#kontakt" class="btn btn-pill">Naplánovat cestu</a>
@@ -88,6 +104,8 @@ const {
       <a href="reference">Reference</a>
       <a href="#filozofie">Filozofie</a>
       <a href="#zazitky">Zážitky</a>
+      <a href="vip-sluzby">VIP služby</a>
+      <a href="dulezite-informace">Důležité informace</a>
       <a href="#kontakt">Kontakt</a>
     </nav>
     <div class="footer-contact">

@@ -99,8 +99,10 @@ const hotelGalerie =
 const tocItems =
   kind === 'destinace' && d
     ? ([
-        { id: 'info', label: 'Info' },
         (oblasti.length > 0 || hotelyPrime.length > 0) && { id: 'ubytovani', label: 'Destinace' },
+        { id: 'info', label: 'Info' },
+        d.poznavejte && { id: 'poznavejte', label: 'Poznávejte' },
+        d.relaxujte && { id: 'relaxujte', label: 'Relaxujte' },
         d.galerie.length > 0 && { id: 'fotogalerie', label: 'Fotogalerie' },
         d.kdy_jet.length > 0 && { id: 'kdy-jet', label: 'Kdy jet' },
         d.mapa && { id: 'mapa', label: 'Mapa' },
@@ -222,20 +224,6 @@ const pageDescription =
     </>
   ) : (
     <>
-      <!-- ============ ÚRYVEK + INFO ============ -->
-      <section class="section" id="info">
-        <div class="wrap">
-          {d!.perex ? (
-            <p class="lead dest-excerpt reveal">{d!.perex}</p>
-          ) : (
-            <p class="lead dest-excerpt reveal">⚠ Doplnit od klienta — popis destinace zatím chybí.</p>
-          )}
-          <div class="dest-about reveal" data-delay="1">
-            <Content />
-          </div>
-        </div>
-      </section>
-
       <!-- ============ UBYTOVÁNÍ (oblasti, nebo přímo hotely, pokud oblast chybí) ============ -->
       <section class="section section-dark" id="ubytovani">
         <div class="wrap">
@@ -305,6 +293,95 @@ const pageDescription =
         </div>
       </section>
 
+      <!-- ============ INFO — krátký úvod nalevo, text napravo s "Přečíst více"
+           (js/dest-collapse.js — sdílený mechanismus i pro Poznávejte/Relaxujte
+           níž, jen jiné CSS chování: tady jde o odstín/clamp, u akordeonů o
+           úplné sbalení). ============ -->
+      <section class="section" id="info">
+        <div class="wrap dest-intro">
+          <div class="dest-intro-head reveal">
+            <p class="kicker">Info</p>
+            <h2 class="display">{d!.perex ?? '⚠ Doplnit od klienta — popis destinace zatím chybí.'}</h2>
+          </div>
+          <div class="dest-intro-body reveal" data-delay="1" data-collapse>
+            <div class="dest-intro-text" data-collapse-panel>
+              <Content />
+            </div>
+            <button
+              type="button"
+              class="dest-intro-more"
+              data-collapse-trigger
+              data-label-more="Přečíst více ↓"
+              data-label-less="Skrýt ↑"
+            >
+              Přečíst více ↓
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ POZNÁVEJTE (akordeon, sbalené ve výchozím stavu) ============ -->
+      {kind === 'destinace' && d!.poznavejte && (
+        <section class="section dest-accordion-section" id="poznavejte" style="background: var(--cream-2);">
+          <div class="wrap">
+            <div class="dest-accordion" data-collapse>
+              <button type="button" class="dest-accordion-trigger reveal" data-collapse-trigger aria-expanded="false">
+                <h2 class="display">Poznávejte</h2>
+                <span class="dest-accordion-chevron" aria-hidden="true">↓</span>
+              </button>
+              <div class="dest-accordion-panel" data-collapse-panel>
+                <div class="dest-accordion-inner">
+                  <p>{d!.poznavejte.text}</p>
+                  {(d!.poznavejte.tipy.length > 0 || d!.poznavejte.svatky.length > 0) && (
+                    <div class="dest-accordion-lists">
+                      {d!.poznavejte.tipy.length > 0 && (
+                        <div class="dest-accordion-col">
+                          <h3>Co si nenechat ujít</h3>
+                          <ul>{d!.poznavejte.tipy.map((t) => <li>{t}</li>)}</ul>
+                        </div>
+                      )}
+                      {d!.poznavejte.svatky.length > 0 && (
+                        <div class="dest-accordion-col">
+                          <h3>Svátky a festivaly</h3>
+                          <ul>{d!.poznavejte.svatky.map((s) => <li>{s}</li>)}</ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <!-- ============ RELAXUJTE (akordeon, sbalené ve výchozím stavu) ============ -->
+      {kind === 'destinace' && d!.relaxujte && (
+        <section class="section dest-accordion-section" id="relaxujte">
+          <div class="wrap">
+            <div class="dest-accordion" data-collapse>
+              <button type="button" class="dest-accordion-trigger reveal" data-collapse-trigger aria-expanded="false">
+                <h2 class="display">Relaxujte</h2>
+                <span class="dest-accordion-chevron" aria-hidden="true">↓</span>
+              </button>
+              <div class="dest-accordion-panel" data-collapse-panel>
+                <div class="dest-accordion-inner">
+                  <p>{d!.relaxujte.text}</p>
+                  {d!.relaxujte.mista_koupani.length > 0 && (
+                    <div class="dest-accordion-lists">
+                      <div class="dest-accordion-col">
+                        <h3>Místa na koupání</h3>
+                        <ul>{d!.relaxujte.mista_koupani.map((m) => <li>{m}</li>)}</ul>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       <!-- ============ FOTOGALERIE ============ -->
       {d!.galerie.length > 0 && (
         <section class="section" id="fotogalerie" style="background: var(--cream-2);">
@@ -333,6 +410,7 @@ const pageDescription =
               <div class="live-weather reveal" data-delay="1" data-live-weather data-lat={d!.mapa.lat} data-lng={d!.mapa.lng}>
                 <span class="live-weather-dot" aria-hidden="true"></span>
                 <span class="live-weather-text">Načítám aktuální počasí…</span>
+                <a class="live-weather-credit" href="https://www.met.no/" target="_blank" rel="noopener">zdroj: MET Norway</a>
               </div>
             )}
             {d!.kdy_jet_poznamka && <p class="weather-note reveal" data-delay="2">{d!.kdy_jet_poznamka}</p>}
@@ -488,4 +566,5 @@ const pageDescription =
 )}
 <script is:inline src="js/price-tag.js?v=1"></script>
 <script is:inline src="js/photo-swiper.js?v=2"></script>
-{kind === 'destinace' && <script is:inline src="js/weather-live.js?v=1"></script>}
+{kind === 'destinace' && <script is:inline src="js/weather-live.js?v=2"></script>}
+{kind !== 'hotel' && <script is:inline src="js/dest-collapse.js?v=1"></script>}

@@ -1,0 +1,138 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="VIP služby — Snail Travel"
+  description="Odbavení ve VIP salóncích, privátní transfery i privátní lety — služby, které si vaše cesta zaslouží."
+  activeNav="vip-sluzby"
+>
+
+  <!-- ============ PAGE HEAD — foto soukromého letadla (assets/zaz-lety.jpg),
+       stejné, co se používá na homepage v dlaždici Zážitky/Privátní lety
+       (index.astro), ne nová/vyfabrikovaná fotka. ============ -->
+  <section class="section dest-head dest-head-photo">
+    <div class="dest-head-bg" style="background-image: url('assets/zaz-lety.jpg')" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="kicker kicker-light reveal">VIP služby</p>
+      <h1 class="display reveal" data-delay="1">Když je kvalita<br />a luxus standardem</h1>
+      <p class="dest-lead reveal" data-delay="2">
+        Cesta začíná dřív, než nastoupíte do letadla, a končí až po&nbsp;návratu domů.
+        Na přání zařídíme i&nbsp;to, co je kolem samotné dovolené — od&nbsp;odbavení
+        na&nbsp;letišti po&nbsp;dopravu z&nbsp;letiště do&nbsp;hotelu.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SLUŽBY ============ -->
+  <section class="section" id="sluzby">
+    <div class="wrap">
+      <div class="feature-list">
+        <div class="feature-item reveal">
+          <span class="icon-circle" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="10" r="3" />
+              <path d="M12 21c-4-4.5-7-8-7-11a7 7 0 0 1 14 0c0 3-3 6.5-7 11z" />
+            </svg>
+          </span>
+          <span class="feature-item-text">
+            <h3>Výběr destinace</h3>
+            <p>
+              Při cestování do jiných zemí je nutné mít na paměti, že jedete do místa, kde
+              platí zcela jiné zákony a zákonitosti, než na co jste zvyklí z domova. Pakliže
+              je vám filosofie či zvyklosti dané země zcela cizí a principiálně vám vadí,
+              nekažte si zbytečně dovolenou a vyberte si jinou zemi — rádi vám s výběrem
+              pomůžeme.
+            </p>
+          </span>
+        </div>
+
+        <div class="feature-item reveal" data-delay="1">
+          <span class="icon-circle" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4" />
+              <path d="M4 11h16v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4z" />
+              <path d="M6 17v2M18 17v2" />
+            </svg>
+          </span>
+          <span class="feature-item-text">
+            <h3>VIP salónky na letištích</h3>
+            <p>
+              Pro vaše maximální pohodlí vám v případě zájmu zajistíme odbavení na letištích
+              v Praze i v zahraničí ve VIP salóncích — bez front a se vším komfortem, který
+              k cestování patří.
+            </p>
+          </span>
+        </div>
+
+        <div class="feature-item reveal" data-delay="2">
+          <span class="icon-circle" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 2 15 22l-4-9-9-4 20-7z" />
+              <path d="M22 2 11 13" />
+            </svg>
+          </span>
+          <span class="feature-item-text">
+            <h3>Letecká doprava</h3>
+            <p>
+              K organizaci našich zájezdů volíme vždy renomované letecké společnosti, a to
+              výhradně na pravidelných linkách. Podle přání vybíráme třídu cestování —
+              economy, business i first class.
+            </p>
+          </span>
+        </div>
+
+        <div class="feature-item reveal" data-delay="3">
+          <span class="icon-circle" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11" />
+              <rect x="3" y="11" width="18" height="6" rx="2" />
+              <circle cx="7.5" cy="17" r="1.5" />
+              <circle cx="16.5" cy="17" r="1.5" />
+            </svg>
+          </span>
+          <span class="feature-item-text">
+            <h3>Privátní transfery</h3>
+            <p>
+              Transfer z letiště do hotelu a zpět pro vás zajistíme privátními luxusními
+              vozy, kdy na vás na letišti bude čekat řidič s cedulkou a vaším jménem.
+            </p>
+          </span>
+        </div>
+
+        <div class="feature-item reveal" data-delay="4">
+          <span class="icon-circle" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="8" cy="15" r="3" />
+              <path d="M10.5 12.5 20 3M17 6l3 3M14 9l2 2" />
+            </svg>
+          </span>
+          <span class="feature-item-text">
+            <h3>Privátní lety</h3>
+            <p>
+              Pro vaše úplné pohodlí a soukromí vám zajistíme lety privátními letouny podle
+              vašich specifikací a přání.
+            </p>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BAND ============ -->
+  <section class="section dest-cta-band">
+    <div class="wrap">
+      <div class="dest-cta-inner reveal">
+        <h2 class="display">Naplánujme spolu vaši cestu</h2>
+        <p>
+          Bára Blaschke se vám ozve do 48 hodin s nabídkou na míru — včetně toho, co k cestě patří okolo.
+          <br />
+          <a href="mailto:barbora@snailtravel.cz">barbora@snailtravel.cz</a>
+          &nbsp;·&nbsp;
+          <a href="tel:+420602552624">+420&nbsp;602&nbsp;552&nbsp;624</a>
+        </p>
+        <a href="#kontakt" class="btn btn-pill">Naplánovat cestu</a>
+      </div>
+    </div>
+  </section>
+
+</Base>

@@ -130,6 +130,67 @@ zazitky:
       Festival vína (přelom srpna a září) i celoroční degustace ve
       Funchalu — madeirské víno patří k nejznámějším na světě.
 
+golf:
+  - nazev: Santo da Serra
+    jamky: 27
+  - nazev: Palheiro Golf
+    jamky: 18
+
+poznavejte:
+  text: >
+    Usměvaví a příjemní Madeiřané si život na nádherném ostrově opravdu
+    užívají. Oslavy, svátky, festivaly a slavnosti probíhají téměř po celý
+    rok. Mezi nejznámější patří květinové slavnosti a karneval, k oblíbeným
+    oslavám patří ty, které slaví přírodu — bujaré veselí v ulicích zažijete
+    při slavnostech citrónu, cibule, třešní, banánů či kaštanů. Madeira si
+    kromě krásné přírody uchovala i starobylý nádech. Milovníci historie by
+    neměli minout hlavní město Funchal — malebné přístavní město s
+    překrásnou plážovou promenádou, dominantním kostelem a atrakcí, kterou
+    jinde neuvidíte: jízdou na saních. Opálení "carreiros" v bílém vás od
+    funchalského kostela Igreja de Nossa Senhora obratně provezou úzkými
+    uličkami na speciálních saních, upravených na jízdu po silnici. Carreiros
+    je prestižní povolání, které se předává z otce na syna.
+  tipy:
+    - "Kostel Igreja de Nossa Senhora (krásný kostel, ve kterém jsou uloženy ostatky Karla I., Funchal)"
+    - "Jízda na saních (Funchal)"
+    - "Mercado dos Lavradores (hlavní tržnice, Funchal)"
+    - "Madeira Aquarium (akvárium, které nabízí potápění se žraloky, rejnoky a další stovkou ryb)"
+    - "Kabinová lanovka (kouzelná vyhlídková cesta z nábřeží do čtvrti Monte, Funchal)"
+    - "Rua de Santa Maria (barevné pomalované domy tvoří galerii pod širým nebem, Funchal)"
+  svatky:
+    - "Květinové slavnosti (4 týdny po Velikonocích, Funchal)"
+    - "Festival vína (přelom srpna a září)"
+    - "Karneval (nejúchvatnější podívaná v roce, únor – březen)"
+    - "Festival Atlántico (festival ohňostrojů na přivítání léta, červen)"
+    - "Vánoce (největší a nejdůležitější svátky, prosinec – leden)"
+    - "Slavnosti Kryštofa Kolumba (oslavy objevení ostrova, září)"
+
+relaxujte:
+  text: >
+    Madeirské moře je krásné, čisté a díky Golfskému proudu také celoročně
+    vyhřáté, ale Madeira není klasickou plážovou destinací. Na ostrově je jen
+    několik písečných a oblázkových pláží. Pro vstup do moře jsou u hotelů
+    vybudovaná mola, osvěžit se můžete v bazénech nebo ve vyhlášených lávových
+    jezírkách. Uchvacující je i mořské dno — průzračné vody atlantského
+    oceánu se hemží barevnými rybami, v blízkosti ostrova klidně plavou vodní
+    želvy, delfíni i majestátní velryby. Ostrovní podmínky jsou ideální pro
+    milovníky potápění, šnorchlování, rybaření nebo třeba paraglidingu. Po
+    aktivním odpočinku nezapomeňte doplnit energii a ochutnat výtečnou
+    madeirskou kuchyni plnou čerstvých ryb, mořských plodů a zeleniny.
+    Kulinářskou lahůdkou je třeba ryba s grilovaným banánem, pýchou sladké
+    kuchyně je medový koláč, který si díky dlouhé trvanlivosti můžete odvézt
+    i s sebou. K tomu ochutnejte také vyhlášené madeirské víno.
+  mista_koupani:
+    - "Prainha (jediná přírodní písečná pláž)"
+    - "Praia Formosa (kamenitá pláž u města Funchal)"
+    - "Calheta Beach (umělá písečná pláž)"
+    - "Machico (umělá pláž z bílého písku ze Sahary)"
+    - "Ponta do Sol (malebná zátoka s oblázkovou pláží)"
+    - "Porto da Cruz (krásné středisko s terasovitým bazénem)"
+    - "Porto Moniz (přírodní lávová jezírka s vyhřátou vodou)"
+    - "Funchal Lido (koupaliště ve městě Funchal)"
+    - "Ponta Gorda (lázeňský komplex ve městě Funchal)"
+
 ref_tag: Madeira
 
 chybi:
