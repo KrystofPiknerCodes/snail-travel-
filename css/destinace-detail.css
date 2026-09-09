@@ -239,11 +239,19 @@
   cursor: pointer;
   text-align: left;
 }
+.dest-accordion-trigger-label { display: flex; align-items: center; gap: 18px; }
 .dest-accordion-trigger h2 {
   margin: 0;
   /* Přepis globálního .display (až 3.6rem) — bez kickeru nad sebou by tu
      jinak stálo osamocené jedno slovo v plné hero velikosti. */
   font-size: clamp(1.5rem, 2.6vw, 2rem);
+}
+.dest-accordion-trigger .icon-circle { width: 55px; height: 55px; }
+.dest-accordion-trigger .icon-circle svg { width: 28px; height: 28px; }
+@media (max-width: 620px) {
+  .dest-accordion-trigger-label { gap: 12px; }
+  .dest-accordion-trigger .icon-circle { width: 45px; height: 45px; }
+  .dest-accordion-trigger .icon-circle svg { width: 22px; height: 22px; }
 }
 .dest-accordion-chevron {
   flex: none;
