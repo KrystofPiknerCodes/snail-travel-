@@ -181,8 +181,9 @@ const destinaceCollection = defineCollection({
       .optional(),
 
     // "Relaxujte" — pláže/koupání, moře, gastronomie. Stejný akordeonový
-    // princip jako `poznavejte`. Golfová hřiště NEJDOU sem — mají už vlastní
-    // pole `golf` výš a vlastní sekci na stránce, sem by jen duplikovala.
+    // princip jako `poznavejte`. Golfová hřiště (pole `golf` výš) nemají
+    // vlastní sekci na stránce — vykreslují se jako další sloupec tady
+    // (rozhodnutí Krystof, září 2026), viz [...slug].astro.
     relaxujte: z
       .object({
         text: z.string(),

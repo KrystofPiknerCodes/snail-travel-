@@ -102,12 +102,10 @@ const tocItems =
         (oblasti.length > 0 || hotelyPrime.length > 0) && { id: 'ubytovani', label: 'Destinace' },
         { id: 'info', label: 'Info' },
         d.poznavejte && { id: 'poznavejte', label: 'Poznávejte' },
-        d.relaxujte && { id: 'relaxujte', label: 'Relaxujte' },
+        (d.relaxujte || d.golf.length > 0) && { id: 'relaxujte', label: 'Relaxujte' },
         d.galerie.length > 0 && { id: 'fotogalerie', label: 'Fotogalerie' },
         d.kdy_jet.length > 0 && { id: 'kdy-jet', label: 'Kdy jet' },
         d.mapa && { id: 'mapa', label: 'Mapa' },
-        d.zazitky.length > 0 && { id: 'zazitky', label: 'Zážitky' },
-        d.golf.length > 0 && { id: 'golf', label: 'Golf' },
         d.ref_tag && { id: 'reference', label: 'Reference' },
       ].filter(Boolean) as Array<{ id: string; label: string }>)
     : [];
@@ -191,17 +189,8 @@ const pageDescription =
       </section>
 
       <!-- ============ POLOHA ============ -->
-      {h!.poloha ? (
+      {h!.poloha && (
         <MapaMista lat={h!.poloha.lat} lng={h!.poloha.lng} zoom={15} nazev={h!.nazev} kicker="Poloha" />
-      ) : (
-        <section class="section" style="padding-top:0;">
-          <div class="wrap dest-about">
-            <div class="chybi-box reveal">
-              <strong>⚠ Doplnit od klienta</strong>
-              Přesnou polohu hotelu zatím nemáme.
-            </div>
-          </div>
-        </section>
       )}
 
       <!-- ============ CTA ============ -->
@@ -224,7 +213,10 @@ const pageDescription =
     </>
   ) : (
     <>
-      <!-- ============ UBYTOVÁNÍ (oblasti, nebo přímo hotely, pokud oblast chybí) ============ -->
+      <!-- ============ UBYTOVÁNÍ (oblasti, nebo přímo hotely, pokud oblast chybí). Sekce se
+           nevykreslí vůbec, když není ani jedno — stejná podmínka jako u položky
+           v tocItems výš, ať nezůstane prázdná sekce s "doplnit od klienta". ============ -->
+      {(oblasti.length > 0 || hotelyPrime.length > 0) && (
       <section class="section section-dark" id="ubytovani">
         <div class="wrap">
           <header class="section-head reveal">
@@ -261,7 +253,7 @@ const pageDescription =
                 );
               })}
             </ul>
-          ) : hotelyPrime.length > 0 ? (
+          ) : (
             <ul class="country-grid reveal" data-delay="1">
               {hotelyPrime.map((hotel) => (
                 <li>
@@ -284,14 +276,10 @@ const pageDescription =
                 </li>
               ))}
             </ul>
-          ) : (
-            <div class="chybi-box reveal">
-              <strong>⚠ Doplnit od klienta</strong>
-              Konkrétní hotely tady zatím nemáme.
-            </div>
           )}
         </div>
       </section>
+      )}
 
       <!-- ============ INFO — krátký úvod nalevo, text napravo s "Přečíst více"
            (js/dest-collapse.js — sdílený mechanismus i pro Poznávejte/Relaxujte
@@ -326,7 +314,15 @@ const pageDescription =
           <div class="wrap">
             <div class="dest-accordion" data-collapse>
               <button type="button" class="dest-accordion-trigger reveal" data-collapse-trigger aria-expanded="false">
-                <h2 class="display">Poznávejte</h2>
+                <span class="dest-accordion-trigger-label">
+                  <h2 class="display">Poznávejte</h2>
+                  <span class="icon-circle" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                    </svg>
+                  </span>
+                </span>
                 <span class="dest-accordion-chevron" aria-hidden="true">↓</span>
               </button>
               <div class="dest-accordion-panel" data-collapse-panel>
@@ -355,24 +351,52 @@ const pageDescription =
         </section>
       )}
 
-      <!-- ============ RELAXUJTE (akordeon, sbalené ve výchozím stavu) ============ -->
-      {kind === 'destinace' && d!.relaxujte && (
+      <!-- ============ RELAXUJTE (akordeon, sbalené ve výchozím stavu). Golf
+           nemá vlastní sekci — jen sloupec tady, viz rozhodnutí Krystof, září
+           2026 (jedno hřiště/destinaci nezaslouží samostatnou sekci v navigaci). ============ -->
+      {kind === 'destinace' && (d!.relaxujte || d!.golf.length > 0) && (
         <section class="section dest-accordion-section" id="relaxujte">
           <div class="wrap">
             <div class="dest-accordion" data-collapse>
               <button type="button" class="dest-accordion-trigger reveal" data-collapse-trigger aria-expanded="false">
-                <h2 class="display">Relaxujte</h2>
+                <span class="dest-accordion-trigger-label">
+                  <h2 class="display">Relaxujte</h2>
+                  <span class="icon-circle" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="5" />
+                      <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                    </svg>
+                  </span>
+                </span>
                 <span class="dest-accordion-chevron" aria-hidden="true">↓</span>
               </button>
               <div class="dest-accordion-panel" data-collapse-panel>
                 <div class="dest-accordion-inner">
-                  <p>{d!.relaxujte.text}</p>
-                  {d!.relaxujte.mista_koupani.length > 0 && (
+                  {d!.relaxujte && <p>{d!.relaxujte.text}</p>}
+                  {(d!.relaxujte?.mista_koupani.length || d!.golf.length > 0) && (
                     <div class="dest-accordion-lists">
-                      <div class="dest-accordion-col">
-                        <h3>Místa na koupání</h3>
-                        <ul>{d!.relaxujte.mista_koupani.map((m) => <li>{m}</li>)}</ul>
-                      </div>
+                      {!!d!.relaxujte?.mista_koupani.length && (
+                        <div class="dest-accordion-col">
+                          <h3>Místa na koupání</h3>
+                          <ul>{d!.relaxujte!.mista_koupani.map((m) => <li>{m}</li>)}</ul>
+                        </div>
+                      )}
+                      {d!.golf.length > 0 && (
+                        <div class="dest-accordion-col">
+                          <h3>Golfová hřiště</h3>
+                          <ul>
+                            {d!.golf.map((g) => (
+                              <li>
+                                {g.nazev}
+                                {g.jamky ? ` — ${g.jamky} jamek` : ''}
+                                {g.vzdalenost_hotel ? ` · ${g.vzdalenost_hotel} od hotelu` : ''}
+                                {g.green_fee_v_cene === true ? ' · green fee v ceně' : ''}
+                                {g.green_fee_v_cene === false ? ' · green fee mimo cenu' : ''}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -398,7 +422,7 @@ const pageDescription =
       )}
 
       <!-- ============ KDY JET ============ -->
-      {kind === 'destinace' && (
+      {kind === 'destinace' && d!.kdy_jet.length > 0 && (
         <section class="section" id="kdy-jet" style="background: var(--cream-2);">
           <div class="wrap">
             <header class="section-head reveal">
@@ -415,94 +439,42 @@ const pageDescription =
             )}
             {d!.kdy_jet_poznamka && <p class="weather-note reveal" data-delay="2">{d!.kdy_jet_poznamka}</p>}
 
-            {d!.kdy_jet.length > 0 ? (
-              <div class="climate-table-wrap reveal" data-delay="3">
-                <div class="climate-table">
-                  <div class="climate-row climate-row-pill">
-                    <span class="climate-label">Vzduch</span>
-                    <div class="climate-pill">
-                      {d!.kdy_jet.map((m) => <span class="climate-cell">{m.teplota_vzduch}</span>)}
-                    </div>
+            <div class="climate-table-wrap reveal" data-delay="3">
+              <div class="climate-table">
+                <div class="climate-row climate-row-pill">
+                  <span class="climate-label">Vzduch</span>
+                  <div class="climate-pill">
+                    {d!.kdy_jet.map((m) => <span class="climate-cell">{m.teplota_vzduch}</span>)}
                   </div>
-                  <div class="climate-row">
-                    <span class="climate-label">Měsíc</span>
-                    <div class="climate-months">
-                      {d!.kdy_jet.map((m) => <span class="climate-cell">{m.mesic}</span>)}
-                    </div>
-                  </div>
-                  <div class="climate-row climate-row-pill">
-                    <span class="climate-label">Moře</span>
-                    <div class="climate-pill">
-                      {d!.kdy_jet.map((m) => <span class="climate-cell">{m.teplota_more}</span>)}
-                    </div>
-                  </div>
-                  {d!.kdy_jet.some((m) => m.srazky) && (
-                    <div class="climate-row climate-row-pill">
-                      <span class="climate-label">Srážky</span>
-                      <div class="climate-pill">
-                        {d!.kdy_jet.map((m) => <span class="climate-cell">{m.srazky || '—'}</span>)}
-                      </div>
-                    </div>
-                  )}
                 </div>
+                <div class="climate-row">
+                  <span class="climate-label">Měsíc</span>
+                  <div class="climate-months">
+                    {d!.kdy_jet.map((m) => <span class="climate-cell">{m.mesic}</span>)}
+                  </div>
+                </div>
+                <div class="climate-row climate-row-pill">
+                  <span class="climate-label">Moře</span>
+                  <div class="climate-pill">
+                    {d!.kdy_jet.map((m) => <span class="climate-cell">{m.teplota_more}</span>)}
+                  </div>
+                </div>
+                {d!.kdy_jet.some((m) => m.srazky) && (
+                  <div class="climate-row climate-row-pill">
+                    <span class="climate-label">Srážky</span>
+                    <div class="climate-pill">
+                      {d!.kdy_jet.map((m) => <span class="climate-cell">{m.srazky || '—'}</span>)}
+                    </div>
+                  </div>
+                )}
               </div>
-            ) : (
-              <div class="chybi-box reveal">
-                <strong>⚠ Doplnit od klienta</strong>
-                Počasí po měsících zatím nemáme.
-              </div>
-            )}
+            </div>
           </div>
         </section>
       )}
 
       <!-- ============ MAPA ============ -->
       {d!.mapa && <MapaMista lat={d!.mapa.lat} lng={d!.mapa.lng} zoom={d!.mapa.zoom} nazev={d!.nazev} />}
-
-      <!-- ============ ZÁŽITKY ============ -->
-      {kind === 'destinace' && d!.zazitky.length > 0 && (
-        <section class="section" id="zazitky">
-          <div class="wrap">
-            <header class="section-head reveal">
-              <p class="kicker">Co zažít</p>
-              <h2 class="display">Zážitky a výlety</h2>
-            </header>
-            <div class="experience-grid reveal" data-delay="1">
-              {d!.zazitky.map((z) => (
-                <div class="experience-item">
-                  <h3>{z.nazev}</h3>
-                  <p>{z.popis}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      <!-- ============ GOLF ============ -->
-      {kind === 'destinace' && d!.golf.length > 0 && (
-        <section class="section" id="golf" style="background: var(--cream-2);">
-          <div class="wrap">
-            <header class="section-head reveal">
-              <p class="kicker">Golf</p>
-              <h2 class="display">Golfová hřiště</h2>
-            </header>
-            <div class="experience-grid reveal" data-delay="1">
-              {d!.golf.map((g) => (
-                <div class="experience-item">
-                  <h3>{g.nazev}</h3>
-                  <p>
-                    {g.jamky ? `${g.jamky} jamek` : '⚠ Počet jamek chybí'}
-                    {g.vzdalenost_hotel ? ` · ${g.vzdalenost_hotel} od hotelu` : ''}
-                    {g.green_fee_v_cene === true ? ' · green fee v ceně' : ''}
-                    {g.green_fee_v_cene === false ? ' · green fee mimo cenu' : ''}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       <!-- ============ REFERENCE (js/dest-references.js) ============ -->
       {kind === 'destinace' && d!.ref_tag && (
@@ -523,19 +495,6 @@ const pageDescription =
         </section>
       )}
 
-      <!-- ============ CO CHYBÍ (viditelný podklad k diskusi) ============ -->
-      {d!.chybi.length > 0 && (
-        <section class="section" style="padding-top: 0; padding-bottom: 60px;">
-          <div class="wrap">
-            <div class="chybi-box reveal">
-              <strong>⚠ Doplnit od klienta — podklad k diskusi</strong>
-              <ul>
-                {d!.chybi.map((item) => <li>{item}</li>)}
-              </ul>
-            </div>
-          </div>
-        </section>
-      )}
 
       <!-- ============ CTA BAND — kontakt ============ -->
       <section class="section dest-cta-band">

@@ -10,21 +10,19 @@ perex: >
   vína. Madeira je čarovný ostrov s nádhernou přírodou a celoročně krásným
   počasím.
 
-hlavni_foto: /assets/madeira/madeira-hero.jpg
+hlavni_foto: /assets/madeira/madeira-hero-1.jpg
 
 # Fotky (mimo hero) staženy z Pexels (volně užitné, září 2026) — k nahrazení
 # vlastními fotkami klienta z jeho zájezdů, viz chybi níže.
 galerie:
-  - src: /assets/madeira/madeira-hero.jpg
-    alt: Pobřeží Madeiry s útesy nad Atlantikem
-  - src: /assets/madeira/madeira-gallery-6.jpg
-    alt: Letecký pohled na červené útesy a terasovitá pole nad mořem
-  - src: /assets/madeira/madeira-gallery-3.jpg
-    alt: Dramatické pobřežní útesy Madeiry nad Atlantikem
-  - src: /assets/madeira/madeira-gallery-5.jpg
-    alt: Rybářský přístav Câmara de Lobos s vinicemi na svahu
-  - src: /assets/madeira/madeira-gallery-4.jpg
-    alt: Turistka na pobřežní stezce nad oceánem za soumraku
+  - src: /assets/madeira/madeira-hero-1.jpg
+    alt: Letecký pohled na zelené útesy severního pobřeží Madeiry
+  - src: /assets/madeira/madeira-hero-2.jpg
+    alt: Ponta de São Lourenço — červené skalnaté mysy na východě ostrova
+  - src: /assets/madeira/madeira-hero-3.jpg
+    alt: Machico za soumraku s osvětlenou zátokou
+  - src: /assets/madeira/madeira-hero-4.jpg
+    alt: Duha nad horským údolím se vesnicí na severu Madeiry
 
 # Vycentrování mapy oblasti na ostrov Madeira. Souřadnice z OpenStreetMap
 # Nominatim (dotaz "Madeira Portugal", hraniční relace ostrova/souostroví) —
