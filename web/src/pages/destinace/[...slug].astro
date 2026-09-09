@@ -126,7 +126,7 @@ const pageDescription =
       d.galerie && d.galerie.length > 1 ? (
         <div class="dest-hero-slider" id="destHeroSlider" aria-hidden="true">
           {d.galerie.slice(0, 4).map((img, i) => (
-            <div class={`dest-hero-slide ${i === 0 ? 'is-active' : ''}`} style={`background-image: url('${img.src}')`}></div>
+            <div class={`dest-hero-slide ${i === 0 ? 'is-active' : ''}`} style={`background-image: url('${rel(img.src)}')`}></div>
           ))}
           <div class="dest-hero-overlay"></div>
           <div class="dest-hero-dots">
@@ -136,7 +136,7 @@ const pageDescription =
           </div>
         </div>
       ) : (
-        <div class="dest-head-bg" style={`background-image: url('${d.hlavni_foto}')`} aria-hidden="true"></div>
+        <div class="dest-head-bg" style={`background-image: url('${rel(d.hlavni_foto)}')`} aria-hidden="true"></div>
       )
     )}
     <div class="wrap">
