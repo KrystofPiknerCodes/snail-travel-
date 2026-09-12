@@ -19,12 +19,18 @@ import {
   indexDestinace,
   resolveAncestors,
   childOblasti,
+  hotelyPod,
   buildBreadcrumb,
   resolveKontinent,
   KONTINENT_NAZEV,
   type DestEntry,
   type HotelEntry,
 } from '../../lib/hierarchie';
+
+// Kolik hotelů se v sekci "Zájezdy destinace" ukáže rovnou, zbytek je za
+// tlačítkem "Zobrazit všechny" — stejný princip a stejné číslo jako
+// VIDITELNYCH na /destinace (web/src/pages/destinace/index.astro).
+const VIDITELNYCH_HOTELU = 6;
 
 type Kind = 'destinace' | 'oblast' | 'hotel';
 
@@ -94,6 +100,23 @@ const hotelyPrime = kind !== 'hotel' ? hotelyAll.filter((h) => h.data.nadrazena 
 // všechny leží přímo pod tímhle uzlem (viz komentář v HotelCard.astro).
 const hotelyPrimeLokace = kind !== 'hotel' ? [...chain.map((c) => c.data.nazev), d?.nazev ?? ''].join(' / ') : '';
 
+// Všechny hotely destinace napříč oblastmi (Funchal, Calheta, ...) na jednom
+// místě pro sekci "Zájezdy destinace" níž — na rozdíl od hotelyPrime výš,
+// který u destinace s oblastmi (Madeira) vyjde prázdný, protože hotely visí
+// pod jednotlivými oblastmi, ne přímo pod destinací. Vykresluje se proto jen
+// tehdy, když destinace oblasti MÁ (jinak by duplikovala sekci Ubytování,
+// která bez oblastí hotelyPrime vypisuje sama). Na rozdíl od hotelyPrimeLokace
+// výš je lokace per-hotel, protože hotely v tomhle seznamu leží pod různými
+// oblastmi (basePath by fungoval jen pro hotely přímo pod entry).
+const destinaceById = indexDestinace(destinaceAll);
+const hotelyDestinace = kind === 'destinace' && oblasti.length > 0 ? hotelyPod(entry.id, hotelyAll, destinaceAll) : [];
+const hotelHref = (hotel: HotelEntry) => {
+  const hChain = resolveAncestors(hotel.data.nadrazena, destinaceById);
+  return `destinace/${[...hChain.map((c) => c.id), hotel.id].join('/')}`;
+};
+const hotelLokace = (hotel: HotelEntry) =>
+  resolveAncestors(hotel.data.nadrazena, destinaceById).map((c) => c.data.nazev).join(' / ');
+
 // ---- Hotel ----
 const h = kind === 'hotel' ? (entry as HotelEntry).data : null;
 // Galerie pro PhotoSwiper — bez vyplněné `galerie` spadne na jediné `foto`,
@@ -154,6 +177,7 @@ const tocItems =
   kind === 'destinace' && d
     ? ([
         (oblasti.length > 0 || hotelyPrime.length > 0) && { id: 'ubytovani', label: 'Destinace' },
+        hotelyDestinace.length > 0 && { id: 'zajezdy', label: 'Zájezdy' },
         { id: 'info', label: 'Info' },
         d.galerie.length > 0 && { id: 'fotogalerie', label: 'Fotogalerie' },
         d.kdy_jet.length > 0 && { id: 'kdy-jet', label: 'Kdy jet' },
@@ -380,6 +404,43 @@ const pageDescription =
       </section>
       )}
 
+      <!-- ============ ZÁJEZDY DESTINACE — všechny hotely napříč oblastmi
+           (Funchal, Calheta, ...) na jednom místě, ne rozdělené jako sekce
+           Ubytování výš. Prvních VIDITELNYCH_HOTELU vidět rovnou, zbytek za
+           tlačítkem "Zobrazit všechny" — stejný .country-grid + is-more
+           mechanismus jako na /destinace (web/public/js/dest-hotel-toggle.js). ============ -->
+      {hotelyDestinace.length > 0 && (
+      <section class="section" id="zajezdy">
+        <div class="wrap">
+          <header class="section-head reveal">
+            <p class="kicker">Nabídka</p>
+            <h2 class="display">Zájezdy destinace {d!.nazev}</h2>
+            <p class="lead">Všechny hotely, které na {d!.nazev} nabízíme, od cenově dostupných po ikonické adresy.</p>
+          </header>
+
+          <ul class="country-grid reveal" data-delay="1" id="zajezdyGrid">
+            {hotelyDestinace.map((hotel, i) => (
+              <HotelCard
+                hotel={hotel}
+                href={hotelHref(hotel)}
+                lokace={hotelLokace(hotel)}
+                rel={rel}
+                class={i >= VIDITELNYCH_HOTELU ? 'is-more' : ''}
+              />
+            ))}
+          </ul>
+
+          {hotelyDestinace.length > VIDITELNYCH_HOTELU && (
+            <div class="cta-row country-grid-cta">
+              <button class="btn btn-ghost country-grid-toggle" type="button" aria-expanded="false" aria-controls="zajezdyGrid">
+                <span class="btn-ghost-label">Zobrazit všechny hotely ({hotelyDestinace.length})</span>
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+      )}
+
       <!-- ============ INFO — krátký úvod nalevo, text napravo s "Přečíst více"
            (js/dest-collapse.js — sdílený mechanismus i pro Poznávejte/Relaxujte
            níž, jen jiné CSS chování: tady jde o odstín/clamp, u akordeonů o
@@ -389,7 +450,7 @@ const pageDescription =
           <p class="kicker reveal">Info</p>
           <div class="dest-intro">
           <div class="dest-intro-head reveal">
-            <h2 class="display">{d!.perex ? czechNbsp(d!.perex) : '⚠ Doplnit od klienta — popis destinace zatím chybí.'}</h2>
+            <h2 class="display">{d!.nazev}</h2>
           </div>
           <div class="dest-intro-body reveal" data-delay="1" data-collapse>
             <div class="dest-intro-text" data-collapse-panel>
@@ -415,13 +476,13 @@ const pageDescription =
           <div class="wrap">
             <div class="dest-accordion-head reveal">
               <span class="dest-accordion-trigger-label">
-                <h2 class="display">Poznávejte</h2>
                 <span class="icon-circle" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
                   </svg>
                 </span>
+                <h2 class="display">Poznávejte</h2>
               </span>
             </div>
             <div class="dest-accordion" data-collapse>
@@ -468,13 +529,13 @@ const pageDescription =
           <div class="wrap">
             <div class="dest-accordion-head reveal">
               <span class="dest-accordion-trigger-label">
-                <h2 class="display">Relaxujte</h2>
                 <span class="icon-circle" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="5" />
                     <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
                   </svg>
                 </span>
+                <h2 class="display">Relaxujte</h2>
               </span>
             </div>
             <div class="dest-accordion" data-collapse>
@@ -644,3 +705,4 @@ const pageDescription =
 <script is:inline src="js/photo-swiper.js?v=2"></script>
 {kind === 'destinace' && <script is:inline src="js/weather-live.js?v=2"></script>}
 {(kind === 'destinace' || kind === 'hotel') && <script is:inline src="js/dest-collapse.js?v=1"></script>}
+{hotelyDestinace.length > VIDITELNYCH_HOTELU && <script is:inline src="js/dest-hotel-toggle.js?v=1"></script>}

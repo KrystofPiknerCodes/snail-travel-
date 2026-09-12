@@ -16,12 +16,13 @@ export interface Props {
   href: string;
   lokace: string;
   rel: (p?: string) => string;
+  class?: string;
 }
 
-const { hotel, href, lokace, rel } = Astro.props;
+const { hotel, href, lokace, rel, class: className } = Astro.props;
 ---
 
-<li>
+<li class={className}>
   <a href={href}>
     <div class="country-media">
       {hotel.data.foto ? (
