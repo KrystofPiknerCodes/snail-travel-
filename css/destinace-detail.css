@@ -211,6 +211,12 @@
   align-items: start;
   margin-top: 14px;
 }
+.dest-intro-head {
+  /* Nadpis je teď vždy krátké jméno destinace (ne proměnlivě dlouhý perex),
+     vycentrované v úzkém sloupci, ať napříč destinacemi nepůsobí, že
+     sloupec "poskakuje" ze strany na stranu (zpětná vazba Krystof, září 2026). */
+  text-align: center;
+}
 .dest-intro-head h2 {
   /* Bez extra margin-top — má začínat na stejné výšce jako text ve
      sloupci vpravo (.dest-intro-text), "Info" teď žije jako kicker nad
@@ -275,6 +281,7 @@
 .dest-accordion-head {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 24px;
   margin-bottom: 4px;
 }
