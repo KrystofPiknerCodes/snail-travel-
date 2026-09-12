@@ -69,23 +69,33 @@
   -webkit-backdrop-filter: blur(7px);
   border: 1px solid rgba(216, 190, 126, 0.38);
 }
-.price-tag-karta .price-tag-symbol { font-size: 14px; color: var(--gold-soft); line-height: 1; }
+.price-tag-karta .price-tag-symbol { font-size: 18px; font-weight: 800; color: var(--gold-soft); line-height: 1; }
+.price-tag-karta .price-tag-symbol-off { opacity: 0.5; }
 .price-tag-mapa .price-tag-symbol { font-size: 15px; color: var(--gold-deep); }
 .price-tag:hover .price-tag-symbol, .price-tag:focus .price-tag-symbol { color: var(--gold); }
 .price-tag-missing { font-size: 13px; color: rgba(250, 248, 243, 0.7); cursor: default; }
 
-/* ---------- Hero hotelu: hvězdy vlevo, cenová kategorie vpravo v jednom
-   řádku (na přání Krystof, září 2026 — dřív byly obě položky pod sebou
-   uprostřed). Prázdný <span/> místo hvězd, když hotel hvězdy nemá, ať
-   cena zůstane přitažená doprava přes justify-content: space-between. ---------- */
+/* ---------- Hero hotelu: hvězdy nahoře, cena pod nimi, obojí vycentrované
+   (na přání Krystof, září 2026 — zpátky na stack/center, "vedle sebe"
+   verze byla jen mezikrok). ---------- */
 .hotel-hero-meta {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+  gap: 14px;
   margin-top: 22px;
 }
 .hotel-stars {
+  /* Stejný "box" vzhled jako CenaTag hero varianta (viz .price-tag-hero
+     .price-tag-symbol) — dřív tu hvězdy stály jako holý text vedle
+     orámované ceny a působilo to nesourodě. Zpětná vazba Krystof, září 2026. */
+  display: inline-block;
+  padding: 12px 18px;
+  border-radius: 3px;
+  background: rgba(20, 18, 12, 0.5);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  border: 1px solid rgba(216, 190, 126, 0.38);
   font-size: 20px;
   letter-spacing: 3px;
   color: var(--gold-soft);
@@ -153,9 +163,31 @@
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
-.country-badge-left { left: 10px; right: auto; font-size: 14px; letter-spacing: 1.5px; line-height: 1; }
-.country-badge-right { display: inline-flex; align-items: center; line-height: 1; }
-.country-badge-right { right: 10px; }
+/* Hvězdy + cena na kartě hotelu — dřív každý v jiném rohu (hvězdy vlevo,
+   cena vpravo), po zvýraznění cenového badge (viz níže) to vedle sebe
+   působilo nesourodě. Teď oba badge žijí v jednom sloupci vpravo nahoře,
+   stejný tmavší/výraznější styl. Zpětná vazba Krystof, září 2026. */
+.country-badge-stack {
+  position: absolute;
+  top: 10px; right: 10px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.country-badge-stack .country-badge {
+  position: static;
+  padding: 7px 12px;
+  background: rgba(14, 11, 7, 0.72);
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  line-height: 1;
+}
+/* Hvězdy vždy jako 5 znaků (N vybarvených + zbytek tlumený), stejný princip
+   jako $ u CenaTag — na přání Krystof, září 2026: "ať je jich vidět 5". */
+.country-stars-off { opacity: 0.35; }
+.country-badge-price { display: inline-flex; align-items: center; }
 .country-sub {
   display: block;
   margin-top: 5px;
@@ -177,9 +209,13 @@
   grid-template-columns: minmax(220px, 320px) 1fr;
   gap: 12px 56px;
   align-items: start;
+  margin-top: 14px;
 }
 .dest-intro-head h2 {
-  margin-top: 10px;
+  /* Bez extra margin-top — má začínat na stejné výšce jako text ve
+     sloupci vpravo (.dest-intro-text), "Info" teď žije jako kicker nad
+     celou mřížkou, ne uvnitř levého sloupce. */
+  margin-top: 0;
   /* Přepis globálního .display — ten škáluje podle šířky VIEWPORTU (až
      3.6rem), ne podle úzkého sloupce, kde tu sedí. Na delší perex (věta
      nebo dvě, ne krátký claim jako u referenčního designu) by to nafouklo
@@ -191,6 +227,11 @@
 .dest-intro-text { color: var(--ink-soft); }
 .dest-intro-text p { margin: 0 0 1em; }
 .dest-intro-text p:last-child { margin-bottom: 0; }
+/* Stejný vzhled jako .dest-intro-text, ale BEZ ořezu/gradientu/"Přečíst
+   více" — pro textové sekce hotelu (Vybavení, Stravování...), kde jde o
+   hlavní obsah stránky, ne doplněk co lze schovat. */
+.dest-intro-text-full { color: var(--ink-soft); }
+.dest-intro-text-full p { margin: 0; }
 .dest-intro-body:not(.is-open) .dest-intro-text {
   max-height: 190px;
   overflow: hidden;
@@ -223,52 +264,69 @@
   .dest-intro { grid-template-columns: 1fr; gap: 20px; }
 }
 
-/* ---------- Poznávejte / Relaxujte — akordeon, úplně sbalený ve výchozím
-   stavu (na rozdíl od Info výš, kde je vidět aspoň kus textu). Stejný
-   js/dest-collapse.js mechanismus, jen CSS chování je "0 → celá výška"
-   místo odstínu. ---------- */
-.dest-accordion-trigger {
+/* ---------- Poznávejte / Relaxujte — akordeon, ale ve výchozím stavu je
+   (stejně jako u Info výš) vidět kousek textu s odstínem dole, ne úplně
+   prázdný panel — jinak na první pohled nešlo poznat, že jde o rozklikávací
+   obsah (zpětná vazba Krystof, září 2026). Barva odstínu (`--fade-to`) se
+   nastavuje inline na sekci, ať sedí na pozadí `--cream` i `--cream-2`,
+   podle toho, jaké má daná sekce `background`. ---------- */
+/* Nadpis sekce — jen statický nadpis, klikací je teď (stejně jako u Info)
+   výhradně tlačítko "Přečíst více" pod textem, ne šipka u nadpisu. */
+.dest-accordion-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 24px;
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  text-align: left;
+  margin-bottom: 4px;
 }
 .dest-accordion-trigger-label { display: flex; align-items: center; gap: 18px; }
-.dest-accordion-trigger h2 {
+.dest-accordion-head h2 {
   margin: 0;
   /* Přepis globálního .display (až 3.6rem) — bez kickeru nad sebou by tu
      jinak stálo osamocené jedno slovo v plné hero velikosti. */
   font-size: clamp(1.5rem, 2.6vw, 2rem);
 }
-.dest-accordion-trigger .icon-circle { width: 55px; height: 55px; }
-.dest-accordion-trigger .icon-circle svg { width: 28px; height: 28px; }
+.dest-accordion-head .icon-circle { width: 55px; height: 55px; }
+.dest-accordion-head .icon-circle svg { width: 28px; height: 28px; }
 @media (max-width: 620px) {
   .dest-accordion-trigger-label { gap: 12px; }
-  .dest-accordion-trigger .icon-circle { width: 45px; height: 45px; }
-  .dest-accordion-trigger .icon-circle svg { width: 22px; height: 22px; }
+  .dest-accordion-head .icon-circle { width: 45px; height: 45px; }
+  .dest-accordion-head .icon-circle svg { width: 22px; height: 22px; }
 }
-.dest-accordion-chevron {
-  flex: none;
-  font-family: var(--sans);
-  font-size: 20px;
-  color: var(--gold-deep);
-  transition: transform 0.3s ease;
-}
-.dest-accordion.is-open .dest-accordion-chevron { transform: rotate(180deg); }
 .dest-accordion-panel {
-  max-height: 0;
+  max-height: 150px;
   overflow: hidden;
+  position: relative;
   transition: max-height 0.4s ease;
 }
+.dest-accordion-panel::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, rgba(250, 248, 243, 0), var(--fade-to, var(--cream)));
+  pointer-events: none;
+}
 .dest-accordion.is-open .dest-accordion-panel { max-height: 2600px; }
+.dest-accordion.is-open .dest-accordion-panel::after { opacity: 0; }
 .dest-accordion-inner { padding-top: 28px; max-width: 800px; }
 .dest-accordion-inner > p { color: var(--ink-soft); }
+/* Mezititulky uvnitř spojeného hotelového "Info" bloku (Poloha, Vybavení
+   hotelu, Stravování...) — stejný drobný styl jako .dest-accordion-col h3,
+   jen přímo v proudu textu, ne ve sloupcovém seznamu. */
+.dest-accordion-inner > h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin: 24px 0 8px;
+}
+.dest-accordion-inner > h3:first-child { margin-top: 0; }
+.dest-info-icon { flex: none; width: 18px; height: 18px; color: var(--gold); }
 .dest-accordion-lists {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -588,8 +646,20 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
 /* ============================================================
    MAPA — poloha jednoho místa (Leaflet), MapaMista.astro
    ============================================================ */
+.dest-map-text {
+  max-width: 680px;
+  margin: -8px auto 0;
+  text-align: center;
+  color: var(--ink-soft);
+}
 .dest-map {
   position: relative;
+  /* Leaflet uvnitř používá z-index až 1000 (ovládací prvky, popupy). Bez
+     vlastního stacking contextu se ty hodnoty porovnávaly přímo s pevnou
+     hlavičkou (.site-header, z-index: 100) a mapa ji přerostla — po
+     scrollu tak "ujela" nad logo/nav. `isolation: isolate` uzavře
+     Leafletí z-indexy dovnitř tohohle boxu. */
+  isolation: isolate;
   margin-top: 46px;
   height: 480px;
   border-radius: 3px;
@@ -671,10 +741,12 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
 .dest-hero-overlay {
   position: absolute;
   inset: 0;
+  /* Zesvětleno (bylo .58 dole) a sjednoceno s .dest-head-bg::after —
+     zpětná vazba Krystof, září 2026. */
   background: linear-gradient(180deg,
     rgba(18, 14, 9, 0.18) 0%,
     rgba(18, 14, 9, 0.12) 38%,
-    rgba(14, 11, 7, 0.58) 100%);
+    rgba(14, 11, 7, 0.5) 100%);
 }
 .dest-hero-dots {
   position: absolute;

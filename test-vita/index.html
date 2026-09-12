@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TEST — 1:1 podle Vita Travel</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="/assets/logo-mark.png" type="image/png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   TEST STRÁNKA — izolovaný experiment, není propojený s ostrým
+   webem. Cíl: co nejvěrnější 1:1 klon vita-travel.webflow.io
+   (layout, barvy, typografie, animace) s textem/fotkami Snail Travel.
+   Barvy i fonty jsou zkopírované přímo z computed stylů reference,
+   ne odhadnuté — viz komentáře u proměnných.
+   ============================================================ */
+:root {
+  /* Layout/typografie zůstává z Vita Travel. Barevné schéma přepnuté na
+     gradient z .section-dark (web/public/css/destinace-detail.css) —
+     "Podobné zážitky" pruh na detailu destinace, diagonální modrošedá →
+     krémová. Proměnné mají historické -w- (white) jméno z tmavé verze,
+     teď nesou inkoustové tóny — jméno se neměnilo, ať diff zůstal malý. */
+  --grad-a: #C9E1EA;     /* výraznější, ale pořád světlá modrošedá */
+  --grad-mid: #F8F4EA;
+  --grad-b: #F7DFAF;     /* výraznější teplá krémová/zlatavá */
+  --bg: #E9E4D6;         /* plná záloha (gradientu) tam, kde nejde použít gradient přímo */
+  --panel: #FFFFFF;      /* světlý panel/pilulka na gradientu */
+  --panel-2: #F2ECDD;    /* střídavý pás (jako .continent-block.alt) */
+  --line: rgba(33,30,24,.12);
+  --w-100: #211E18;      /* ink */
+  --w-60: rgba(33,30,24,.64);
+  --w-50: rgba(33,30,24,.52);
+  --w-40: rgba(33,30,24,.4);
+  --gold: #BD9A45;
+  --gold-deep: #927233;
+  --gold-soft: #D8BE7E;
+  --ease: cubic-bezier(.22,1,.36,1);
+  --container: 1240px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; color: var(--w-100);
+  background: linear-gradient(120deg, var(--grad-a) 0%, var(--grad-mid) 48%, var(--grad-b) 100%) fixed;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-weight: 400; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+.wrap { max-width: var(--container); margin: 0 auto; padding: 0 32px; }
+
+/* ---------- Reveal-on-scroll (mimikuje jejich data-anim fade/translate) --- */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+.reveal.in { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1 !important; transform: none !important; transition: none !important; } }
+
+/* ---------- Dev banner ---------- */
+.tv-banner { background: #050e11; color: rgba(255,255,255,.7); text-align: center; font-size: 12.5px; letter-spacing: .01em; padding: 9px 16px; position: relative; z-index: 50; }
+.tv-banner strong { color: #fff; }
+
+/* ---------- Pill button — zlatá (--gold), aby fungovala stejně nad
+   tmavým hero videem i nad světlým gradientem pod ním ---------- */
+.pill {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--gold); color: var(--w-100);
+  font-size: 14px; font-weight: 500; letter-spacing: -.01em;
+  padding: 15px 8px 15px 22px; border-radius: 2px; border: none; cursor: pointer;
+  transition: background .3s var(--ease), transform .3s var(--ease);
+}
+.pill:hover { transform: translateY(-2px); background: #CBAE63; }
+.pill-icon {
+  width: 28px; height: 28px; border-radius: 0; background: var(--w-100);
+  display: flex; align-items: center; justify-content: center; flex: none;
+  transition: transform .5s var(--ease);
+}
+.pill:hover .pill-icon { transform: rotate(135deg); }
+.pill-icon svg path { fill: var(--gold); }
+.pill-ghost { background: transparent; border: 1px solid var(--line); color: #fff; }
+.pill-ghost:hover { background: rgba(255,255,255,.06); }
+.pill-ghost .pill-icon { background: rgba(255,255,255,.1); }
+.pill-ghost .pill-icon svg path { fill: #fff; }
+
+/* ---------- Kicker (jejich malé popisky — normální velikost písmen, jemně stažený tracking, ne uppercase) ---------- */
+.kicker { font-size: 14px; font-weight: 500; letter-spacing: -.01em; color: var(--w-60); margin: 0 0 16px; display: flex; align-items: center; gap: 8px; }
+.kicker::before { content: ""; width: 6px; height: 6px; background: var(--gold); }
+
+h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -.03em; }
+
+/* ---------- Header — přes video vždy bílá, po odscrollu na světlý
+   gradient přepne na inkoust (viz JS: .is-scrolled) ---------- */
+.tv-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 40; color: #fff;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 26px 40px; transition: background .4s var(--ease), backdrop-filter .4s var(--ease), padding .4s var(--ease), color .4s var(--ease);
+}
+.tv-header.is-scrolled {
+  background: rgba(233,225,210,.72); color: var(--w-100);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  padding: 16px 40px; border-bottom: 1px solid var(--line);
+}
+.tv-brand { display: flex; align-items: center; gap: 10px; }
+.tv-brand img { width: 26px; height: 26px; }
+.tv-brand span { font-family: "Cinzel", serif; font-weight: 600; font-size: 16px; letter-spacing: .04em; }
+.tv-nav { display: flex; align-items: center; gap: 34px; }
+.tv-nav a { font-size: 14.5px; font-weight: 500; letter-spacing: -.01em; color: inherit; opacity: .78; transition: opacity .25s var(--ease); position: relative; }
+.tv-nav a:hover { opacity: 1; }
+
+/* ---------- Hero — video zůstává tmavší moment (kvůli čitelnosti textu),
+   přetónováno inkoustem/zlatou místo Vita navy ---------- */
+.tv-hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden; color: #fff; }
+.tv-hero-bg { position: absolute; inset: 0; }
+.tv-hero-bg img, .tv-hero-bg video { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.05) brightness(.92); transform: scale(1.06); }
+.tv-hero-bg::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(33,30,24,.32) 0%, rgba(33,30,24,.06) 32%, rgba(33,30,24,.62) 100%),
+    radial-gradient(circle at 50% 15%, rgba(189,154,69,.18), rgba(33,30,24,0) 55%);
+}
+.tv-hero-inner { position: relative; z-index: 2; padding: 0 24px; max-width: 1100px; }
+.tv-hero-kicker { font-size: 14px; font-weight: 500; color: var(--gold-soft); margin: 0 0 20px; }
+.tv-hero-word { font-size: clamp(64px, 14vw, 200px); line-height: .9; letter-spacing: -.045em; margin: 0; color: #fff; }
+.tv-hero-title { font-size: clamp(38px, 6.4vw, 96px); line-height: 1.04; letter-spacing: -.02em; font-weight: 700; margin: 0; color: #fff; text-shadow: 0 2px 24px rgba(0,0,0,.4); }
+.tv-hero-sub { font-size: clamp(16px, 1.8vw, 19px); font-weight: 400; color: rgba(255,255,255,.86); max-width: 560px; margin: 22px auto 0; line-height: 1.6; text-shadow: 0 1px 12px rgba(0,0,0,.35); }
+.tv-hero-cta { margin-top: 36px; }
+.tv-hero-side {
+  position: absolute; right: 26px; top: 50%; transform: translateY(-50%) rotate(90deg);
+  transform-origin: center; z-index: 2; display: flex; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,.72); letter-spacing: -.01em;
+  transition: color .3s var(--ease);
+}
+.tv-hero-side:hover { color: #fff; }
+.tv-scroll-hint {
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 500; color: rgba(255,255,255,.7);
+}
+.tv-scroll-line { width: 1px; height: 30px; background: rgba(255,255,255,.4); overflow: hidden; position: relative; }
+.tv-scroll-line::after {
+  content: ""; position: absolute; left: 0; top: -100%; width: 100%; height: 100%; background: #fff;
+  animation: scrollDrip 1.8s ease-in-out infinite;
+}
+@keyframes scrollDrip { 0% { top: -100%; } 60% { top: 100%; } 100% { top: 100%; } }
+
+/* ---------- Section shell ---------- */
+.tv-section { padding: 130px 0; }
+.tv-section.alt { background: var(--panel-2); }
+.tv-section-head { max-width: 640px; margin-bottom: 60px; }
+.tv-section-head.center { max-width: 640px; margin-left: auto; margin-right: auto; text-align: center; }
+.tv-section-head h2 { font-size: clamp(30px, 3.6vw, 46px); line-height: 1.12; }
+.tv-section-head p { font-size: 17px; color: var(--w-60); margin: 18px 0 0; line-height: 1.6; }
+
+/* ---------- Statistic chips (3 fotopanely s dělící linkou) ---------- */
+.tv-chips { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.tv-chip { padding: 40px 36px; border-right: 1px solid var(--line); }
+.tv-chip:last-child { border-right: none; }
+.tv-chip-photo { width: 100%; aspect-ratio: 4/5; overflow: hidden; margin-bottom: 26px; }
+.tv-chip-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+.tv-chip:hover .tv-chip-photo img { transform: scale(1.06); }
+.tv-chip-label { font-size: 20px; font-weight: 600; letter-spacing: -.015em; margin: 0 0 6px; }
+.tv-chip-stat { font-size: 14px; color: var(--w-60); }
+
+/* ---------- About / stats (paragraf + 2 velká čísla, dělené linkou) ---------- */
+.tv-about { display: grid; grid-template-columns: 1.1fr 1fr; gap: 0; border-top: 1px solid var(--line); }
+.tv-about-text { padding: 56px 56px 56px 0; border-right: 1px solid var(--line); }
+.tv-about-text .kicker { margin-bottom: 22px; }
+.tv-about-text h2 { font-size: clamp(28px, 3.2vw, 40px); margin-bottom: 20px; }
+.tv-about-text p { font-size: 17px; color: var(--w-60); line-height: 1.65; max-width: 460px; }
+.tv-about-stats { display: grid; grid-template-rows: 1fr 1fr; }
+.tv-stat { padding: 40px 0 40px 56px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 26px; }
+.tv-stat:last-child { border-bottom: none; }
+.tv-stat-num { font-size: clamp(46px, 5vw, 64px); font-weight: 600; letter-spacing: -.04em; white-space: nowrap; color: var(--gold-deep); }
+.tv-stat-label { font-size: 14.5px; color: var(--w-60); max-width: 220px; line-height: 1.5; }
+
+/* ---------- Featured — horizontální drag-scroll ---------- */
+.tv-featured-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; margin-bottom: 50px; flex-wrap: wrap; }
+.tv-slider { display: flex; gap: 22px; overflow-x: auto; scrollbar-width: none; cursor: grab; padding-bottom: 6px; margin: 0 -32px; padding-left: 32px; padding-right: 32px; }
+.tv-slider.is-dragging { cursor: grabbing; scroll-snap-type: none; }
+.tv-slider:not(.is-dragging) { scroll-snap-type: x mandatory; }
+.tv-slider::-webkit-scrollbar { display: none; }
+.tv-fcard { flex: 0 0 auto; width: min(500px, 78vw); scroll-snap-align: start; }
+.tv-fcard:nth-child(3n+1) { width: min(620px, 88vw); } /* asymetrické střídání šířky karet */
+.tv-fcard:nth-child(3n+2) { margin-top: 34px; }
+.tv-fcard-photo { position: relative; aspect-ratio: 16/10; overflow: hidden; }
+.tv-fcard-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); pointer-events: none; }
+.tv-fcard:hover .tv-fcard-photo img { transform: scale(1.05); }
+.tv-fcard-badge { position: absolute; top: 0; right: 0; background: var(--gold); color: var(--w-100); backdrop-filter: blur(8px); padding: 8px 14px; font-size: 12px; font-weight: 600; }
+.tv-fcard-body { padding: 24px 4px 0; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+.tv-fcard-loc { font-size: 13px; color: var(--w-60); margin: 0 0 8px; }
+.tv-fcard-title { font-size: 22px; font-weight: 600; letter-spacing: -.02em; margin: 0; }
+.tv-fcard-meta { text-align: right; }
+.tv-fcard-meta .from { font-size: 12px; color: var(--w-50); display: block; }
+.tv-fcard-meta .val { font-size: 19px; font-weight: 600; letter-spacing: -.02em; }
+.tv-fcard-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--w-60); }
+.tv-fcard-foot a { display: inline-flex; align-items: center; gap: 6px; color: var(--w-100); font-weight: 500; }
+
+/* ---------- Zážitky — bento grid (stejný princip jako .experiences/.bento
+   na homepage, jen hranatější/asymetričtější) ---------- */
+.tv-bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 220px; gap: 2px; background: var(--line); }
+.tv-btile { position: relative; overflow: hidden; background: var(--panel); }
+.tv-btile.lg { grid-column: span 2; grid-row: span 2; }
+.tv-btile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+.tv-btile:hover img { transform: scale(1.07); }
+.tv-btile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(33,30,24,0) 40%, rgba(33,30,24,.82) 100%); }
+.tv-btile-body { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 18px 20px; color: #fff; }
+.tv-btile-cat { font-size: 11.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--gold-soft); margin: 0 0 6px; }
+.tv-btile-title { font-size: 18px; font-weight: 600; letter-spacing: -.015em; margin: 0; }
+.tv-btile.lg .tv-btile-title { font-size: 24px; }
+
+/* ---------- Combine / kroky s "+" konektory ---------- */
+.tv-combine-top { display: grid; grid-template-columns: 1.3fr 1fr; gap: 60px; align-items: center; margin-bottom: 70px; }
+.tv-combine-word { display: flex; flex-wrap: wrap; align-items: baseline; gap: 14px; font-size: clamp(30px, 4vw, 48px); font-weight: 600; letter-spacing: -.03em; }
+.tv-combine-word .plus { color: var(--gold-deep); font-weight: 400; }
+.tv-combine-desc { font-size: 16px; color: var(--w-60); line-height: 1.65; }
+.tv-steps4 { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
+.tv-steps4 .tv-step { padding: 32px 28px 0 0; border-right: 1px solid var(--line); }
+.tv-steps4 .tv-step:last-child { border-right: none; }
+.tv-step-num { font-size: 13px; color: var(--gold-deep); font-weight: 600; margin-bottom: 14px; }
+.tv-step h3 { font-size: 18px; margin-bottom: 8px; }
+.tv-step p { font-size: 14px; color: var(--w-60); margin: 0; line-height: 1.55; }
+
+/* ---------- Destinace podle kontinentu ---------- */
+.tv-dest-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 230px; gap: 2px; background: var(--line); }
+.tv-dest-item.span2 { grid-column: span 2; }
+.tv-dest-item { background: var(--panel); padding: 24px 22px; position: relative; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
+.tv-dest-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .16; transition: opacity .4s var(--ease), transform .6s var(--ease); }
+.tv-dest-item:hover img { opacity: .3; transform: scale(1.05); }
+.tv-dest-item > * { position: relative; z-index: 1; }
+.tv-dest-code { font-size: 13px; color: var(--gold-deep); font-weight: 600; }
+.tv-dest-name { font-size: 22px; font-weight: 600; letter-spacing: -.02em; margin-top: 30px; }
+.tv-dest-count { font-size: 13.5px; color: var(--w-60); margin-top: 4px; }
+
+/* ---------- How it works (kompaktní seznam bez karet) ---------- */
+.tv-how { display: grid; grid-template-columns: 1fr 2fr; gap: 60px; }
+.tv-how-list { display: flex; flex-direction: column; }
+.tv-how-row { display: grid; grid-template-columns: 60px 1fr; gap: 20px; padding: 22px 0; border-top: 1px solid var(--line); }
+.tv-how-list .tv-how-row:last-child { border-bottom: 1px solid var(--line); }
+.tv-how-num { font-size: 13px; color: var(--gold-deep); font-weight: 600; }
+.tv-how-row h3 { font-size: 17px; margin-bottom: 4px; }
+.tv-how-row p { font-size: 13.5px; color: var(--w-60); margin: 0; }
+
+/* ---------- Tým ---------- */
+.tv-team-grid { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.tv-person { padding: 40px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 96px 1fr; gap: 24px; }
+.tv-person-photo { width: 96px; height: 96px; object-fit: cover; transition: transform .4s var(--ease); }
+.tv-person:nth-child(odd) .tv-person-photo { transform: rotate(-2deg); }
+.tv-person:nth-child(even) .tv-person-photo { transform: rotate(2deg); }
+.tv-person:hover .tv-person-photo { transform: rotate(0deg); }
+.tv-person-name { font-size: 19px; font-weight: 600; letter-spacing: -.015em; margin-bottom: 4px; }
+.tv-person-role { font-size: 13px; color: var(--gold-deep); font-weight: 500; margin-bottom: 12px; }
+.tv-person-bio { font-size: 14px; color: var(--w-60); line-height: 1.6; margin: 0; }
+.tv-network { margin-top: 50px; padding-top: 40px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 30px; flex-wrap: wrap; }
+.tv-network-avatars { display: flex; }
+.tv-network-avatars img { width: 48px; height: 48px; object-fit: cover; border: 2px solid var(--bg); margin-left: -8px; }
+.tv-network-avatars img:first-child { margin-left: 0; }
+.tv-network p { font-size: 14.5px; color: var(--w-60); max-width: 420px; margin: 0; }
+
+/* ---------- Quote — vlastní tmavý moment (foto + inkoust/zlatý závoj),
+   nezávislý na světlém gradientu okolo, kvůli čitelnosti citátu ---------- */
+.tv-quote { position: relative; padding: 130px 0; text-align: center; overflow: hidden; color: #fff; }
+.tv-quote-bg { position: absolute; inset: 0; }
+.tv-quote-bg img { width: 100%; height: 100%; object-fit: cover; opacity: .38; filter: saturate(1.05); }
+.tv-quote-bg::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(33,30,24,.72), rgba(33,30,24,.72)),
+    radial-gradient(circle at 50% 30%, rgba(189,154,69,.28), rgba(33,30,24,0) 60%);
+}
+.tv-quote-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 0 24px; }
+.tv-quote-text { font-size: clamp(21px, 2.6vw, 30px); font-weight: 500; letter-spacing: -.015em; line-height: 1.5; margin: 0 0 22px; color: #fff; }
+.tv-quote-name { font-size: 13.5px; color: var(--gold-soft); }
+
+/* ---------- Footer ---------- */
+.tv-footer { padding: 70px 0 34px; border-top: 1px solid var(--line); }
+.tv-footer-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; flex-wrap: wrap; margin-bottom: 60px; }
+.tv-footer-brand { display: flex; align-items: center; gap: 10px; font-family: "Cinzel", serif; font-size: 18px; font-weight: 600; letter-spacing: .04em; margin-bottom: 14px; }
+.tv-footer-brand img { width: 24px; height: 24px; }
+.tv-footer-col p, .tv-footer-col a { font-size: 14px; color: var(--w-60); display: block; margin: 6px 0; }
+.tv-footer-nav { display: flex; gap: 30px; }
+.tv-footer-nav a { font-size: 14.5px; color: var(--w-60); }
+.tv-footer-nav a:hover { color: var(--w-100); }
+.tv-footer-bottom { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding-top: 26px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--w-40); }
+
+/* ---------- Cookie lišta (jako na referenci) — volba se pamatuje v localStorage ---------- */
+.tv-cookie {
+  position: fixed; left: 24px; right: 24px; bottom: 24px; z-index: 60;
+  max-width: 640px; margin: 0 auto;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 2px;
+  padding: 20px 22px; display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+  box-shadow: 0 20px 60px rgba(0,0,0,.35);
+  transform: translateY(140%); opacity: 0; transition: transform .6s var(--ease), opacity .6s var(--ease);
+}
+.tv-cookie.is-visible { transform: translateY(0); opacity: 1; }
+.tv-cookie p { margin: 0; font-size: 13px; color: var(--w-60); line-height: 1.55; flex: 1 1 320px; }
+.tv-cookie p a { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 2px; }
+.tv-cookie-actions { display: flex; gap: 10px; flex: 0 0 auto; }
+.tv-cookie-btn { font-size: 13px; font-weight: 500; padding: 10px 18px; border-radius: 2px; border: 1px solid var(--line); background: transparent; color: var(--w-100); cursor: pointer; transition: background .25s var(--ease), transform .25s var(--ease); }
+.tv-cookie-btn:hover { transform: translateY(-1px); background: rgba(33,30,24,.05); }
+.tv-cookie-btn.accept { background: var(--gold); color: var(--w-100); border-color: transparent; }
+.tv-cookie-btn.accept:hover { background: var(--gold-deep); color: #fff; }
+@media (max-width: 620px) {
+  .tv-cookie { left: 14px; right: 14px; bottom: 14px; padding: 18px; }
+}
+
+@media (max-width: 980px) {
+  .tv-nav { display: none; }
+  .tv-chips { grid-template-columns: 1fr; }
+  .tv-chip { border-right: none; border-bottom: 1px solid var(--line); }
+  .tv-about { grid-template-columns: 1fr; }
+  .tv-about-text { border-right: none; border-bottom: 1px solid var(--line); padding: 40px 0; }
+  .tv-stat { padding-left: 0; }
+  .tv-combine-top { grid-template-columns: 1fr; }
+  .tv-steps4 { grid-template-columns: repeat(2, 1fr); }
+  .tv-steps4 .tv-step:nth-child(2) { border-right: none; }
+  .tv-dest-grid { grid-template-columns: repeat(2, 1fr); }
+  .tv-how { grid-template-columns: 1fr; }
+  .tv-team-grid { grid-template-columns: 1fr; }
+  .tv-person { grid-template-columns: 72px 1fr; padding: 28px; }
+  .tv-footer-top { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div class="tv-banner">🧪 TEST — 1:1 klon <strong>vita-travel.webflow.io</strong> (barvy, layout, animace) s obsahem Snail Travel. Izolovaná stránka, nepatří do ostrého webu.</div>
+
+<header class="tv-header" id="tvHeader">
+  <a href="#" class="tv-brand">
+    <img src="/assets/logo-mark.png" alt="" />
+    <span>Snail Travel</span>
+  </a>
+  <nav class="tv-nav">
+    <a href="#featured">Destinace</a>
+    <a href="#zazitky">Zážitky</a>
+    <a href="#team">Tým</a>
+    <a href="#quote">Reference</a>
+  </nav>
+  <a href="#featured" class="pill">
+    Naplánovat cestu
+    <span class="pill-icon"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C8 0 7.32057 2.41553 7.32057 4C7.32057 5.58447 8 8 8 8C8 8 5.58447 7.32057 4 7.32057C2.41553 7.32057 0 8 0 8C0 8 0.679427 5.58447 0.679427 4C0.679427 2.41553 0 0 0 0C0 0 2.41553 0.679426 4 0.679426C5.58447 0.679426 8 0 8 0Z"/></svg></span>
+  </a>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="tv-hero">
+  <div class="tv-hero-bg">
+    <video autoplay muted loop playsinline preload="metadata" poster="/assets/ph-hero.svg">
+      <source src="/assets/hero.mp4?v=6" type="video/mp4" />
+    </video>
+  </div>
+  <a href="#featured" class="tv-hero-side">Prozkoumat ↗</a>
+  <div class="tv-hero-inner">
+    <p class="tv-hero-kicker reveal">Exkluzivní cestování na míru</p>
+    <h1 class="tv-hero-title reveal" data-delay="1">Cestování definované<br />pro nejnáročnější</h1>
+    <p class="tv-hero-sub reveal" data-delay="2">Soukromé cesty navržené do posledního detailu. Pro ty, kdo<br />nechtějí svět jen vidět — ale skutečně zažít.</p>
+    <div class="tv-hero-cta reveal" data-delay="3">
+      <a href="#featured" class="pill">
+        Prozkoumat destinace
+        <span class="pill-icon"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C8 0 7.32057 2.41553 7.32057 4C7.32057 5.58447 8 8 8 8C8 8 5.58447 7.32057 4 7.32057C2.41553 7.32057 0 8 0 8C0 8 0.679427 5.58447 0.679427 4C0.679427 2.41553 0 0 0 0C0 0 2.41553 0.679426 4 0.679426C5.58447 0.679426 8 0 8 0Z"/></svg></span>
+      </a>
+    </div>
+  </div>
+  <div class="tv-scroll-hint"><span class="tv-scroll-line"></span>Scrollujte</div>
+</section>
+
+<!-- ============ CHIPS / STATISTIC ============ -->
+<section class="tv-section">
+  <div class="wrap">
+    <div class="tv-section-head reveal">
+      <p class="kicker">Destinace</p>
+      <h2>Prověřili jsme destinace<br />ve více než 100 zemích</h2>
+      <p>Přesvědčte se sami — vybíráme jen z ověřených míst a hotelů.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="tv-chips reveal" data-delay="1">
+      <div class="tv-chip">
+        <div class="tv-chip-photo"><img src="/assets/countries/azorske-ostrovy.jpg" alt="" /></div>
+        <p class="tv-chip-label">Ostrovy v Atlantiku</p>
+        <p class="tv-chip-stat">Madeira &amp; Azory · 2 destinace</p>
+      </div>
+      <div class="tv-chip">
+        <div class="tv-chip-photo"><img src="/assets/countries/mauritius.jpg" alt="" /></div>
+        <p class="tv-chip-label">Golfové cesty</p>
+        <p class="tv-chip-stat">15 % klientů jede za golfem</p>
+      </div>
+      <div class="tv-chip">
+        <div class="tv-chip-photo"><img src="/assets/countries/maledivy.jpg" alt="" /></div>
+        <p class="tv-chip-label">Cesty s průvodcem</p>
+        <p class="tv-chip-stat">30 % referencí je zmiňuje</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT / STATS ============ -->
+<section class="tv-section alt">
+  <div class="wrap tv-about reveal">
+    <div class="tv-about-text">
+      <p class="kicker">O nás</p>
+      <h2>Ne jen zájezdy —<br />cesty šité na míru</h2>
+      <p>Snail Travel plánuje cesty od roku 1998. Butiková cestovní kancelář, která
+        dává přednost kvalitě před kvantitou — a klientům, kteří se k nám vrací
+        rok co rok.</p>
+    </div>
+    <div class="tv-about-stats">
+      <div class="tv-stat">
+        <div class="tv-stat-num" data-count="107" data-suffix="+">0</div>
+        <div class="tv-stat-label">Destinací po celém světě, které máme ověřené</div>
+      </div>
+      <div class="tv-stat">
+        <div class="tv-stat-num" data-count="221" data-suffix="+">0</div>
+        <div class="tv-stat-label">Reálných referencí od klientů, co s námi cestovali</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURED — SLIDER ============ -->
+<section class="tv-section" id="featured">
+  <div class="wrap">
+    <div class="tv-featured-head reveal">
+      <div class="tv-section-head" style="margin-bottom:0;">
+        <p class="kicker">Vybrané destinace</p>
+        <h2>Kam s námi tento rok</h2>
+      </div>
+      <p style="max-width:360px; color:var(--w-60); font-size:15px;">Destinace, které naši klienti reálně nejvíc milují — podle referencí, ne podle dojmu.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="tv-slider reveal" data-delay="1" id="tvSlider">
+      <article class="tv-fcard">
+        <div class="tv-fcard-photo"><img src="/assets/countries/madeira.jpg" alt="Madeira" /><span class="tv-fcard-badge">57 referencí</span></div>
+        <div class="tv-fcard-body">
+          <div><p class="tv-fcard-loc">Portugalsko · Atlantik</p><h3 class="tv-fcard-title">Madeira</h3></div>
+        </div>
+        <div class="tv-fcard-foot"><span>Golf · turistika · gastronomie</span><a href="#">Prozkoumat →</a></div>
+      </article>
+      <article class="tv-fcard">
+        <div class="tv-fcard-photo"><img src="/assets/countries/azorske-ostrovy.jpg" alt="Azorské ostrovy" /><span class="tv-fcard-badge">14 referencí</span></div>
+        <div class="tv-fcard-body">
+          <div><p class="tv-fcard-loc">Portugalsko · Atlantik</p><h3 class="tv-fcard-title">Azorské ostrovy</h3></div>
+        </div>
+        <div class="tv-fcard-foot"><span>Sopky · jezera · klid</span><a href="#">Prozkoumat →</a></div>
+      </article>
+      <article class="tv-fcard">
+        <div class="tv-fcard-photo"><img src="/assets/countries/maledivy.jpg" alt="Maledivy" /><span class="tv-fcard-badge">14 referencí</span></div>
+        <div class="tv-fcard-body">
+          <div><p class="tv-fcard-loc">Jižní Asie</p><h3 class="tv-fcard-title">Maledivy</h3></div>
+        </div>
+        <div class="tv-fcard-foot"><span>Resorty · potápění · klid</span><a href="#">Prozkoumat →</a></div>
+      </article>
+      <article class="tv-fcard">
+        <div class="tv-fcard-photo"><img src="/assets/countries/mauritius.jpg" alt="Mauritius" /><span class="tv-fcard-badge">13 referencí</span></div>
+        <div class="tv-fcard-body">
+          <div><p class="tv-fcard-loc">Východní Afrika</p><h3 class="tv-fcard-title">Mauritius</h3></div>
+        </div>
+        <div class="tv-fcard-foot"><span>Golf · pláže · rodinné cesty</span><a href="#">Prozkoumat →</a></div>
+      </article>
+      <article class="tv-fcard">
+        <div class="tv-fcard-photo"><img src="/assets/countries/seychely.jpg" alt="Seychely" /><span class="tv-fcard-badge">4 reference</span></div>
+        <div class="tv-fcard-body">
+          <div><p class="tv-fcard-loc">Východní Afrika</p><h3 class="tv-fcard-title">Seychely</h3></div>
+        </div>
+        <div class="tv-fcard-foot"><span>Ostrovy · líbánky · soukromí</span><a href="#">Prozkoumat →</a></div>
+      </article>
+      <article class="tv-fcard">
+        <div class="tv-fcard-photo"><img src="/assets/countries/bali.jpg" alt="Bali" /><span class="tv-fcard-badge">3 reference</span></div>
+        <div class="tv-fcard-body">
+          <div><p class="tv-fcard-loc">Indonésie</p><h3 class="tv-fcard-title">Bali</h3></div>
+        </div>
+        <div class="tv-fcard-foot"><span>Kultura · wellness · příroda</span><a href="#">Prozkoumat →</a></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ZÁŽITKY (BENTO) ============ -->
+<section class="tv-section alt" id="zazitky">
+  <div class="wrap">
+    <div class="tv-section-head reveal">
+      <p class="kicker">Zážitky</p>
+      <h2>Zážitky, které si pamatujete<br />ještě roky poté</h2>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="tv-bento reveal" data-delay="1">
+      <a class="tv-btile lg" href="#">
+        <img src="/assets/zaz-golf.jpg" alt="Golfové hřiště s výhledem na moře" />
+        <div class="tv-btile-body"><p class="tv-btile-cat">Golf</p><h3 class="tv-btile-title">Golfové rezidence u moře</h3></div>
+      </a>
+      <a class="tv-btile" href="#">
+        <img src="/assets/zaz-f1.jpg" alt="Formule 1 na okruhu" />
+        <div class="tv-btile-body"><p class="tv-btile-cat">Formule 1</p><h3 class="tv-btile-title">Víkend v paddocku</h3></div>
+      </a>
+      <a class="tv-btile" href="#">
+        <img src="/assets/zaz-euro.jpg" alt="Evropská metropole za soumraku" />
+        <div class="tv-btile-body"><p class="tv-btile-cat">City break</p><h3 class="tv-btile-title">Eurovíkendy</h3></div>
+      </a>
+      <a class="tv-btile" href="#">
+        <img src="/assets/zaz-wellness.jpg" alt="Luxusní wellness resort" />
+        <div class="tv-btile-body"><p class="tv-btile-cat">Wellness</p><h3 class="tv-btile-title">Wellness &amp; lázně</h3></div>
+      </a>
+      <a class="tv-btile" href="#">
+        <img src="/assets/zaz-safari.jpg" alt="Safari v africké savaně" />
+        <div class="tv-btile-body"><p class="tv-btile-cat">Safari</p><h3 class="tv-btile-title">Soukromá safari</h3></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMBINE / KROKY ============ -->
+<section class="tv-section alt">
+  <div class="wrap">
+    <div class="tv-combine-top reveal">
+      <div class="tv-combine-word">
+        <span>Poskládejte</span><span class="plus">+</span><span>Hotel</span><span class="plus">+</span><span>Golf</span><span class="plus">+</span><span>Zážitky</span>
+      </div>
+      <p class="tv-combine-desc">Vaši cestu poskládáme na míru do jednoho balíčku — okamžité
+        potvrzení tam, kde to jde, jinak osobní domluva na detailech.</p>
+    </div>
+    <div class="tv-steps4 reveal" data-delay="1">
+      <div class="tv-step"><div class="tv-step-num">01 · Krok</div><h3>Vyberte destinaci</h3><p>Zvolíme spolu zemi, region i typ cesty.</p></div>
+      <div class="tv-step"><div class="tv-step-num">02 · Krok</div><h3>Doplňte hotel</h3><p>Napárujeme ověřený hotel podle vašich přání.</p></div>
+      <div class="tv-step"><div class="tv-step-num">03 · Krok</div><h3>Přidejte zážitky</h3><p>Golf, průvodce, transfery a extra program.</p></div>
+      <div class="tv-step"><div class="tv-step-num">04 · Krok</div><h3>Potvrďte cestu</h3><p>Vy si jen sbalíte kufry, o zbytek se postaráme.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DESTINACE PODLE KONTINENTU ============ -->
+<section class="tv-section">
+  <div class="wrap">
+    <div class="tv-section-head reveal">
+      <p class="kicker">Destinace podle kontinentu</p>
+      <h2>Objevte svou příští cestu</h2>
+      <p>Vyberte si z destinací napříč Evropou, Afrikou i Asií — nebo se nechte inspirovat tím, co jsme tam pro vás už ověřili.</p>
+    </div>
+    <div class="tv-dest-grid reveal" data-delay="1">
+      <div class="tv-dest-item span2">
+        <img src="/assets/countries/azorske-ostrovy.jpg" alt="" />
+        <span class="tv-dest-code">EU</span>
+        <div><div class="tv-dest-name">Evropa</div><div class="tv-dest-count">39 destinací</div></div>
+      </div>
+      <div class="tv-dest-item">
+        <img src="/assets/countries/mauritius.jpg" alt="" />
+        <span class="tv-dest-code">AF</span>
+        <div><div class="tv-dest-name">Afrika</div><div class="tv-dest-count">18 destinací</div></div>
+      </div>
+      <div class="tv-dest-item">
+        <img src="/assets/countries/bali.jpg" alt="" />
+        <span class="tv-dest-code">AS</span>
+        <div><div class="tv-dest-name">Asie</div><div class="tv-dest-count">25 destinací</div></div>
+      </div>
+      <div class="tv-dest-item">
+        <img src="/assets/countries/dest-madeira.jpg" alt="" />
+        <span class="tv-dest-code">NA</span>
+        <div><div class="tv-dest-name">Severní Amerika</div><div class="tv-dest-count">10 destinací</div></div>
+      </div>
+      <div class="tv-dest-item">
+        <img src="/assets/countries/maledivy.jpg" alt="" />
+        <span class="tv-dest-code">SA</span>
+        <div><div class="tv-dest-name">Jižní Amerika</div><div class="tv-dest-count">9 destinací</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="tv-section alt">
+  <div class="wrap tv-how">
+    <div class="tv-section-head reveal" style="margin-bottom:0;">
+      <p class="kicker">Jak to funguje</p>
+      <h2>Od nápadu po cestu</h2>
+    </div>
+    <div class="tv-how-list reveal" data-delay="1">
+      <div class="tv-how-row"><div class="tv-how-num">01</div><div><h3>Řekněte nám, co chcete</h3><p>Telefon nebo e-mail, žádný formulář s klikacím košíkem.</p></div></div>
+      <div class="tv-how-row"><div class="tv-how-num">02</div><div><h3>Navrhneme cestu</h3><p>Destinace a hotely doporučíme přesně podle vás.</p></div></div>
+      <div class="tv-how-row"><div class="tv-how-num">03</div><div><h3>Doladíme balíček</h3><p>Golf, transfery, průvodce — jedním potvrzením.</p></div></div>
+      <div class="tv-how-row"><div class="tv-how-num">04</div><div><h3>Vyrazíte na cestu</h3><p>Jsme na telefonu po celou dobu, ne jen do platby.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TÝM ============ -->
+<section class="tv-section" id="team">
+  <div class="wrap">
+    <div class="tv-section-head reveal">
+      <p class="kicker">Kdo cestu připraví</p>
+      <h2>Za každou cestou je konkrétní člověk</h2>
+      <p>Ne call centrum — lidé, kteří s vámi často jedou i osobně.</p>
+    </div>
+    <div class="tv-team-grid reveal" data-delay="1">
+      <div class="tv-person">
+        <img class="tv-person-photo" src="/assets/team/kristina.jpg" alt="" />
+        <div><div class="tv-person-name">Kristina Králová</div><div class="tv-person-role">Snail Travel</div><p class="tv-person-bio">Roky zkušeností s přípravou cest na míru pro dlouholeté klienty.</p></div>
+      </div>
+      <div class="tv-person">
+        <img class="tv-person-photo" src="/assets/team/barbora.jpg" alt="" />
+        <div><div class="tv-person-name">Barbora Blaschke</div><div class="tv-person-role">Travel designer</div><p class="tv-person-bio">Váš první kontakt — poskládá itinerář i drobné detaily kolem cesty.</p></div>
+      </div>
+      <div class="tv-person">
+        <img class="tv-person-photo" src="/assets/team/marcela.jpg" alt="" />
+        <div><div class="tv-person-name">Marcela Hynštová</div><div class="tv-person-role">Snail Travel</div><p class="tv-person-bio">Stará se, aby na cestě klaplo úplně všechno, i to nejmenší.</p></div>
+      </div>
+      <div class="tv-person">
+        <img class="tv-person-photo" src="/assets/team/jitka.jpg" alt="" />
+        <div><div class="tv-person-name">Jitka Weiss</div><div class="tv-person-role">Snail Travel</div><p class="tv-person-bio">Zná destinace i hotely osobně — z vlastních cest s klienty.</p></div>
+      </div>
+    </div>
+    <div class="tv-network reveal" data-delay="2">
+      <div class="tv-network-avatars">
+        <img src="/assets/team/kristina.jpg" alt="" />
+        <img src="/assets/team/barbora.jpg" alt="" />
+        <img src="/assets/team/marcela.jpg" alt="" />
+        <img src="/assets/team/jitka.jpg" alt="" />
+        <img src="/assets/team/pavla.jpg" alt="" />
+      </div>
+      <p>Butiková cestovní kancelář, ne velký tým bez tváře — pět lidí, co znají vaše jméno i to, kam jste jeli minule.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUOTE ============ -->
+<section class="tv-quote" id="quote">
+  <div class="tv-quote-bg"><img src="/assets/countries/azorske-ostrovy.jpg" alt="" /></div>
+  <div class="tv-quote-inner reveal">
+    <p class="tv-quote-text">„Chtěla jsem vám poděkovat — Azory dopadly skvěle, všechno klaplo jak mělo a děsně se nám tam líbilo. Určitě se tam vrátíme.“</p>
+    <p class="tv-quote-name">Daniela · cesta na Azorské ostrovy</p>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="tv-footer">
+  <div class="wrap">
+    <div class="tv-footer-top">
+      <div class="tv-footer-col">
+        <div class="tv-footer-brand"><img src="/assets/logo-mark.png" alt="" />Snail Travel</div>
+        <p>Umění cestovat pomalu.</p>
+      </div>
+      <nav class="tv-footer-nav">
+        <a href="#featured">Destinace</a>
+        <a href="#team">Tým</a>
+        <a href="#quote">Reference</a>
+      </nav>
+      <div class="tv-footer-col">
+        <a href="tel:+420602552624">+420 602 552 624</a>
+        <a href="mailto:barbora@snailtravel.cz">barbora@snailtravel.cz</a>
+      </div>
+    </div>
+    <div class="tv-footer-bottom">
+      <span>© Snail Travel, 2026. Všechna práva vyhrazena.</span>
+      <span>Testovací layout podle vita-travel.webflow.io</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ COOKIE LIŠTA ============ -->
+<div class="tv-cookie" id="tvCookie">
+  <p>Kliknutím na „Přijmout“ souhlasíte s ukládáním cookies pro vylepšení navigace na webu
+    a analýzu návštěvnosti. Víc v <a href="#">zásadách ochrany soukromí</a>.</p>
+  <div class="tv-cookie-actions">
+    <button class="tv-cookie-btn" id="tvCookieDecline" type="button">Odmítnout</button>
+    <button class="tv-cookie-btn accept" id="tvCookieAccept" type="button">Přijmout</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---- Cookie lišta — volba se pamatuje v localStorage, ne jen na sezení ---
+  var COOKIE_KEY = 'tvCookieConsent';
+  var cookieBar = document.getElementById('tvCookie');
+  if (cookieBar) {
+    var saved = null;
+    try { saved = localStorage.getItem(COOKIE_KEY); } catch (e) { /* soukromý režim atd. */ }
+    if (!saved) {
+      setTimeout(function () { cookieBar.classList.add('is-visible'); }, 900);
+    }
+    function decide(value) {
+      try { localStorage.setItem(COOKIE_KEY, value); } catch (e) {}
+      cookieBar.classList.remove('is-visible');
+    }
+    document.getElementById('tvCookieAccept').addEventListener('click', function () { decide('accepted'); });
+    document.getElementById('tvCookieDecline').addEventListener('click', function () { decide('declined'); });
+  }
+
+  // ---- Header background po odscrollování -----------------------------
+  var header = document.getElementById('tvHeader');
+  function onScroll() {
+    header.classList.toggle('is-scrolled', window.scrollY > 60);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ---- Reveal-on-scroll (IntersectionObserver, staggered přes data-delay) ---
+  var reveals = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var el = entry.target;
+      var delay = parseInt(el.dataset.delay || '0', 10) * 110;
+      setTimeout(function () { el.classList.add('in'); }, delay);
+      io.unobserve(el);
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(function (el) { io.observe(el); });
+
+  // ---- Count-up čísel ve statistice -------------------------------------
+  var counters = document.querySelectorAll('.tv-stat-num[data-count]');
+  var cio = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var el = entry.target;
+      var target = parseInt(el.dataset.count, 10);
+      var suffix = el.dataset.suffix || '';
+      var start = null;
+      var duration = 1400;
+      function step(ts) {
+        if (!start) start = ts;
+        var p = Math.min(1, (ts - start) / duration);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(eased * target) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+      cio.unobserve(el);
+    });
+  }, { threshold: 0.4 });
+  counters.forEach(function (el) { cio.observe(el); });
+
+  // ---- Drag-to-scroll slider (stejný princip jako dest-hotel-scroller.js) ---
+  var slider = document.getElementById('tvSlider');
+  if (slider) {
+    var isDown = false, startX, scrollStart;
+    slider.addEventListener('pointerdown', function (e) {
+      isDown = true;
+      slider.classList.add('is-dragging');
+      startX = e.clientX;
+      scrollStart = slider.scrollLeft;
+      slider.setPointerCapture(e.pointerId);
+    });
+    slider.addEventListener('pointermove', function (e) {
+      if (!isDown) return;
+      slider.scrollLeft = scrollStart - (e.clientX - startX);
+    });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) {
+      slider.addEventListener(ev, function () {
+        isDown = false;
+        slider.classList.remove('is-dragging');
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>
