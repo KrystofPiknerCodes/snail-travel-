@@ -200,6 +200,17 @@
 .dest-about { max-width: 760px; margin: 0 auto; text-align: center; }
 .dest-about .lead { color: var(--ink-soft); }
 
+/* Jméno destinace nad Info — vycentrovaný titulek (.section-head) nad
+   dvousloupcovým layoutem níž, zlatě. */
+.dest-info-heading { color: var(--gold-deep); }
+/* Perex (levý sloupec Info) — zarovnaný vlevo (ne na střed, to se nelíbilo),
+   jen optický posun nahoru, ať začátek textu vizuálně sedí na stejné výšce
+   jako začátek textu ve sloupci vpravo (.dest-intro-text) — bez posunu byl
+   perex kvůli jinému řádkování/velikosti písma opticky o pár pixelů níž,
+   i když mají oba sloupce stejný horní okraj boxu (align-items: start).
+   Jen #info, ne "Tip od šneků" u hotelu, který sdílí stejné .dest-intro-head. */
+#info .dest-intro-head h2 { margin-top: -6px; }
+
 /* ---------- Info — dvousloupcový úvod (nadpis vlevo, text vpravo s
    "Přečíst více"), inspirováno referenčním designem (Fitzroy). Sbaleno na
    pevnou výšku s odstínem dole, dokud návštěvník neklikne — js/dest-collapse.js
@@ -210,12 +221,6 @@
   gap: 12px 56px;
   align-items: start;
   margin-top: 14px;
-}
-.dest-intro-head {
-  /* Nadpis je teď vždy krátké jméno destinace (ne proměnlivě dlouhý perex),
-     vycentrované v úzkém sloupci, ať napříč destinacemi nepůsobí, že
-     sloupec "poskakuje" ze strany na stranu (zpětná vazba Krystof, září 2026). */
-  text-align: center;
 }
 .dest-intro-head h2 {
   /* Bez extra margin-top — má začínat na stejné výšce jako text ve
@@ -277,7 +282,9 @@
    nastavuje inline na sekci, ať sedí na pozadí `--cream` i `--cream-2`,
    podle toho, jaké má daná sekce `background`. ---------- */
 /* Nadpis sekce — jen statický nadpis, klikací je teď (stejně jako u Info)
-   výhradně tlačítko "Přečíst více" pod textem, ne šipka u nadpisu. */
+   výhradně tlačítko "Přečíst více" pod textem, ne šipka u nadpisu.
+   Vycentrovaný a zlatý — stejné zpracování jako nadpis "Madeira" u Info
+   výš (zpětná vazba Krystof, září 2026), text pod tím zůstává vlevo. */
 .dest-accordion-head {
   display: flex;
   align-items: center;
@@ -288,6 +295,7 @@
 .dest-accordion-trigger-label { display: flex; align-items: center; gap: 18px; }
 .dest-accordion-head h2 {
   margin: 0;
+  color: var(--gold-deep);
   /* Přepis globálního .display (až 3.6rem) — bez kickeru nad sebou by tu
      jinak stálo osamocené jedno slovo v plné hero velikosti. */
   font-size: clamp(1.5rem, 2.6vw, 2rem);
@@ -317,6 +325,24 @@
 .dest-accordion.is-open .dest-accordion-panel::after { opacity: 0; }
 .dest-accordion-inner { padding-top: 28px; max-width: 800px; }
 .dest-accordion-inner > p { color: var(--ink-soft); }
+/* Poznávejte / Relaxujte — celý blok (odstavec, seznamy, tlačítko) vycentrovaný
+   jako jednotka pod vycentrovaným nadpisem výš (zpětná vazba Krystof, září
+   2026: napasovat text na stejnou pozici jako u Info vypadalo se zbylou
+   prázdnou kolonkou vlevo divně — jednodušší je vzít celý blok na střed).
+   Seznamy (Co si nenechat ujít/Svátky, Místa na koupání/Golfová hřiště)
+   zůstávají uvnitř zarovnané vlevo, ať se dobře čtou. */
+#poznavejte .dest-accordion,
+#relaxujte .dest-accordion {
+  text-align: center;
+}
+#poznavejte .dest-accordion-inner,
+#relaxujte .dest-accordion-inner {
+  margin: 0 auto;
+}
+#poznavejte .dest-accordion-lists,
+#relaxujte .dest-accordion-lists {
+  text-align: left;
+}
 /* Mezititulky uvnitř spojeného hotelového "Info" bloku (Poloha, Vybavení
    hotelu, Stravování...) — stejný drobný styl jako .dest-accordion-col h3,
    jen přímo v proudu textu, ne ve sloupcovém seznamu. */
@@ -355,6 +381,7 @@
 @media (max-width: 620px) {
   .dest-accordion-lists { grid-template-columns: 1fr; gap: 24px; }
 }
+
 
 /* ---------- Fotogalerie — jedna velká fotka + šipky, žádný lightbox
    (PhotoSwiper.astro / public/js/photo-swiper.js). Používá se u
