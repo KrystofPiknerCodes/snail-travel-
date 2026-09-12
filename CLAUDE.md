@@ -34,8 +34,12 @@ pokud o to uživatel výslovně nepožádá — každá běžná úprava jde do 
   2. `git worktree add ../snail-travel-ghp origin/gh-pages && cd ../snail-travel-ghp
      && git checkout -B gh-pages origin/gh-pages` (samostatný worktree, ať se
      nekříží s prací na `main`).
-  3. Smazat vše kromě `.git` ve worktree, zkopírovat tam čerstvý `web/dist/`
-     (build z kroku 1 už obsahuje `.nojekyll`, nekopírovat ho zvlášť).
+  3. Smazat vše kromě `.git` ve worktree, zkopírovat tam čerstvý `web/dist/`.
+     **`.nojekyll` NENÍ součástí Astro buildu** (v `web/public/` neexistuje) —
+     ověřeno 12.9.2026, dřívější poznámka že "build ho už obsahuje" byla
+     mylná. Po zkopírování `dist/` je potřeba `touch .nojekyll` ve worktree
+     ručně, jinak GitHub Pages přežene Jekyllem a ignoruje složky se
+     podtržítkem (`_astro/`) — assety pak na živém webu chybí.
   4. `git add -A && git commit -m "Deploy: sync gh-pages s aktuálním Astro buildem
      (main @ <sha)" && git push origin gh-pages`.
   5. Uklidit worktree (`git worktree remove ../snail-travel-ghp`) — na Windows se
