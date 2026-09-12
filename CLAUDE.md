@@ -113,6 +113,12 @@ pokud o to uživatel výslovně nepožádá — každá běžná úprava jde do 
   nešířit ([Cinzel decision paměť](../../../.claude/projects/-Users-krystof-Desktop-Claude-Code/memory/typography-cinzel-decision.md) obsahuje odůvodnění).
 - Logo: `web/public/assets/logo-mark.png` (ulita, hlavička), `logo-full.png`
   (ulita + nápis, patička). Zdroj klientův GIF, pokud dorazí vektor, nahradit.
+- **Výběr fotek** (rozhodnutí Krystof, září 2026): napříč webem preferovat
+  **světlé** fotky, ideálně výhledy na moře a krajinu — ne tmavé snímky.
+  Fotky konkrétních hotelů (interiér, bazén, pokoj u karty hotelu) jsou
+  výjimka, tam dává smysl hotelový záběr — jinde (hero destinace, galerie
+  destinace/oblasti) se hotelovým pohledům radši vyhnout ve prospěch
+  přírody/pobřeží.
 - **`.country-grid` (mřížka zemí na `/destinace` a v seznamu oblastí/hotelů)**:
   dlaždice mají jednotnou velikost (`minmax(200px,1fr)`, `aspect-ratio: 4/5`).
   `li.is-featured` dřív dostávalo `grid-column: span 2` (dvojnásobná šířka) —

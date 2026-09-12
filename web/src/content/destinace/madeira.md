@@ -12,17 +12,23 @@ perex: >
 
 hlavni_foto: /assets/madeira/madeira-hero-1.jpg
 
-# Fotky (mimo hero) staženy z Pexels (volně užitné, září 2026) — k nahrazení
-# vlastními fotkami klienta z jeho zájezdů, viz chybi níže.
+# Nové fotky od Krystofa (září 2026) — prvních 5 odpovídá pravidlu v CLAUDE.md
+# (světlé, výhledy na moře/krajinu). Z dodané sady vyřazeny 3 fotky, které
+# nebyly z Madeiry (pláž v Algarve, 2× Bixby Bridge/Big Sur v Kalifornii) —
+# viz konverzace, needitovat zpátky bez ověření lokality.
 galerie:
   - src: /assets/madeira/madeira-hero-1.jpg
-    alt: Letecký pohled na zelené útesy severního pobřeží Madeiry
+    alt: Letecký pohled na ostrov Madeira nad Atlantikem
   - src: /assets/madeira/madeira-hero-2.jpg
-    alt: Ponta de São Lourenço — červené skalnaté mysy na východě ostrova
+    alt: Skalnaté útesy pobřeží Madeiry
   - src: /assets/madeira/madeira-hero-3.jpg
-    alt: Machico za soumraku s osvětlenou zátokou
+    alt: Vesnice Porto Moniz na severním pobřeží Madeiry
   - src: /assets/madeira/madeira-hero-4.jpg
-    alt: Duha nad horským údolím se vesnicí na severu Madeiry
+    alt: Fialové květiny s výhledem na pobřeží Madeiry
+  - src: /assets/madeira/madeira-gallery-5.jpg
+    alt: Maják na skalnatém ostrůvku u pobřeží Madeiry
+  - src: /assets/madeira/madeira-gallery-6.jpg
+    alt: Vulkanické pobřežní skály Madeiry nad průzračným oceánem
 
 # Vycentrování mapy oblasti na ostrov Madeira. Souřadnice z OpenStreetMap
 # Nominatim (dotaz "Madeira Portugal", hraniční relace ostrova/souostroví) —

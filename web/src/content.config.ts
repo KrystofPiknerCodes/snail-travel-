@@ -236,6 +236,19 @@ const hotelCollection = defineCollection({
         lng: z.number(),
       })
       .optional(),
+
+    // Textové sekce detailu hotelu — ze živého webu (viz Calheta Beach,
+    // září 2026), stejný princip jako `chybi`/volitelná pole jinde: bez
+    // vyplněné hodnoty se sekce na stránce prostě nevykreslí, žádný
+    // placeholder. `poloha_text` je popis nad mapou (`poloha` výš), ne
+    // náhrada za souřadnice.
+    poloha_text: z.string().optional(),
+    vybaveni_hotelu: z.string().optional(),
+    vybaveni_pokoje: z.string().optional(),
+    stravovani: z.string().optional(),
+    plaz: z.string().optional(),
+    sport_zabava: z.string().optional(),
+    nas_nazor: z.string().optional(),
   }),
 });
 

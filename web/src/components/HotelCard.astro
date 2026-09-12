@@ -1,0 +1,47 @@
+---
+// Karta hotelu — sdílená komponenta, ať vypadá stejně všude na webu, kde se
+// hotel vypisuje (dnes: seznam hotelů přímo pod destinací/oblastí v
+// [...slug].astro; do budoucna i případná samostatná stránka "Hotely" s
+// filtrováním napříč destinacemi, viz poznámky ze schůzky 31.8.2026).
+//
+// `lokace` je hotova jako hotová řetězcová nálepka (ne pole/entry), protože
+// volající stránka nejlíp ví, jak dlouhou cestu chce ukázat — přímý rodič
+// dnes vypisuje jen "Destinace / Oblast" (stejné pro celou stránku), zatímco
+// budoucí globální seznam hotelů bude chtít u každé karty jinou cestu.
+import type { CollectionEntry } from 'astro:content';
+import CenaTag from './CenaTag.astro';
+
+export interface Props {
+  hotel: CollectionEntry<'hotel'>;
+  href: string;
+  lokace: string;
+  rel: (p?: string) => string;
+}
+
+const { hotel, href, lokace, rel } = Astro.props;
+---
+
+<li>
+  <a href={href}>
+    <div class="country-media">
+      {hotel.data.foto ? (
+        <img class="country-photo" src={rel(hotel.data.foto)} alt={hotel.data.nazev} loading="lazy" />
+      ) : (
+        <div class="hotel-photo-ph">⚠ Foto hotelu chybí — doplnit od klienta</div>
+      )}
+      <span class="country-badge-stack">
+        {hotel.data.hvezdy && (
+          <span class="country-badge">
+            <span class="country-stars-on">{'★'.repeat(hotel.data.hvezdy)}</span><span class="country-stars-off">{'★'.repeat(5 - hotel.data.hvezdy)}</span>
+          </span>
+        )}
+        <span class="country-badge country-badge-price"><CenaTag cenaOd={hotel.data.cena_od} variant="karta" /></span>
+      </span>
+      <span class="country-cta">Prohlédnout</span>
+    </div>
+    <div class="country-body">
+      <span class="country-name">{hotel.data.nazev}</span>
+      <span class="country-location">{lokace}</span>
+    </div>
+  </a>
+</li>

@@ -20,17 +20,24 @@ export interface Props {
   zoom: number;
   nazev: string;
   kicker?: string;
+  // Vlastní id sekce pro kotvu z rozcestníku — výchozí "mapa" (destinace/
+  // oblast), hotel používá "poloha", ať sedí s vlastním popisným textem.
+  id?: string;
+  // Volitelný popisný text nad mapou (u hotelu "Poloha" ze živého webu) —
+  // destinace/oblast text nemají, mapa tam stojí sama za sebe.
+  text?: string;
 }
 
-const { lat, lng, zoom, nazev, kicker = 'Mapa' } = Astro.props;
+const { lat, lng, zoom, nazev, kicker = 'Mapa', id = 'mapa', text } = Astro.props;
 ---
 
-<section class="section" id="mapa" style="background: var(--cream-2);">
+<section class="section" id={id} style="background: var(--cream-2);">
   <div class="wrap">
     <header class="section-head reveal">
       <p class="kicker">{kicker}</p>
       <h2 class="display">Kde se nachází {nazev}</h2>
     </header>
+    {text && <p class="dest-map-text reveal" data-delay="1">{text}</p>}
 
     <div
       class="dest-map reveal"

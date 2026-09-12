@@ -37,7 +37,7 @@ const VIDITELNYCH = 6;
 // řeší statické cesty přes <base>, ale absolutní cesty uložené přímo v obsahu
 // (např. hlavni_foto: "/assets/...") a dynamicky skládané odkazy je potřeba
 // zbavit úvodního lomítka ručně, ať zůstanou relativní vůči <base>.
-const rel = (p: string) => p.replace(/^\//, '');
+const rel = (p?: string) => (p ? p.replace(/^\//, '') : '');
 
 function poKontinentu(kod: string) {
   return destinace
@@ -127,14 +127,18 @@ function poKontinentu(kod: string) {
               <li class={`${d.data.vybrana ? 'is-featured ' : ''}${i >= VIDITELNYCH ? 'is-more' : ''}`}>
                 <a href={`destinace/${d.id}`}>
                   <div class="country-media">
-                    <img
-                      class="country-photo"
-                      src={rel(d.data.hlavni_foto)}
-                      alt={d.data.nazev}
-                      loading="lazy"
-                      width="400"
-                      height="500"
-                    />
+                    {d.data.hlavni_foto ? (
+                      <img
+                        class="country-photo"
+                        src={rel(d.data.hlavni_foto)}
+                        alt={d.data.nazev}
+                        loading="lazy"
+                        width="400"
+                        height="500"
+                      />
+                    ) : (
+                      <div class="country-photo country-photo-placeholder" aria-hidden="true"></div>
+                    )}
                     <span class="country-cta">Zobrazit nabídky</span>
                   </div>
                   <div class="country-body">

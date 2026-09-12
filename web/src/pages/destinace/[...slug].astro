@@ -13,6 +13,8 @@ import Rozcestnik from '../../components/Rozcestnik.astro';
 import MapaMista from '../../components/MapaMista.astro';
 import CenaTag from '../../components/CenaTag.astro';
 import PhotoSwiper from '../../components/PhotoSwiper.astro';
+import HotelCard from '../../components/HotelCard.astro';
+import { czechNbsp } from '../../lib/typography';
 import {
   indexDestinace,
   resolveAncestors,
@@ -77,7 +79,7 @@ const basePath = 'destinace/' + [...chain.map((c) => c.id), entry.id].join('/');
 // GitHub Pages běží pod podadresářem (SITE_BASE, viz astro.config.mjs) — Base.astro
 // nastavuje <base>, takže interní odkazy/obrázky musí být relativní (bez úvodního
 // lomítka); absolutní cesty uložené v obsahu (např. hlavni_foto) je potřeba očistit.
-const rel = (p: string) => p.replace(/^\//, '');
+const rel = (p?: string) => (p ? p.replace(/^\//, '') : '');
 
 // ---- Destinace i Oblast sdílejí stejná data (obě žijí v kolekci `destinace`) ----
 const d = kind !== 'hotel' ? (entry as DestEntry).data : null;
@@ -88,6 +90,9 @@ const oblasti = kind !== 'hotel' ? childOblasti(entry.id, destinaceAll) : [];
 
 // Hotely přímo podřazené tomuto uzlu (bez mezičlánku oblasti).
 const hotelyPrime = kind !== 'hotel' ? hotelyAll.filter((h) => h.data.nadrazena === entry.id) : [];
+// "Destinace / Oblast" — stejné pro všechny karty v hotelyPrime, protože
+// všechny leží přímo pod tímhle uzlem (viz komentář v HotelCard.astro).
+const hotelyPrimeLokace = kind !== 'hotel' ? [...chain.map((c) => c.data.nazev), d?.nazev ?? ''].join(' / ') : '';
 
 // ---- Hotel ----
 const h = kind === 'hotel' ? (entry as HotelEntry).data : null;
@@ -95,6 +100,55 @@ const h = kind === 'hotel' ? (entry as HotelEntry).data : null;
 // ať sekce "Fotografie hotelu" funguje i u hotelů, které galerii ještě nemají.
 const hotelGalerie =
   h && h.galerie.length > 0 ? h.galerie : h?.foto ? [{ src: h.foto, alt: h.nazev }] : [];
+
+// "Info" — všechny textové sekce hotelu pohromadě, jeden blok s "Přečíst
+// více" (viz sekce INFO níž), ne rozsekané na samostatné sekce/kotvy.
+// `ikona` je SVG path/tvary pro drobný piktogram před každým mezititulkem
+// (na přání Krystof, září 2026 — "klidně u toho info taky přidej nějaké
+// piktogramy"), stejný monoline styl jako ikony u Poznávejte/Relaxujte.
+const hotelInfoText = h
+  ? ([
+      {
+        nadpis: 'Poloha',
+        text: h.poloha_text,
+        ikona: '<circle cx="12" cy="10" r="3"/><path d="M12 21c-4-4.3-7-7.9-7-11a7 7 0 0 1 14 0c0 3.1-3 6.7-7 11z"/>',
+      },
+      {
+        nadpis: 'Vybavení hotelu',
+        text: h.vybaveni_hotelu,
+        ikona: '<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 16h2"/>',
+      },
+      {
+        nadpis: 'Vybavení pokoje',
+        text: h.vybaveni_pokoje,
+        ikona: '<path d="M3 19v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 19v2M21 19v2M3 13V8a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v3"/>',
+      },
+      {
+        nadpis: 'Stravování',
+        text: h.stravovani,
+        ikona: '<path d="M7 2v7a2 2 0 0 0 4 0V2M9 9v13M17 2c-1.4 0-2 1.3-2 3v4c0 1.1.9 2 2 2M17 2v18"/>',
+      },
+      {
+        nadpis: 'Pláž',
+        text: h.plaz,
+        ikona: '<path d="M12 3c4.5 0 8 4 9 9H3c1-5 4.5-9 9-9zM12 3v18M9 21a2 2 0 0 0 4 0"/>',
+      },
+      {
+        nadpis: 'Sport a zábava',
+        text: h.sport_zabava,
+        ikona: '<path d="M6 7v10M4 9v6M20 7v10M22 9v6M6 12h12"/>',
+      },
+    ].filter((s) => s.text) as Array<{ nadpis: string; text: string; ikona: string }>)
+  : [];
+
+// Hero fotka/slider nahoře stránky — dřív jen u destinace/oblasti, hotel
+// tam měl jen text bez podkladu (viz komentář historie: kicker-light/.display
+// jsou stylované na světlý text NAD fotkou, na hotelu tak bez fotky
+// vycházel skoro nečitelný). Sjednoceno: hotel používá stejnou hero fotku/
+// slider jako destinace, jen ze svojí galerie (`hotelGalerie` výš), ať jde
+// později snadno rozšířit i o video (Krystofovo zadání, září 2026).
+const heroFoto = kind === 'hotel' ? h?.foto : d?.hlavni_foto;
+const heroGalerie = kind === 'hotel' ? hotelGalerie : (d?.galerie ?? []);
 
 const tocItems =
   kind === 'destinace' && d
@@ -105,6 +159,13 @@ const tocItems =
         d.kdy_jet.length > 0 && { id: 'kdy-jet', label: 'Kdy jet' },
         d.mapa && { id: 'mapa', label: 'Mapa' },
         d.ref_tag && { id: 'reference', label: 'Reference' },
+      ].filter(Boolean) as Array<{ id: string; label: string }>)
+    : kind === 'hotel' && h
+    ? ([
+        hotelInfoText.length > 0 && { id: 'info', label: 'Info' },
+        hotelGalerie.length > 0 && { id: 'fotogalerie', label: 'Fotogalerie' },
+        h.poloha && { id: 'mapa', label: 'Mapa' },
+        h.nas_nazor && { id: 'nas-nazor', label: 'Tip od šneků' },
       ].filter(Boolean) as Array<{ id: string; label: string }>)
     : [];
 
@@ -119,22 +180,22 @@ const pageDescription =
 <Base title={pageTitle} description={pageDescription} activeNav="destinace">
 
   <!-- ============ HERO ============ -->
-  <section class={`section dest-head ${(kind !== 'hotel' && d?.hlavni_foto) ? 'dest-head-photo dest-head-slider' : ''}`}>
-    {kind !== 'hotel' && d?.hlavni_foto && (
-      d.galerie && d.galerie.length > 1 ? (
+  <section class={`section dest-head ${heroFoto ? 'dest-head-photo dest-head-slider' : ''}`}>
+    {heroFoto && (
+      kind === 'destinace' && heroGalerie.length > 1 ? (
         <div class="dest-hero-slider" id="destHeroSlider" aria-hidden="true">
-          {d.galerie.slice(0, 4).map((img, i) => (
+          {heroGalerie.slice(0, 4).map((img, i) => (
             <div class={`dest-hero-slide ${i === 0 ? 'is-active' : ''}`} style={`background-image: url('${rel(img.src)}')`}></div>
           ))}
           <div class="dest-hero-overlay"></div>
           <div class="dest-hero-dots">
-            {d.galerie.slice(0, 4).map((_, i) => (
+            {heroGalerie.slice(0, 4).map((_, i) => (
               <button type="button" class={`dest-hero-dot ${i === 0 ? 'is-active' : ''}`} data-slide={i} aria-label={`Fotka ${i + 1}`}></button>
             ))}
           </div>
         </div>
       ) : (
-        <div class="dest-head-bg" style={`background-image: url('${rel(d.hlavni_foto)}')`} aria-hidden="true"></div>
+        <div class="dest-head-bg" style={`background-image: url('${rel(heroFoto)}')`} aria-hidden="true"></div>
       )
     )}
     <div class="wrap">
@@ -154,7 +215,11 @@ const pageDescription =
           </p>
           <h1 class="display reveal" data-delay="2">{h!.nazev}</h1>
           <div class="hotel-hero-meta reveal" data-delay="3">
-            {h!.hvezdy ? <div class="hotel-stars">{'★'.repeat(h!.hvezdy)}</div> : <span />}
+            {h!.hvezdy ? (
+              <div class="hotel-stars">
+                <span class="country-stars-on">{'★'.repeat(h!.hvezdy)}</span><span class="country-stars-off">{'★'.repeat(5 - h!.hvezdy)}</span>
+              </div>
+            ) : <span />}
             <CenaTag cenaOd={h!.cena_od} variant="hero" />
           </div>
         </>
@@ -171,12 +236,51 @@ const pageDescription =
     </div>
   </section>
 
-  {kind === 'destinace' && <Rozcestnik items={tocItems} />}
+  {(kind === 'destinace' || kind === 'hotel') && <Rozcestnik items={tocItems} />}
 
   {kind === 'hotel' ? (
     <>
-      <!-- ============ FOTO HOTELU ============ -->
-      <section class="section" id="info">
+      <!-- ============ INFO — všechny textové sekce hotelu (Poloha, Vybavení,
+           Stravování...) spojené do jednoho bloku s náhledem a "Přečíst
+           více", stejný akordeonový princip jako Poznávejte/Relaxujte u
+           destinace. Na přání Krystof, září 2026: "to info mělo být
+           všechno dohromady, ne to rozsekat na sekce". ============ -->
+      {hotelInfoText.length > 0 && (
+        <section class="section dest-accordion-section" id="info" style="background: var(--cream-2); --fade-to: var(--cream-2);">
+          <div class="wrap">
+            <div class="dest-accordion-head reveal">
+              <h2 class="display">Info</h2>
+            </div>
+            <div class="dest-accordion" data-collapse>
+              <div class="dest-accordion-panel" data-collapse-panel>
+                <div class="dest-accordion-inner">
+                  {hotelInfoText.map(({ nadpis, text, ikona }) => (
+                    <>
+                      <h3>
+                        <svg class="dest-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ikona} />
+                        {nadpis}
+                      </h3>
+                      <p>{czechNbsp(text)}</p>
+                    </>
+                  ))}
+                </div>
+              </div>
+              <button
+                type="button"
+                class="dest-intro-more"
+                data-collapse-trigger
+                data-label-more="Přečíst více ↓"
+                data-label-less="Skrýt ↑"
+              >
+                Přečíst více ↓
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <!-- ============ FOTOGALERIE ============ -->
+      <section class="section" id="fotogalerie">
         <div class="wrap">
           {hotelGalerie.length > 0 ? (
             <PhotoSwiper images={hotelGalerie} rel={rel} />
@@ -186,9 +290,23 @@ const pageDescription =
         </div>
       </section>
 
-      <!-- ============ POLOHA ============ -->
+      <!-- ============ MAPA ============ -->
       {h!.poloha && (
-        <MapaMista lat={h!.poloha.lat} lng={h!.poloha.lng} zoom={15} nazev={h!.nazev} kicker="Poloha" />
+        <MapaMista lat={h!.poloha.lat} lng={h!.poloha.lng} zoom={15} nazev={h!.nazev} />
+      )}
+
+      <!-- ============ TIP OD ŠNEKŮ ============ -->
+      {h!.nas_nazor && (
+        <section class="section" id="nas-nazor">
+          <div class="wrap dest-intro">
+            <div class="dest-intro-head reveal">
+              <h2 class="display">Tip od šneků</h2>
+            </div>
+            <div class="dest-intro-text-full reveal" data-delay="1">
+              <p>{czechNbsp(h!.nas_nazor)}</p>
+            </div>
+          </div>
+        </section>
       )}
 
       <!-- ============ CTA ============ -->
@@ -254,24 +372,7 @@ const pageDescription =
           ) : (
             <ul class="country-grid reveal" data-delay="1">
               {hotelyPrime.map((hotel) => (
-                <li>
-                  <a href={`${basePath}/${hotel.id}`}>
-                    <div class="country-media">
-                      {hotel.data.foto ? (
-                        <img class="country-photo" src={rel(hotel.data.foto)} alt={hotel.data.nazev} loading="lazy" />
-                      ) : (
-                        <div class="hotel-photo-ph">⚠ Foto hotelu chybí — doplnit od klienta</div>
-                      )}
-                      {hotel.data.hvezdy && <span class="country-badge country-badge-left">{'★'.repeat(hotel.data.hvezdy)}</span>}
-                      <span class="country-badge country-badge-right"><CenaTag cenaOd={hotel.data.cena_od} variant="karta" /></span>
-                      <span class="country-cta">Prohlédnout</span>
-                    </div>
-                    <div class="country-body">
-                      <span class="country-name">{hotel.data.nazev}</span>
-                      {hotel.data.misto && <span class="country-sub">{hotel.data.misto}</span>}
-                    </div>
-                  </a>
-                </li>
+                <HotelCard hotel={hotel} href={`${basePath}/${hotel.id}`} lokace={hotelyPrimeLokace} rel={rel} />
               ))}
             </ul>
           )}
@@ -284,10 +385,11 @@ const pageDescription =
            níž, jen jiné CSS chování: tady jde o odstín/clamp, u akordeonů o
            úplné sbalení). ============ -->
       <section class="section" id="info">
-        <div class="wrap dest-intro">
+        <div class="wrap">
+          <p class="kicker reveal">Info</p>
+          <div class="dest-intro">
           <div class="dest-intro-head reveal">
-            <p class="kicker">Info</p>
-            <h2 class="display">{d!.perex ?? '⚠ Doplnit od klienta — popis destinace zatím chybí.'}</h2>
+            <h2 class="display">{d!.perex ? czechNbsp(d!.perex) : '⚠ Doplnit od klienta — popis destinace zatím chybí.'}</h2>
           </div>
           <div class="dest-intro-body reveal" data-delay="1" data-collapse>
             <div class="dest-intro-text" data-collapse-panel>
@@ -303,47 +405,56 @@ const pageDescription =
               Přečíst více ↓
             </button>
           </div>
+          </div>
         </div>
       </section>
 
       <!-- ============ POZNÁVEJTE (akordeon, sbalené ve výchozím stavu) ============ -->
       {kind === 'destinace' && d!.poznavejte && (
-        <section class="section dest-accordion-section" id="poznavejte" style="background: var(--cream-2);">
+        <section class="section dest-accordion-section" id="poznavejte" style="background: var(--cream-2); --fade-to: var(--cream-2);">
           <div class="wrap">
-            <div class="dest-accordion" data-collapse>
-              <button type="button" class="dest-accordion-trigger reveal" data-collapse-trigger aria-expanded="false">
-                <span class="dest-accordion-trigger-label">
-                  <h2 class="display">Poznávejte</h2>
-                  <span class="icon-circle" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-                    </svg>
-                  </span>
+            <div class="dest-accordion-head reveal">
+              <span class="dest-accordion-trigger-label">
+                <h2 class="display">Poznávejte</h2>
+                <span class="icon-circle" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                  </svg>
                 </span>
-                <span class="dest-accordion-chevron" aria-hidden="true">↓</span>
-              </button>
+              </span>
+            </div>
+            <div class="dest-accordion" data-collapse>
               <div class="dest-accordion-panel" data-collapse-panel>
                 <div class="dest-accordion-inner">
-                  <p>{d!.poznavejte.text}</p>
+                  <p>{czechNbsp(d!.poznavejte.text)}</p>
                   {(d!.poznavejte.tipy.length > 0 || d!.poznavejte.svatky.length > 0) && (
                     <div class="dest-accordion-lists">
                       {d!.poznavejte.tipy.length > 0 && (
                         <div class="dest-accordion-col">
                           <h3>Co si nenechat ujít</h3>
-                          <ul>{d!.poznavejte.tipy.map((t) => <li>{t}</li>)}</ul>
+                          <ul>{d!.poznavejte.tipy.map((t) => <li>{czechNbsp(t)}</li>)}</ul>
                         </div>
                       )}
                       {d!.poznavejte.svatky.length > 0 && (
                         <div class="dest-accordion-col">
                           <h3>Svátky a festivaly</h3>
-                          <ul>{d!.poznavejte.svatky.map((s) => <li>{s}</li>)}</ul>
+                          <ul>{d!.poznavejte.svatky.map((s) => <li>{czechNbsp(s)}</li>)}</ul>
                         </div>
                       )}
                     </div>
                   )}
                 </div>
               </div>
+              <button
+                type="button"
+                class="dest-intro-more"
+                data-collapse-trigger
+                data-label-more="Přečíst více ↓"
+                data-label-less="Skrýt ↑"
+              >
+                Přečíst více ↓
+              </button>
             </div>
           </div>
         </section>
@@ -355,28 +466,27 @@ const pageDescription =
       {kind === 'destinace' && (d!.relaxujte || d!.golf.length > 0) && (
         <section class="section dest-accordion-section" id="relaxujte">
           <div class="wrap">
-            <div class="dest-accordion" data-collapse>
-              <button type="button" class="dest-accordion-trigger reveal" data-collapse-trigger aria-expanded="false">
-                <span class="dest-accordion-trigger-label">
-                  <h2 class="display">Relaxujte</h2>
-                  <span class="icon-circle" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="5" />
-                      <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-                    </svg>
-                  </span>
+            <div class="dest-accordion-head reveal">
+              <span class="dest-accordion-trigger-label">
+                <h2 class="display">Relaxujte</h2>
+                <span class="icon-circle" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5" />
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                  </svg>
                 </span>
-                <span class="dest-accordion-chevron" aria-hidden="true">↓</span>
-              </button>
+              </span>
+            </div>
+            <div class="dest-accordion" data-collapse>
               <div class="dest-accordion-panel" data-collapse-panel>
                 <div class="dest-accordion-inner">
-                  {d!.relaxujte && <p>{d!.relaxujte.text}</p>}
+                  {d!.relaxujte && <p>{czechNbsp(d!.relaxujte.text)}</p>}
                   {(d!.relaxujte?.mista_koupani.length || d!.golf.length > 0) && (
                     <div class="dest-accordion-lists">
                       {!!d!.relaxujte?.mista_koupani.length && (
                         <div class="dest-accordion-col">
                           <h3>Místa na koupání</h3>
-                          <ul>{d!.relaxujte!.mista_koupani.map((m) => <li>{m}</li>)}</ul>
+                          <ul>{d!.relaxujte!.mista_koupani.map((m) => <li>{czechNbsp(m)}</li>)}</ul>
                         </div>
                       )}
                       {d!.golf.length > 0 && (
@@ -399,6 +509,15 @@ const pageDescription =
                   )}
                 </div>
               </div>
+              <button
+                type="button"
+                class="dest-intro-more"
+                data-collapse-trigger
+                data-label-more="Přečíst více ↓"
+                data-label-less="Skrýt ↑"
+              >
+                Přečíst více ↓
+              </button>
             </div>
           </div>
         </section>
@@ -518,10 +637,10 @@ const pageDescription =
 
 </Base>
 
-{kind !== 'hotel' && d?.galerie && d.galerie.length > 1 && (
+{kind === 'destinace' && heroGalerie.length > 1 && (
   <script is:inline src="js/dest-hero-slider.js"></script>
 )}
 <script is:inline src="js/price-tag.js?v=1"></script>
 <script is:inline src="js/photo-swiper.js?v=2"></script>
 {kind === 'destinace' && <script is:inline src="js/weather-live.js?v=2"></script>}
-{kind !== 'hotel' && <script is:inline src="js/dest-collapse.js?v=1"></script>}
+{(kind === 'destinace' || kind === 'hotel') && <script is:inline src="js/dest-collapse.js?v=1"></script>}
