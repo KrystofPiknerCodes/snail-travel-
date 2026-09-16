@@ -1,0 +1,431 @@
+<title>Štítky hotelů</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#f5f3ee; --panel-bg:#ffffff; --panel-border:#e4ded0;
+    --text:#221f1a; --text-soft:#726c5e; --text-faint:#a39c89;
+    --accent:#8f7434;
+    --note-bg:#fbf8f0; --note-border:#e7dcbd;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#15130f; --panel-bg:#1d1a14; --panel-border:#332c20;
+      --text:#f1ece0; --text-soft:#b3ab97; --text-faint:#75705f;
+      --accent:#d8be7e;
+      --note-bg:#221d14; --note-border:#3a3222;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#15130f; --panel-bg:#1d1a14; --panel-border:#332c20;
+    --text:#f1ece0; --text-soft:#b3ab97; --text-faint:#75705f;
+    --accent:#d8be7e;
+    --note-bg:#221d14; --note-border:#3a3222;
+  }
+
+  /* ---- fixní paleta ŽIVÉHO webu Snail Travel — jen uvnitř .site-panel,
+     beze změny podle tématu prohlížeče (živý web má jen jedno téma). ---- */
+  .site-panel{
+    --gold:#BD9A45; --gold-deep:#927233; --gold-soft:#D8BE7E;
+    --cream:#FAF8F3; --cream-2:#F3EEE4; --ink:#211E18; --ink-soft:#6A6457;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    margin:0; padding:56px 24px 90px;
+  }
+  .wrap{ max-width:1080px; margin:0 auto; }
+
+  .page-head{ margin-bottom:52px; max-width:640px; }
+  .page-eyebrow{
+    font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--accent); margin:0 0 14px;
+  }
+  .page-head h1{
+    font-family:'Playfair Display',Georgia,serif; font-weight:600;
+    font-size:clamp(1.9rem,4vw,2.6rem); line-height:1.12; margin:0 0 14px;
+    text-wrap:balance;
+  }
+  .page-head p{ color:var(--text-soft); font-size:15px; line-height:1.65; margin:0; }
+
+  .board{ margin-bottom:64px; }
+  .board-head{
+    display:flex; align-items:baseline; gap:14px; margin-bottom:18px;
+    border-bottom:1px solid var(--panel-border); padding-bottom:12px;
+  }
+  .board-num{
+    font-family:'Playfair Display',serif; font-size:13px; font-weight:600;
+    color:var(--text-faint); flex-shrink:0;
+  }
+  .board-title{ font-size:15px; font-weight:600; margin:0; }
+  .board-sub{ font-size:13px; color:var(--text-soft); margin:2px 0 0; }
+
+  .site-panel{
+    background:var(--cream); border:1px solid var(--panel-border);
+    border-radius:6px; overflow:hidden;
+    box-shadow:0 1px 2px rgba(0,0,0,.04);
+  }
+  .site-panel-pad{ padding:28px clamp(20px,4vw,44px); }
+
+  /* ===== 01 — karty hotelů (beze změny) ===== */
+  .hcard-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .hcard{ display:block; text-decoration:none; }
+  .hcard-media{ position:relative; aspect-ratio:4/5; border-radius:4px; overflow:hidden; margin-bottom:10px; }
+  .hcard-photo{ position:absolute; inset:0; }
+  .ph-reid{ background:linear-gradient(155deg,#274957 0%,#3c6b74 42%,#a8c8b8 76%,#e9dfc0 100%); }
+  .ph-calheta{ background:linear-gradient(155deg,#1d5266 0%,#3f8f96 45%,#d9c9a0 78%,#f1e6c8 100%); }
+  .ph-cliff{ background:linear-gradient(155deg,#1e3b3f 0%,#356458 40%,#8fae87 75%,#e7dfc2 100%); }
+  .hcard-badges{ position:absolute; top:9px; right:9px; z-index:2; display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+  .hcard-badge{ padding:7px 12px; border-radius:999px; background:rgba(14,11,7,.72); backdrop-filter:blur(4px); color:var(--gold-soft); line-height:1; }
+  .hcard-badge-stars{ font-size:14px; letter-spacing:1.5px; }
+  .hcard-badge-price{ font-family:'Inter',sans-serif; font-size:18px; font-weight:800; letter-spacing:.02em; }
+  .hcard-stars-off{ opacity:.35; }
+  .hcard-price-off{ opacity:.5; }
+  .hcard-body{ padding:0 2px; }
+  .hcard-name{ display:block; font-family:'Playfair Display',serif; font-weight:600; font-size:16px; color:var(--ink); margin-bottom:3px; }
+  .hcard-loc{ display:block; font-size:12px; color:var(--ink-soft); }
+  .no-tags-note{ margin-top:16px; font-size:12.5px; color:var(--text-soft); display:flex; align-items:center; gap:8px; }
+  .no-tags-note svg{ flex-shrink:0; color:var(--accent); }
+
+  /* ===== hero (nezměněno — jen hvězdy a cena) ===== */
+  .hero-mock{
+    position:relative; min-height:300px; display:flex; align-items:flex-end;
+    padding:22px clamp(20px,4vw,44px) 30px;
+    background:linear-gradient(150deg,#1f3d4a 0%,#2f5a63 38%,#7fa08f 74%,#e9dfc0 100%);
+  }
+  .hero-mock::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(18,14,9,.15) 0%, rgba(18,14,9,.14) 40%, rgba(14,11,7,.62) 100%);
+  }
+  .hero-crumb{ position:absolute; top:20px; left:clamp(20px,4vw,44px); z-index:2; font-size:11.5px; color:rgba(250,248,243,.75); letter-spacing:.02em; }
+  .hero-crumb span{ opacity:.55; margin:0 6px; }
+  .hero-inner{ position:relative; z-index:2; max-width:640px; }
+  .hero-kicker{ font-size:12px; font-weight:500; letter-spacing:.32em; text-transform:uppercase; color:var(--gold-soft); text-shadow:0 2px 6px rgba(0,0,0,.65); margin:0 0 12px; }
+  .hero-title{ font-family:'Playfair Display',serif; font-weight:600; color:#fff; font-size:clamp(1.7rem,3.6vw,2.5rem); line-height:1.1; margin:0 0 18px; text-wrap:balance; }
+  .hero-meta-row{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:0; }
+  .glass-pill{ display:inline-block; padding:12px 18px; border-radius:3px; background:rgba(20,18,12,.5); backdrop-filter:blur(6px); border:1px solid rgba(216,190,126,.38); color:var(--gold-soft); line-height:1; }
+  .glass-stars{ font-size:20px; letter-spacing:3px; }
+  .glass-dollar{ font-family:'Inter',sans-serif; font-size:28px; font-weight:700; letter-spacing:.02em; }
+  .dollar-off{ opacity:.35; }
+
+  /* ===== odznáčky (badge medailonky) — hlavní věc ===== */
+  .badge-strip{ padding:26px clamp(20px,4vw,44px) 28px; border-top:1px solid #ece5d2; }
+  .badge-strip-label{
+    font-size:10.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink-soft); margin:0 0 16px;
+  }
+  .badge-row{ display:flex; flex-wrap:wrap; gap:22px 16px; }
+  .badge{ display:flex; flex-direction:column; align-items:center; width:88px; text-align:center; gap:9px; }
+  .badge-ring{
+    width:62px; height:62px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .badge-ring svg{ width:25px; height:25px; }
+  .badge-fill .badge-ring{
+    background:var(--gold); color:var(--cream);
+    box-shadow: inset 0 0 0 3px var(--cream), 0 0 0 1px var(--gold);
+  }
+  .badge-outline .badge-ring{
+    background:var(--cream-2); color:var(--gold-deep);
+    box-shadow: inset 0 0 0 1.5px rgba(146,114,51,.4);
+  }
+  .badge-label{ font-family:'Inter',sans-serif; font-size:10.5px; font-weight:600; letter-spacing:.03em; color:var(--ink-soft); line-height:1.35; }
+
+  /* ===== 03 — celá paleta ===== */
+  .palette-group{ margin-bottom:30px; }
+  .palette-group:last-child{ margin-bottom:0; }
+  .palette-group h4{ font-family:'Inter',sans-serif; font-size:12.5px; font-weight:600; letter-spacing:.06em; color:var(--ink-soft); margin:0 0 18px; }
+
+  /* ---- note / otázky ---- */
+  .note{ background:var(--note-bg); border:1px solid var(--note-border); border-radius:6px; padding:22px 26px; margin-top:8px; }
+  .note h3{ font-size:14px; margin:0 0 12px; font-weight:600; }
+  .note ol{ margin:0; padding-left:20px; }
+  .note li{ font-size:14px; line-height:1.7; color:var(--text-soft); }
+  .note li + li{ margin-top:6px; }
+  .note b{ color:var(--text); font-weight:600; }
+
+  @media (max-width:720px){ .hcard-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:520px){ .hcard-grid{ grid-template-columns:1fr; max-width:260px; } }
+</style>
+
+<!-- ===== sada ikon — 24x24, jedna čára, stejný jazyk jako .dest-info-icon
+     na živém webu (stroke currentColor, žádná výplň, kulaté zakončení) ===== -->
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<g id="ic-base" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></g>
+
+<symbol id="i-all-inclusive" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M5 5h14L12 13Z"/><path d="M12 13v6"/><path d="M9 19h6"/>
+</g></symbol>
+
+<symbol id="i-adults" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="9"/>
+  <text x="12" y="15.5" text-anchor="middle" font-family="Inter, sans-serif" font-size="8.5" font-weight="700" fill="currentColor" stroke="none">18+</text>
+</g></symbol>
+
+<symbol id="i-eco" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M6 18C6 10 12 4 19 4c0 9-6 14-13 14Z"/><path d="M6 18c2-4 5-7 9-9"/>
+</g></symbol>
+
+<symbol id="i-wow" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 3l1.8 6.2L20 11l-6.2 1.8L12 19l-1.8-6.2L4 11l6.2-1.8Z"/>
+</g></symbol>
+
+<symbol id="i-wellness" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11Z"/>
+</g></symbol>
+
+<symbol id="i-kids" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="8" cy="7.2" r="2.5"/><path d="M3.8 20c0-3.6 1.8-5.6 4.2-5.6s4.2 2 4.2 5.6"/>
+  <circle cx="17" cy="10.4" r="1.8"/><path d="M14 20c0-2.7 1.3-4.2 3-4.2s3 1.5 3 4.2"/>
+</g></symbol>
+
+<symbol id="i-beach" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+  <path d="M4 13A8 8 0 0 1 20 13L18 15.3 16 13 14 15.3 12 13 10 15.3 8 13 6 15.3 4 13Z"/>
+  <path d="M12 13v8"/>
+  <path d="M9 21h6"/>
+</g></symbol>
+
+<symbol id="i-ayurveda" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M5.5 13.5a6.5 6.5 0 0 0 13 0"/><path d="M4 13.5h16"/><path d="M9 9.5 16 3"/>
+</g></symbol>
+
+<symbol id="i-barefoot" viewBox="0 0 24 24"><g fill="currentColor" stroke="none">
+  <path d="M17 9.8C18.5 12 18.3 16.5 15.8 19.5 13.8 21.8 9.8 21.8 7.8 19.3 10 16.5 9.5 11.5 8.3 9 10.5 8.5 14.5 8.5 17 9.8Z"/>
+  <circle cx="7" cy="7.6" r="1.05"/><circle cx="9.1" cy="6" r="1.2"/><circle cx="11.3" cy="5.1" r="1.35"/>
+  <circle cx="13.5" cy="5.2" r="1.35"/><circle cx="15.8" cy="6.2" r="1.55"/>
+</g></symbol>
+
+<symbol id="i-eurovikend" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M9.5 9V6.5A1.5 1.5 0 0 1 11 5h2a1.5 1.5 0 0 1 1.5 1.5V9"/>
+  <rect x="6" y="9" width="12" height="11.5" rx="1.6"/>
+  <path d="M6 13.5h12"/>
+  <path d="M9.7 20.5v1.2M14.3 20.5v1.2"/>
+</g></symbol>
+
+<symbol id="i-exotic" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="8.5"/>
+  <ellipse cx="12" cy="12" rx="3.6" ry="8.5"/>
+  <path d="M3.5 12h17"/>
+  <path d="M5 7.2h14M5 16.8h14"/>
+</g></symbol>
+
+<symbol id="i-flydrive" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M6 22 10 2"/><path d="M18 22 14 2"/><path d="M12 4v2.5M12 9.5v3M12 16v2.5"/>
+  <path d="M8 22h8l-1.3-3.6a1.4 1.4 0 0 0-1.3-.9h-2.8a1.4 1.4 0 0 0-1.3.9Z"/>
+  <circle cx="9.6" cy="22" r="0.9" fill="currentColor" stroke="none"/><circle cx="14.4" cy="22" r="0.9" fill="currentColor" stroke="none"/>
+</g></symbol>
+
+<symbol id="i-golf" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M6 21V4"/><path d="M6 4l9 3-9 3"/><ellipse cx="6" cy="21" rx="3.2" ry="1"/>
+</g></symbol>
+
+<symbol id="i-letenky" viewBox="0 0 24 24">
+  <path fill="currentColor" stroke="none" d="M21.5 15.5v-2l-8-5V3.8a1.5 1.5 0 0 0-3 0V8.5l-8 5v2l8-2.4V19l-2.8 2v1.4l4.3-1.1 4.3 1.1V21l-2.8-2v-5.9z"/>
+</symbol>
+
+<symbol id="i-snow" viewBox="0 0 24 24"><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+  <path d="M12 3v18M4.2 7l15.6 10M4.2 17l15.6-10"/>
+  <g fill="currentColor" stroke="none">
+    <circle cx="12" cy="3" r="1.2"/><circle cx="12" cy="21" r="1.2"/>
+    <circle cx="4.2" cy="7" r="1.2"/><circle cx="19.8" cy="17" r="1.2"/>
+    <circle cx="4.2" cy="17" r="1.2"/><circle cx="19.8" cy="7" r="1.2"/>
+    <circle cx="12" cy="12" r="1.4"/>
+  </g>
+</g></symbol>
+
+<symbol id="i-cruise" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 15h16l-2.5 5h-11L4 15Z"/><path d="M12 15V5"/><path d="M12 6l6 4.5H12Z"/>
+  <path d="M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0"/>
+</g></symbol>
+
+<symbol id="i-train" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="5" y="4" width="14" height="12" rx="4"/><path d="M5 11h14"/>
+  <path d="M8 16l-2 3M16 16l2 3"/>
+  <circle cx="9" cy="19" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="19" r="1.2" fill="currentColor" stroke="none"/>
+</g></symbol>
+
+<symbol id="i-ski" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round">
+  <path d="M5.5 20 9 6" stroke-width="3"/>
+  <path d="M13.5 20 17 6" stroke-width="3"/>
+  <path d="M20 4 8 20" stroke-width="1.3"/>
+  <circle cx="12.2" cy="14.5" r="1.3" fill="currentColor" stroke="none"/>
+</g></symbol>
+
+<symbol id="i-pobytovy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="10" r="4.2"/>
+  <path d="M12 2.3v2M12 15.7v2M4.3 10h2M17.7 10h2M6.6 4.6l1.4 1.4M16 4.6l-1.4 1.4"/>
+  <path d="M3 19.5c2.3-1.6 4.7-1.6 7 0s4.7 1.6 7 0"/>
+</g></symbol>
+
+<symbol id="i-okruhy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 17c4-6 8 2 11-3" stroke-dasharray="1.6 3.2"/>
+  <path d="M18 4.5c-2 0-3.6 1.6-3.6 3.5 0 2.5 3.6 6.8 3.6 6.8s3.6-4.3 3.6-6.8c0-2-1.6-3.5-3.6-3.5Z"/>
+  <circle cx="18" cy="8" r="1.1" fill="currentColor" stroke="none"/>
+</g></symbol>
+
+<symbol id="i-villa" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/><path d="M10 20v-6h4v6"/>
+</g></symbol>
+
+<symbol id="i-safari" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="8" cy="15.5" r="3.4"/><circle cx="16" cy="15.5" r="3.4"/>
+  <rect x="6.5" y="8" width="3" height="4.6" rx="1"/><rect x="14.5" y="8" width="3" height="4.6" rx="1"/>
+  <path d="M11 13.5h2"/>
+</g></symbol>
+
+<symbol id="i-stopover" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M13.5 3 3.5 8.5l5 1.8 1.8 5L15 3Z"/>
+  <circle cx="17" cy="17" r="5"/><path d="M17 14.2v3l2 1.4"/>
+</g></symbol>
+
+<symbol id="i-senior" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="8.3" cy="6.3" r="2.3"/><path d="M4.2 20c0-3.7 1.8-5.8 4.1-5.8s4.1 2.1 4.1 5.8"/>
+  <circle cx="15.7" cy="6.3" r="2.3"/><path d="M11.6 20c0-3.7 1.8-5.8 4.1-5.8s4.1 2.1 4.1 5.8"/>
+</g></symbol>
+</defs>
+</svg>
+
+<div class="wrap">
+
+  <div class="page-head">
+    <p class="page-eyebrow">Snail Travel · návrh</p>
+    <h1>Štítky hotelů jako odznáčky</h1>
+    <p>Verze dvě — po zpětné vazbě: místo textových pilulek grafické odznáčky (ikona v kroužku
+      + popisek). Karta hotelu je pořád beze změny, odznáčky žijí jen na stránce konkrétního
+      hotelu.</p>
+  </div>
+
+  <!-- 01 — KARTA HOTELU -->
+  <div class="board">
+    <div class="board-head">
+      <span class="board-num">01</span>
+      <div>
+        <p class="board-title">Karta hotelu — beze změny</p>
+        <p class="board-sub">Hvězdy a cena zůstávají jediné badge na fotce karty, odznáčky sem nepřidávat.</p>
+      </div>
+    </div>
+    <div class="site-panel site-panel-pad">
+      <div class="hcard-grid">
+        <a class="hcard" href="#">
+          <div class="hcard-media">
+            <div class="hcard-photo ph-reid"></div>
+            <div class="hcard-badges"><span class="hcard-badge hcard-badge-stars">★★★★★</span><span class="hcard-badge hcard-badge-price">$$$$$</span></div>
+          </div>
+          <div class="hcard-body"><span class="hcard-name">Belmond Reid's Palace</span><span class="hcard-loc">Madeira / Funchal</span></div>
+        </a>
+        <a class="hcard" href="#">
+          <div class="hcard-media">
+            <div class="hcard-photo ph-calheta"></div>
+            <div class="hcard-badges"><span class="hcard-badge hcard-badge-stars">★★★★<span class="hcard-stars-off">★</span></span><span class="hcard-badge hcard-badge-price">$<span class="hcard-price-off">$$$$</span></span></div>
+          </div>
+          <div class="hcard-body"><span class="hcard-name">Calheta Beach</span><span class="hcard-loc">Madeira / Calheta</span></div>
+        </a>
+        <a class="hcard" href="#">
+          <div class="hcard-media">
+            <div class="hcard-photo ph-cliff"></div>
+            <div class="hcard-badges"><span class="hcard-badge hcard-badge-stars">★★★★★</span><span class="hcard-badge hcard-badge-price">$$$$<span class="hcard-price-off">$</span></span></div>
+          </div>
+          <div class="hcard-body"><span class="hcard-name">The Cliff Bay</span><span class="hcard-loc">Madeira / Funchal</span></div>
+        </a>
+      </div>
+      <p class="no-tags-note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+        Žádný nový badge na fotce.
+      </p>
+    </div>
+  </div>
+
+  <!-- 02 — DETAIL HOTELU -->
+  <div class="board">
+    <div class="board-head">
+      <span class="board-num">02</span>
+      <div>
+        <p class="board-title">Detail hotelu — odznáčky pod hero</p>
+        <p class="board-sub">Hero zůstává čisté (hvězdy + cena), odznáčky jdou do pruhu hned pod ním — na kroužcích čitelně vyniknou líp než na fotce, kde by tenká linka ikony zanikla.</p>
+      </div>
+    </div>
+    <div class="site-panel">
+      <div class="hero-mock">
+        <span class="hero-crumb">Destinace <span>/</span> Madeira <span>/</span> Funchal <span>/</span> Belmond Reid's Palace</span>
+        <div class="hero-inner">
+          <p class="hero-kicker">Hotel · Funchal</p>
+          <h2 class="hero-title">Belmond Reid's Palace</h2>
+          <div class="hero-meta-row">
+            <span class="glass-pill glass-stars">★★★★★</span>
+            <span class="glass-pill glass-dollar">$$$$$</span>
+          </div>
+        </div>
+      </div>
+      <div class="badge-strip">
+        <p class="badge-strip-label">Tento hotel nabízí</p>
+        <div class="badge-row">
+          <div class="badge badge-fill"><span class="badge-ring"><svg><use href="#i-wellness"/></svg></span><span class="badge-label">Wellness</span></div>
+          <div class="badge badge-fill"><span class="badge-ring"><svg><use href="#i-beach"/></svg></span><span class="badge-label">Plážové hotely</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-pobytovy"/></svg></span><span class="badge-label">Pobytový zájezd</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-eurovikend"/></svg></span><span class="badge-label">Eurovíkend</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 — CELÁ PALETA -->
+  <div class="board">
+    <div class="board-head">
+      <span class="board-num">03</span>
+      <div>
+        <p class="board-title">Celá paleta — 25 odznáčků</p>
+        <p class="board-sub">Plný kroužek = skupina A (info o hotelu), obrysový kroužek = skupina B (zážitky) — stejné rozlišení jako ve strip layoutu výš.</p>
+      </div>
+    </div>
+    <div class="site-panel site-panel-pad">
+      <div class="palette-group">
+        <h4>A) Informace o hotelu</h4>
+        <div class="badge-row">
+          <div class="badge badge-fill"><span class="badge-ring"><svg><use href="#i-all-inclusive"/></svg></span><span class="badge-label">All inclusive</span></div>
+          <div class="badge badge-fill"><span class="badge-ring"><svg><use href="#i-adults"/></svg></span><span class="badge-label">Pouze pro dospělé</span></div>
+          <div class="badge badge-fill"><span class="badge-ring"><svg><use href="#i-eco"/></svg></span><span class="badge-label">EKO hotely</span></div>
+          <div class="badge badge-fill"><span class="badge-ring"><svg><use href="#i-wow"/></svg></span><span class="badge-label">WOW hotely</span></div>
+          <div class="badge badge-fill"><span class="badge-ring"><svg><use href="#i-wellness"/></svg></span><span class="badge-label">Wellness</span></div>
+          <div class="badge badge-fill"><span class="badge-ring"><svg><use href="#i-kids"/></svg></span><span class="badge-label">Cestování s dětmi</span></div>
+          <div class="badge badge-fill"><span class="badge-ring"><svg><use href="#i-beach"/></svg></span><span class="badge-label">Plážové hotely</span></div>
+        </div>
+      </div>
+      <div class="palette-group">
+        <h4>B) Zážitky</h4>
+        <div class="badge-row">
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-ayurveda"/></svg></span><span class="badge-label">Ayurvéda</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-barefoot"/></svg></span><span class="badge-label">Barefoot</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-eurovikend"/></svg></span><span class="badge-label">Eurovíkend</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-exotic"/></svg></span><span class="badge-label">Exotický zájezd</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-flydrive"/></svg></span><span class="badge-label">Fly &amp; Drive</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-golf"/></svg></span><span class="badge-label">Golfový zájezd</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-letenky"/></svg></span><span class="badge-label">Letenky</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-snow"/></svg></span><span class="badge-label">Ledový hotel</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-snow"/></svg></span><span class="badge-label">Ledové hotely</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-cruise"/></svg></span><span class="badge-label">Luxusní plavby</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-train"/></svg></span><span class="badge-label">Luxusní vlaky</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-ski"/></svg></span><span class="badge-label">Lyžování</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-pobytovy"/></svg></span><span class="badge-label">Pobytový zájezd</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-okruhy"/></svg></span><span class="badge-label">Poznávací okruhy</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-villa"/></svg></span><span class="badge-label">Pronájmy vil</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-safari"/></svg></span><span class="badge-label">Safari</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-stopover"/></svg></span><span class="badge-label">Stop Over</span></div>
+          <div class="badge badge-outline"><span class="badge-ring"><svg><use href="#i-senior"/></svg></span><span class="badge-label">Zájezd pro seniory</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <h3>Na co se chci zeptat</h3>
+    <ol>
+      <li><b>Umístění sedí?</b> Odznáčky v pruhu pod hero, nad rozcestníkem — nebo je radši chceš rovnou vidět nahoře v hero vedle hvězd/ceny (i za cenu horší čitelnosti ikon na fotce)?</li>
+      <li><b>Pár ikon je otevřených k diskuzi</b> — „Pouze pro dospělé" jako „18+" v kroužku, „Zájezd pro seniory" jako srdce (schválně bez berličky/vozíčku, ať to nepůsobí stereotypně). Padne to, nebo máš jiný nápad?</li>
+      <li>„Ledový hotel" a „Ledové hotely" mají teď stejnou ikonku (vločka) — pořád nevím, jestli je to duplicita v seznamu, nebo dva opravdu různé štítky.</li>
+    </ol>
+  </div>
+
+</div>
