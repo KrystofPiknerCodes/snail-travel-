@@ -353,11 +353,12 @@
 #relaxujte .dest-accordion-lists {
   text-align: left;
 }
-/* Text Info hotelu (Poloha/Vybavení hotelu/...) je na rozdíl od Poznávejte/
-   Relaxujte dlouhý souvislý text, ne krátký claim — jako vícřádkový
-   vycentrovaný odstavec se špatně čte. Blok jako celek zůstává vycentrovaný
+/* Souvislý text (Poznávejte/Relaxujte i Info hotelu) se jako vícořádkový
+   vycentrovaný odstavec špatně čte. Blok jako celek zůstává vycentrovaný
    pod nadpisem (viz výš), ale samotný text je zarovnaný vlevo (zpětná
    vazba Krystof, 21.9.2026). */
+#poznavejte .dest-accordion-inner > p,
+#relaxujte .dest-accordion-inner > p,
 #info .dest-accordion-inner > p {
   text-align: left;
 }
