@@ -22,9 +22,17 @@ const {
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light" />
 <title>{title}</title>
 <meta name="description" content={description} />
 <base href={import.meta.env.BASE_URL} />
+<style>
+  /* Pevné světlé pozadí hned v HTML, ne až z externího CSS — jinak je na
+     pomalejším připojení (nebo v tmavém režimu prohlížeče) krátký záblesk
+     černé/nenastylované stránky, než doběhnou fonty a style.css/
+     destinace-detail.css (zpětná vazba Krystof, 21.9.2026). */
+  html, body { background: #FAF8F3; }
+</style>
 <link rel="icon" href="assets/logo-mark.png" type="image/png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
