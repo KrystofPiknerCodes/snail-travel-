@@ -7,14 +7,24 @@ cena_od: 1990
 cena_jednotka: "/ os / noc"
 co_cena_zahrnuje: all inclusive
 
-foto: /assets/madeira/calheta-beach-1.jpg
-# Fotky staženy z oficiálního webu savoysignature.com (Savoy Calheta Beach),
-# září 2026 — k ověření/nahrazení vlastními fotkami klienta.
+foto: /assets/madeira/calheta-beach-hero.jpg
+# Vlastní fotky hotelu (klient/Krystof, 21.9.2026), nahradily starší stock
+# fotky ze savoysignature.com — všechny označené logem STI vpravo dole.
 galerie:
-  - src: /assets/madeira/calheta-beach-1.jpg
-    alt: Calheta Beach — hotel nad písečnou pláží
-  - src: /assets/madeira/calheta-beach-2.jpg
-    alt: Calheta Beach — apartmá s výhledem na moře
+  - src: /assets/madeira/calheta-beach-hero.jpg
+    alt: Calheta Beach — bazén s výhledem na moře
+  - src: /assets/madeira/calheta-beach-bazen-plaz.jpg
+    alt: Calheta Beach — bazén a pláž z ptačí perspektivy
+  - src: /assets/madeira/calheta-beach-exterier-vecer.jpg
+    alt: Calheta Beach — hotel a bazén večer
+  - src: /assets/madeira/calheta-beach-exterier-promenada.jpg
+    alt: Calheta Beach — promenáda podél pláže při západu slunce
+  - src: /assets/madeira/calheta-beach-pokoj-vyhled-1.jpg
+    alt: Calheta Beach — pokoj s výhledem na moře
+  - src: /assets/madeira/calheta-beach-terasa-vyhled.jpg
+    alt: Calheta Beach — terasa pokoje s výhledem na pláž
+  - src: /assets/madeira/calheta-beach-terasa-restaurace.jpg
+    alt: Calheta Beach — venkovní restaurace při západu slunce
 
 # Souřadnice z OSM Nominatim dohledány dodatečně (září 2026) — přesná shoda
 # "Savoy Calheta Beach" veden přímo jako typ "hotel" v OSM. K ověření.

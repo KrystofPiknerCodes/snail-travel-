@@ -325,6 +325,14 @@
 .dest-accordion.is-open .dest-accordion-panel::after { opacity: 0; }
 .dest-accordion-inner { padding-top: 28px; max-width: 800px; }
 .dest-accordion-inner > p { color: var(--ink-soft); }
+/* Info hotelu má víc podsekcí (Poloha/Vybavení hotelu/Vybavení pokoje/...)
+   než Poznávejte/Relaxujte — vyšší náhled před "Přečíst více", ať je vidět
+   víc než jen nadpis a kousek první věty (zpětná vazba Krystof, 21.9.2026). */
+#info .dest-accordion-panel { max-height: 460px; }
+/* #info má vyšší specificitu (ID) než .dest-accordion.is-open výš, takže by
+   jinak přebilo i rozbalený stav a "Přečíst více" by useklo obsah natrvalo
+   (chyba nalezena 21.9.2026) — tohle prioritu vrací zpátky. */
+#info .dest-accordion.is-open .dest-accordion-panel { max-height: 2600px; }
 /* Poznávejte / Relaxujte — celý blok (odstavec, seznamy, tlačítko) vycentrovaný
    jako jednotka pod vycentrovaným nadpisem výš (zpětná vazba Krystof, září
    2026: napasovat text na stejnou pozici jako u Info vypadalo se zbylou
@@ -332,11 +340,13 @@
    Seznamy (Co si nenechat ujít/Svátky, Místa na koupání/Golfová hřiště)
    zůstávají uvnitř zarovnané vlevo, ať se dobře čtou. */
 #poznavejte .dest-accordion,
-#relaxujte .dest-accordion {
+#relaxujte .dest-accordion,
+#info .dest-accordion {
   text-align: center;
 }
 #poznavejte .dest-accordion-inner,
-#relaxujte .dest-accordion-inner {
+#relaxujte .dest-accordion-inner,
+#info .dest-accordion-inner {
   margin: 0 auto;
 }
 #poznavejte .dest-accordion-lists,
@@ -382,6 +392,43 @@
   .dest-accordion-lists { grid-template-columns: 1fr; gap: 24px; }
 }
 
+/* ---------- Odznáčky hotelu — pruh pod hero, nad rozcestníkem (viz
+   docs/navrh-stitky-hotelu.html, umístění odsouhlaseno Krystof, 21.9.2026).
+   Plný zlatý kroužek (.badge-fill) = skupina A (info o hotelu), obrysový
+   (.badge-outline) = skupina B (zážitky). ---------- */
+.hotel-badges { padding: 26px 0 34px; border-top: 1px solid var(--cream-2); text-align: center; }
+.hotel-badges-label {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+}
+.badge-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 22px 16px; }
+.badge { display: flex; flex-direction: column; align-items: center; width: 88px; text-align: center; gap: 9px; }
+.badge-ring {
+  width: 62px; height: 62px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.badge-ring svg { width: 25px; height: 25px; }
+.badge-fill .badge-ring {
+  background: var(--gold); color: var(--cream);
+  box-shadow: inset 0 0 0 3px var(--cream), 0 0 0 1px var(--gold);
+}
+.badge-outline .badge-ring {
+  background: var(--cream-2); color: var(--gold-deep);
+  box-shadow: inset 0 0 0 1.5px rgba(146, 114, 51, 0.4);
+}
+.badge-label {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--ink-soft);
+  line-height: 1.35;
+}
 
 /* ---------- Fotogalerie — jedna velká fotka + šipky, žádný lightbox
    (PhotoSwiper.astro / public/js/photo-swiper.js). Používá se u

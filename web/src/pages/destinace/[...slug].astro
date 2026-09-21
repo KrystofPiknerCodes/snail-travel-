@@ -164,6 +164,44 @@ const hotelInfoText = h
     ].filter((s) => s.text) as Array<{ nadpis: string; text: string; ikona: string }>)
   : [];
 
+// Odznáčky hotelu — zatím jen ukázka natvrdo (viz docs/navrh-stitky-hotelu.html),
+// ne napojené na datový model. skupina 'A' = info o hotelu (plný zlatý kroužek),
+// 'B' = zážitky (obrysový kroužek) — stejné rozlišení jako v návrhu.
+const hotelBadgesDemo = h
+  ? [
+      {
+        skupina: 'A',
+        label: 'All inclusive',
+        ikona: '<path d="M5 5h14L12 13Z"/><path d="M12 13v6"/><path d="M9 19h6"/>',
+      },
+      {
+        skupina: 'A',
+        label: 'Wellness',
+        ikona: '<path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11Z"/>',
+      },
+      {
+        skupina: 'A',
+        label: 'Plážové hotely',
+        ikona: '<path d="M4 13A8 8 0 0 1 20 13L18 15.3 16 13 14 15.3 12 13 10 15.3 8 13 6 15.3 4 13Z"/><path d="M12 13v8"/><path d="M9 21h6"/>',
+      },
+      {
+        skupina: 'B',
+        label: 'Golfový zájezd',
+        ikona: '<path d="M6 21V4"/><path d="M6 4l9 3-9 3"/><ellipse cx="6" cy="21" rx="3.2" ry="1"/>',
+      },
+      {
+        skupina: 'B',
+        label: 'Eurovíkend',
+        ikona: '<path d="M9.5 9V6.5A1.5 1.5 0 0 1 11 5h2a1.5 1.5 0 0 1 1.5 1.5V9"/><rect x="6" y="9" width="12" height="11.5" rx="1.6"/><path d="M6 13.5h12"/><path d="M9.7 20.5v1.2M14.3 20.5v1.2"/>',
+      },
+      {
+        skupina: 'B',
+        label: 'Pobytový zájezd',
+        ikona: '<circle cx="12" cy="10" r="4.2"/><path d="M12 2.3v2M12 15.7v2M4.3 10h2M17.7 10h2M6.6 4.6l1.4 1.4M16 4.6l-1.4 1.4"/><path d="M3 19.5c2.3-1.6 4.7-1.6 7 0s4.7 1.6 7 0"/>',
+      },
+    ]
+  : [];
+
 // Hero fotka/slider nahoře stránky — dřív jen u destinace/oblasti, hotel
 // tam měl jen text bez podkladu (viz komentář historie: kicker-light/.display
 // jsou stylované na světlý text NAD fotkou, na hotelu tak bez fotky
@@ -260,6 +298,27 @@ const pageDescription =
     </div>
   </section>
 
+  <!-- ============ ODZNÁČKY HOTELU — ukázka z docs/navrh-stitky-hotelu.html,
+       natvrdo pár příkladů (ne z dat), umístění pod hero/nad rozcestníkem
+       odsouhlaseno Krystof, 21.9.2026. ============ -->
+  {kind === 'hotel' && hotelBadgesDemo.length > 0 && (
+    <div class="hotel-badges">
+      <div class="wrap">
+        <p class="hotel-badges-label">Tento hotel nabízí</p>
+        <div class="badge-row">
+          {hotelBadgesDemo.map(({ skupina, label, ikona }) => (
+            <div class={`badge ${skupina === 'A' ? 'badge-fill' : 'badge-outline'}`}>
+              <span class="badge-ring">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ikona} />
+              </span>
+              <span class="badge-label">{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )}
+
   {(kind === 'destinace' || kind === 'hotel') && <Rozcestnik items={tocItems} />}
 
   {kind === 'hotel' ? (
@@ -272,9 +331,10 @@ const pageDescription =
       {hotelInfoText.length > 0 && (
         <section class="section dest-accordion-section" id="info" style="background: var(--cream-2); --fade-to: var(--cream-2);">
           <div class="wrap">
-            <div class="dest-accordion-head reveal">
-              <h2 class="display">Info</h2>
-            </div>
+            <header class="section-head reveal" style="text-align:center; max-width:none; margin:0 auto 4px;">
+              <p class="kicker">Info</p>
+              <h2 class="display dest-info-heading">{h!.nazev}</h2>
+            </header>
             <div class="dest-accordion" data-collapse>
               <div class="dest-accordion-panel" data-collapse-panel>
                 <div class="dest-accordion-inner">
@@ -625,7 +685,7 @@ const pageDescription =
 
       <!-- ============ REFERENCE (js/dest-references.js) ============ -->
       {kind === 'destinace' && d!.ref_tag && (
-        <section class="section ref-inline" id="reference" data-dest={d!.ref_tag} data-root="/">
+        <section class="section ref-inline" id="reference" data-dest={d!.ref_tag}>
           <div class="wrap">
             <header class="ref-inline-head reveal">
               <p class="kicker">Reference klientů</p>
@@ -710,5 +770,5 @@ const pageDescription =
 <script is:inline src="js/price-tag.js?v=1"></script>
 <script is:inline src="js/photo-swiper.js?v=2"></script>
 {kind === 'destinace' && <script is:inline src="js/weather-live.js?v=2"></script>}
-{(kind === 'destinace' || kind === 'hotel') && <script is:inline src="js/dest-collapse.js?v=1"></script>}
+{(kind === 'destinace' || kind === 'oblast' || kind === 'hotel') && <script is:inline src="js/dest-collapse.js?v=1"></script>}
 {hotelyDestinace.length > VIDITELNYCH_HOTELU && <script is:inline src="js/dest-hotel-toggle.js?v=1"></script>}
