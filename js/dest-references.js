@@ -19,6 +19,7 @@
 
   Array.prototype.forEach.call(document.querySelectorAll('[data-dest]'), function (section) {
     var tag = section.dataset.dest;
+    var root = section.dataset.root || '';
     var grid = section.querySelector('[data-ref-grid]');
     var items = QUOTES[tag];
 
@@ -74,7 +75,7 @@
 
     var allLink = section.querySelector('[data-ref-all]');
     if (allLink) {
-      allLink.href = 'reference?dest=' + encodeURIComponent(tag);
+      allLink.href = root + 'reference.html?dest=' + encodeURIComponent(tag);
     }
   });
 })();

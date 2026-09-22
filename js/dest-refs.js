@@ -1,6 +1,6 @@
 /* Snail Travel — destinace.html
    Na karty zemí, ke kterým máme klientské reference, přišije odznak
-   "N referencí" odkazující na reference?dest=<země> (Astro routa, bez .html).
+   "N referencí" odkazující na reference.html?dest=<země>.
 
    Počty čte z window.SNAIL_REF_COUNTS (js/ref-counts.js) — malý generovaný
    soubor, aby se sem netahalo 170 KB js/references-data.js.
@@ -44,7 +44,7 @@
 
     var badge = document.createElement('a');
     badge.className = 'country-refs';
-    badge.href = 'reference?dest=' + encodeURIComponent(hit.tag);
+    badge.href = 'reference.html?dest=' + encodeURIComponent(hit.tag);
     badge.setAttribute('aria-label', 'Reference klientů — ' + hit.name + ' (' + hit.count + ')');
     badge.innerHTML =
       '<span class="country-refs-n">' + hit.count + '</span>' +
