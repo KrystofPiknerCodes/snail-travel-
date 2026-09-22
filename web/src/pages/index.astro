@@ -10,10 +10,10 @@ import Base from '../layouts/Base.astro';
   <!-- ============ HERO ============ -->
   <section class="hero" id="hero">
     <div class="hero-media">
-      <!-- Až dorazí finální video, nahraď assets/hero.mp4 (poster zůstane jako fallback). -->
+      <!-- Až dorazí finální video, nahraď assets/hero.mp4 a přegeneruj assets/hero-poster.jpg (první snímek videa, viz CLAUDE.md). -->
       <div class="hero-video-zoom is-active">
-        <video class="hero-video is-active" autoplay muted loop playsinline preload="metadata" poster="assets/ph-hero.svg">
-          <source src="assets/hero.mp4?v=6" type="video/mp4" />
+        <video class="hero-video is-active" autoplay muted loop playsinline preload="auto" poster="assets/hero-poster.jpg?v=1">
+          <source src="assets/hero.mp4?v=7" type="video/mp4" />
         </video>
       </div>
       <div class="hero-scrim"></div>
