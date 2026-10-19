@@ -975,7 +975,10 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
   color: var(--gold-soft);
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
 }
+/* Hvězda je širší než dolar (~18 vs ~14 px při 22px) — hvězdy stažené
+   k sobě, ať je řádek 5 hvězd stejně široký jako 5 dolarů (Krystof, říjen 2026). */
 .dest-head-clean .price-tag-hero .price-tag-symbol { letter-spacing: 2px; }
+.dest-head-clean .hotel-stars { letter-spacing: -2px; }
 .dest-head-clean .price-tag-hero:hover .price-tag-symbol,
 .dest-head-clean .price-tag-hero:focus .price-tag-symbol { color: var(--gold); }
 .hotel-hero-meta-sep {
