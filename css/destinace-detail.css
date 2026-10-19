@@ -926,7 +926,7 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
    ============================================================ */
 .dest-head-clean.dest-head-photo {
   min-height: 100vh;
-  min-height: 100svh;
+  min-height: 100dvh;
   /* Střed textu v 55 % výšky hero — dole „sjížděl" a tlačil se na
      „Posuňte níže", 60 % bylo moc nízko (Krystof, říjen 2026).
      Posun = (padding-top − padding-bottom) / 2 = 5vh. */
@@ -992,7 +992,8 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
 .dest-head-clean .dest-hero-dots { left: auto; right: 40px; bottom: 40px; transform: none; }
 @media (max-width: 620px) {
   .dest-head-clean .dest-hero-dots { right: 20px; bottom: 30px; }
-  .dest-head-clean.dest-head-photo { min-height: 88svh; padding-top: calc(96px + 8.8svh); padding-bottom: 96px; }
+  /* Na celou výšku displeje jako hero video na homepage (.hero, 100dvh). */
+  .dest-head-clean.dest-head-photo { min-height: 100vh; min-height: 100dvh; padding-top: calc(96px + 10dvh); padding-bottom: 96px; }
 }
 /* Nevybarvené hvězdy/dolary v čistém hero — na fotce skoro zanikaly
    (opacity .35), teď viditelné, ale pořád jasně „vypnuté". */
