@@ -2382,3 +2382,7 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   .feature-item .icon-circle { width: 44px; height: 44px; }
   .feature-item .icon-circle svg { width: 20px; height: 20px; }
 }
+/* Aktivní položka menu na průhledné hlavičce nad fotkou (hero hotelu) —
+   tmavá --gold-deep tam zaniká, nad fotkou světlejší zlatá. */
+.site-header:not(.scrolled) .nav a.is-active { color: var(--gold-soft) !important; }
+.site-header:not(.scrolled) .nav a.is-active::after { background: var(--gold-soft); }

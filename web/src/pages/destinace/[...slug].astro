@@ -239,10 +239,10 @@ const pageDescription =
   kind === 'hotel' ? `${h!.nazev}${h!.misto ? `, ${h!.misto}` : ''}` : d!.perex ?? d!.nazev;
 ---
 
-<Base title={pageTitle} description={pageDescription} activeNav="destinace">
+<Base title={pageTitle} description={pageDescription} activeNav="destinace" transparentHero={!!heroFoto}>
 
   <!-- ============ HERO ============ -->
-  <section class={`section dest-head ${heroFoto ? 'dest-head-photo dest-head-slider' : ''}`}>
+  <section class={`section dest-head ${heroFoto ? 'dest-head-photo dest-head-slider' : ''} ${heroFoto ? 'dest-head-clean' : ''}`}>
     {heroFoto && (
       kind === 'destinace' && heroGalerie.length > 1 ? (
         <div class="dest-hero-slider" id="destHeroSlider" aria-hidden="true">
@@ -278,10 +278,11 @@ const pageDescription =
           <h1 class="display reveal" data-delay="2">{h!.nazev}</h1>
           <div class="hotel-hero-meta reveal" data-delay="3">
             {h!.hvezdy ? (
-              <div class="hotel-stars">
+              <div class="hotel-stars" aria-label={`${h!.hvezdy} hvězdičky`}>
                 <span class="country-stars-on">{'★'.repeat(h!.hvezdy)}</span><span class="country-stars-off">{'★'.repeat(5 - h!.hvezdy)}</span>
               </div>
             ) : <span />}
+            <span class="hotel-hero-meta-sep" aria-hidden="true"></span>
             <CenaTag cenaOd={h!.cena_od} variant="hero" />
           </div>
         </>
@@ -294,6 +295,12 @@ const pageDescription =
           </p>
           <h1 class="display reveal" data-delay="2">{d!.nazev}</h1>
         </>
+      )}
+      {heroFoto && tocItems.length > 0 && (
+        <a href={`#${tocItems[0].id}`} class="hero-scroll" aria-label="Posunout dolů">
+          <span>Posuňte níže</span>
+          <span class="hero-scroll-line"></span>
+        </a>
       )}
     </div>
   </section>
