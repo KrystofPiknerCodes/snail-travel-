@@ -354,7 +354,7 @@
     const w = svg.node().getBoundingClientRect().width || SIZE;
     const k = SIZE / w;
     gDots.selectAll('circle').attr('r', d => (d.vybrana ? 5 : 3) * k);
-    gLabels.selectAll('text').attr('font-size', 14 * k);
+    gLabels.selectAll('text').attr('font-size', 15 * k);
   }
 
   // ---- Auto-rotate -----------------------------------------------------

@@ -1533,9 +1533,9 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   .globe-labels { display: inline; }
 }
 .globe-label {
-  font-family: var(--sans);
+  font-family: var(--serif); /* Playfair Display jako nadpisy webu */
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   fill: var(--ink);
   stroke: var(--cream);
   stroke-width: 3px;
