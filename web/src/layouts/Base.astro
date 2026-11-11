@@ -8,6 +8,9 @@ export interface Props {
    * Ostatní stránky nemají hero pod hlavičkou, takže zůstávají "page-light"
    * (hlavička je vždy krémová, bez ohledu na scroll). */
   transparentHero?: boolean;
+  /** Hlavička je plná (krémová) i nad hero fotkou, ne až po odscrollování —
+   * detail destinace/oblasti/hotelu (Krystof, listopad 2026). */
+  solidHeader?: boolean;
 }
 
 const {
@@ -15,6 +18,7 @@ const {
   description = 'Snail Travel — exkluzivní česká luxusní cestovní agentura.',
   activeNav = '',
   transparentHero = false,
+  solidHeader = false,
 } = Astro.props;
 ---
 <!DOCTYPE html>
@@ -43,7 +47,7 @@ const {
 <body class:list={[{ 'page-light': !transparentHero }]}>
 
 <!-- ============ HEADER (sdíleno napříč stránkami, viz web/CLAUDE.md) ============ -->
-<header class:list={['site-header', { scrolled: !transparentHero }]} id="header">
+<header class:list={['site-header', { scrolled: !transparentHero || solidHeader, 'header-solid': solidHeader }]} id="header">
   <div class="header-inner">
     <a href="." class="brand" aria-label="Snail Travel — domů">
       <img class="brand-mark" src="assets/logo-mark.png" alt="" />
@@ -145,7 +149,7 @@ const {
   </div>
 </footer>
 
-<script is:inline src="js/main.js?v=7"></script>
+<script is:inline src="js/main.js?v=8"></script>
 <script is:inline src="js/ref-quotes.js?v=1"></script>
 <script is:inline src="js/dest-references.js?v=1"></script>
 <script is:inline src="js/dest-toc.js?v=4"></script>

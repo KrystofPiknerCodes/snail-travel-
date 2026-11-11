@@ -239,7 +239,7 @@ const pageDescription =
   kind === 'hotel' ? `${h!.nazev}${h!.misto ? `, ${h!.misto}` : ''}` : d!.perex ?? d!.nazev;
 ---
 
-<Base title={pageTitle} description={pageDescription} activeNav="destinace" transparentHero={!!heroFoto}>
+<Base title={pageTitle} description={pageDescription} activeNav="destinace" transparentHero={!!heroFoto} solidHeader>
 
   <!-- ============ HERO ============ -->
   <section class={`section dest-head ${heroFoto ? 'dest-head-photo dest-head-slider' : ''} ${heroFoto ? 'dest-head-clean' : ''}`}>

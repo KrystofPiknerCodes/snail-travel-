@@ -10,7 +10,7 @@
   /* ---------- Header: solid bar after scroll ---------- */
   var header = document.getElementById("header");
   function onScrollHeader() {
-    if (window.scrollY > 60) header.classList.add("scrolled");
+    if (window.scrollY > 60 || header.classList.contains("header-solid")) header.classList.add("scrolled");
     else header.classList.remove("scrolled");
   }
   onScrollHeader();
