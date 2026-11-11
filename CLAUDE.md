@@ -123,6 +123,11 @@ pokud o to uživatel výslovně nepožádá — každá běžná úprava jde do 
   výjimka, tam dává smysl hotelový záběr — jinde (hero destinace, galerie
   destinace/oblasti) se hotelovým pohledům radši vyhnout ve prospěch
   přírody/pobřeží.
+- **Inspirace** (Krystof, listopad 2026): `docs/inspirace/design-md/` je sbírka
+  84 DESIGN.md rozborů známých webů (awesome-design-md) — při navrhování nových
+  sekcí/komponent do ní nahlédnout pro nápady (doporučený výběr v
+  `docs/inspirace/README.md`), ale přebírat jen principy, ne barvy/fonty/identitu
+  cizí značky. Pravidla v téhle sekci mají vždy přednost.
 - **`.country-grid` (mřížka zemí na `/destinace` a v seznamu oblastí/hotelů)**:
   dlaždice mají jednotnou velikost (`minmax(200px,1fr)`, `aspect-ratio: 4/5`).
   `li.is-featured` dřív dostávalo `grid-column: span 2` (dvojnásobná šířka) —
