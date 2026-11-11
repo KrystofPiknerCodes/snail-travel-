@@ -201,7 +201,7 @@
           .attr('class', 'globe-label')
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'central')
-          .text(d => d.text);
+          .text(d => d.text.toLocaleUpperCase('cs'));
       sizeDots();
       placeDots();
       window.addEventListener('resize', sizeDots, { passive: true });
@@ -363,7 +363,7 @@
     const w = svg.node().getBoundingClientRect().width || SIZE;
     const k = SIZE / w;
     gDots.selectAll('circle').attr('r', d => (d.vybrana ? 5 : 3) * k);
-    gLabels.selectAll('text').attr('font-size', 15 * k);
+    gLabels.selectAll('text').attr('font-size', 11 * k);
   }
 
   // ---- Auto-rotate -----------------------------------------------------
