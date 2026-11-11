@@ -1,6 +1,10 @@
 /* Snail Travel — interactive globe
    D3 orthographic globe. Drag to rotate. Hover a continent → gold tint +
    floating label. Click → smooth-scroll to the continent's country grid.
+   Listopad 2026: zlaté tečky = země v nabídce (data window.__GLOBE_BODY
+   z destinace/index.astro). Jen ozdoba: bez tooltipu a prokliku, myš jimi
+   prochází na kontinent. Na dotyku svislý tah posouvá stránku, glóbus se
+   otáčí jen vodorovným tahem.
    ============================================================ */
 (function () {
   'use strict';
@@ -10,6 +14,7 @@
   if (!stage || !window.d3 || !window.topojson) return;
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const points = window.__GLOBE_BODY || [];
 
   // Continent labels + section anchors
   const CONT = {
@@ -129,6 +134,19 @@
 
   // Container for country / continent paths
   const gLand = svg.append('g').attr('class', 'globe-land');
+  const gDots = svg.append('g').attr('class', 'globe-dots').attr('aria-hidden', 'true');
+  // Názvy kontinentů přímo na glóbusu — viditelné jen na dotykových
+  // zařízeních (CSS @media (hover: none)), kde není najetí myší.
+  const gLabels = svg.append('g').attr('class', 'globe-labels').attr('aria-hidden', 'true');
+  const LABELS = [
+    { text: 'Evropa',          at: [15, 52] },
+    { text: 'Afrika',          at: [20, 5] },
+    { text: 'Asie',            at: [90, 45] },
+    { text: 'Severní Amerika', at: [-100, 45] },
+    { text: 'Jižní Amerika',   at: [-60, -15] },
+    { text: 'Austrálie',       at: [134, -25] },
+    { text: 'Antarktida',      at: [0, -80] }
+  ];
 
   // ---- Load world atlas -------------------------------------------------
   const ATLAS = 'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json';
@@ -171,6 +189,22 @@
           if (!d.__cont) return;
           scrollToAnchor(CONT[d.__cont].anchor);
         });
+
+      // decorative dots (vybrané navrch, ať je menší nepřekryjí)
+      gDots.selectAll('circle')
+        .data(points.slice().sort((a, b) => (a.vybrana === b.vybrana ? 0 : a.vybrana ? 1 : -1)))
+        .join('circle')
+          .attr('class', d => 'globe-dot-mark' + (d.vybrana ? ' is-featured' : ''));
+      gLabels.selectAll('text')
+        .data(LABELS)
+        .join('text')
+          .attr('class', 'globe-label')
+          .attr('text-anchor', 'middle')
+          .attr('dominant-baseline', 'central')
+          .text(d => d.text.toLocaleUpperCase('cs'));
+      sizeDots();
+      placeDots();
+      window.addEventListener('resize', sizeDots, { passive: true });
 
       // remove loading placeholder
       const loading = stage.querySelector('.globe-loading');
@@ -222,6 +256,7 @@
   // ---- Drag to rotate --------------------------------------------------
   let dragging = false;
   let didDrag = false;
+  let touchAxis = null; // dotyk: 'x' = otáčíme, 'y' = necháme stránku scrollovat
   let lastP = null;
   let lastRot = null;
 
@@ -238,6 +273,7 @@
   function dragStart(event) {
     dragging = true;
     didDrag = false;
+    touchAxis = null;
     stopAutoRotate();
     lastP = pointFromEvent(event);
     lastRot = projection.rotate();
@@ -248,11 +284,20 @@
     const p = pointFromEvent(event);
     const dx = p[0] - lastP[0];
     const dy = p[1] - lastP[1];
+    if (event.touches) {
+      // Na dotyku rozhodne první pohyb: svisle = scroll stránky (glóbus
+      // pustí), vodorovně = otáčení jen kolem osy.
+      if (!touchAxis) {
+        if (Math.abs(dx) + Math.abs(dy) < 6) return;
+        touchAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      }
+      if (touchAxis === 'y') { dragEnd(); return; }
+    }
     if (Math.abs(dx) + Math.abs(dy) > 3) didDrag = true;
     const k = 0.4; // sensitivity
     const rot = [
       lastRot[0] + dx * k,
-      Math.max(-85, Math.min(85, lastRot[1] - dy * k)),
+      event.touches ? lastRot[1] : Math.max(-85, Math.min(85, lastRot[1] - dy * k)),
       lastRot[2]
     ];
     projection.rotate(rot);
@@ -279,6 +324,46 @@
     svg.select('.globe-sphere').attr('d', path);
     svg.select('.globe-graticule').attr('d', path);
     gLand.selectAll('.globe-country').attr('d', path);
+    placeDots();
+  }
+
+  // ---- Dekorativní tečky ---------------------------------------------
+  function placeDots() {
+    const r = projection.rotate();
+    const center = [-r[0], -r[1]];
+    // Tečky „vepsané“ do povrchu: k okraji koule se zploští ve směru od
+    // středu (cos úhlu = zkrácení na kouli) a vyblednou, za ~80° zmizí,
+    // ať nepřečuhují přes obrys glóbusu.
+    const c = SIZE / 2;
+    gDots.selectAll('circle')
+      .each(function (d) {
+        const dist = d3.geoDistance([d.lng, d.lat], center);
+        const xy = projection([d.lng, d.lat]);
+        if (!xy || dist > 1.4) { this.setAttribute('display', 'none'); return; }
+        const squash = Math.max(0.15, Math.cos(dist));
+        const angle = Math.atan2(xy[1] - c, xy[0] - c) * 180 / Math.PI;
+        this.removeAttribute('display');
+        this.setAttribute('opacity', Math.max(0, Math.min(1, (1.4 - dist) / 0.45)).toFixed(2));
+        this.setAttribute('transform', `translate(${xy[0]},${xy[1]}) rotate(${angle}) scale(${squash},1)`);
+      });
+    // Popisky: plně viditelné uprostřed, k okraji koule zesvětlí a za
+    // ~80° od středu zmizí (na odvrácené straně se nekreslí).
+    gLabels.selectAll('text')
+      .each(function (d) {
+        const dist = d3.geoDistance(d.at, center);
+        const fade = Math.max(0, Math.min(1, (1.4 - dist) / 0.5));
+        const xy = projection(d.at);
+        this.setAttribute('opacity', fade.toFixed(2));
+        this.setAttribute('display', fade > 0 && xy ? '' : 'none');
+        if (xy) { this.setAttribute('x', xy[0]); this.setAttribute('y', xy[1]); }
+      });
+  }
+  // Velikost v obrazovkových px nezávisle na velikosti glóbusu
+  function sizeDots() {
+    const w = svg.node().getBoundingClientRect().width || SIZE;
+    const k = SIZE / w;
+    gDots.selectAll('circle').attr('r', d => (d.vybrana ? 5 : 3) * k);
+    gLabels.selectAll('text').attr('font-size', 11 * k);
   }
 
   // ---- Auto-rotate -----------------------------------------------------

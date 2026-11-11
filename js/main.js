@@ -10,7 +10,7 @@
   /* ---------- Header: solid bar after scroll ---------- */
   var header = document.getElementById("header");
   function onScrollHeader() {
-    if (window.scrollY > 60) header.classList.add("scrolled");
+    if (window.scrollY > 60 || header.classList.contains("header-solid")) header.classList.add("scrolled");
     else header.classList.remove("scrolled");
   }
   onScrollHeader();
@@ -202,6 +202,10 @@
     });
     mobileNav.querySelectorAll("a").forEach(function (a) {
       a.addEventListener("click", function () { setMenu(false); });
+    });
+    // Esc zavře menu
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && document.body.classList.contains("menu-open")) setMenu(false);
     });
   }
 
