@@ -1,6 +1,10 @@
 /* Snail Travel — interactive globe
    D3 orthographic globe. Drag to rotate. Hover a continent → gold tint +
    floating label. Click → smooth-scroll to the continent's country grid.
+   Listopad 2026: po načtení se jednou dotočí na Evropu (žádné stálé točení),
+   zlaté tečky = země v nabídce (klik → detail země, data window.__GLOBE_BODY
+   z destinace/index.astro), na dotyku se otáčí jen vodorovným tahem (svislý
+   posouvá stránku), řádek kontinentů pod glóbusem natočí glóbus na kontinent.
    ============================================================ */
 (function () {
   'use strict';
@@ -10,6 +14,15 @@
   if (!stage || !window.d3 || !window.topojson) return;
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const points = window.__GLOBE_BODY || [];
+  const chips = document.querySelectorAll('[data-globe-cont]');
+
+  // Střed pohledu pro jednotlivé kontinenty [délka, šířka]
+  const CENTER = {
+    EU: [8, 40], AF: [20, 2], AS: [95, 28], NA: [-90, 30],
+    SA: [-62, -18], OC: [145, -22], AA: [-30, -70]
+  };
+  const HOME = CENTER.EU;
 
   // Continent labels + section anchors
   const CONT = {
@@ -111,7 +124,7 @@
     .scale(SIZE / 2 - 24)
     .translate([SIZE / 2, SIZE / 2])
     .clipAngle(90)
-    .rotate([-15, -15, 0]);
+    .rotate(prefersReduced ? [-HOME[0], -HOME[1], 0] : [-HOME[0] + 140, -HOME[1] + 10, 0]);
 
   const path = d3.geoPath(projection);
 
@@ -129,6 +142,7 @@
 
   // Container for country / continent paths
   const gLand = svg.append('g').attr('class', 'globe-land');
+  const gDots = svg.append('g').attr('class', 'globe-dots');
 
   // ---- Load world atlas -------------------------------------------------
   const ATLAS = 'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json';
@@ -172,11 +186,14 @@
           scrollToAnchor(CONT[d.__cont].anchor);
         });
 
+      drawDots();
+
       // remove loading placeholder
       const loading = stage.querySelector('.globe-loading');
       if (loading) loading.remove();
 
-      startAutoRotate();
+      // Úvodní dotočení na Evropu (jednou, pak už se glóbus sám netočí)
+      if (!prefersReduced) rotateTo(HOME, 2600);
     })
     .catch(err => {
       console.error('Globe: failed to load atlas', err);
@@ -202,9 +219,112 @@
       .classed('is-active', function () {
         return cont && this.getAttribute('data-cont') === cont;
       });
+    gDots.selectAll('.globe-dot').classed('is-dim', d => !!cont && d.kontinent !== cont);
+    chips.forEach(c => c.classList.toggle('is-active', c.dataset.globeCont === cont));
   }
 
+  // ---- Tečky zemí v nabídce ------------------------------------------
+  function drawDots() {
+    const pts = points.slice().sort((a, b) => (a.vybrana === b.vybrana ? 0 : a.vybrana ? 1 : -1));
+    const dots = gDots.selectAll('a')
+      .data(pts)
+      .join('a')
+        .attr('href', d => 'destinace/' + d.slug)
+        .attr('class', d => 'globe-dot' + (d.vybrana ? ' is-featured' : ''))
+        .attr('aria-label', d => d.nazev);
+    dots.append('circle').attr('class', 'globe-dot-hit');
+    dots.append('circle').attr('class', 'globe-dot-mark');
+
+    function enter(event, d) {
+      stopIntro();
+      setActive(d.kontinent);
+      const r = event.currentTarget.getBoundingClientRect();
+      showTooltipAt(r.left + r.width / 2, r.top, d.nazev);
+      stage.classList.add('is-hover');
+    }
+    function leave() { setActive(null); hideTooltip(); stage.classList.remove('is-hover'); }
+    dots
+      .on('mouseenter', enter)
+      .on('focus', function (event, d) {
+        // klávesnicí na tečku na odvrácené straně → natočit k ní
+        if (!isVisible(d)) rotateTo([d.lng, d.lat], 0);
+        enter(event, d);
+      })
+      .on('mouseleave', leave)
+      .on('blur', leave)
+      .on('click', event => { if (didDrag) { event.preventDefault(); didDrag = false; } });
+
+    sizeDots();
+    placeDots();
+    window.addEventListener('resize', sizeDots, { passive: true });
+  }
+
+  function isVisible(d) {
+    const r = projection.rotate();
+    return d3.geoDistance([d.lng, d.lat], [-r[0], -r[1]]) < Math.PI / 2 - 0.05;
+  }
+  function placeDots() {
+    gDots.selectAll('.globe-dot')
+      .attr('transform', d => {
+        const xy = projection([d.lng, d.lat]);
+        return xy ? `translate(${xy[0]},${xy[1]})` : null;
+      })
+      .classed('is-hidden', d => !isVisible(d));
+  }
+  // Velikost teček v obrazovkových px nezávisle na velikosti glóbusu
+  function sizeDots() {
+    const w = svg.node().getBoundingClientRect().width || SIZE;
+    const k = SIZE / w;
+    gDots.selectAll('.globe-dot-mark').attr('r', d => (d.vybrana ? 6 : 3.5) * k);
+    gDots.selectAll('.globe-dot-hit').attr('r', d => (d.vybrana ? 12 : 9) * k);
+  }
+
+  // ---- Plynulé natočení na bod [délka, šířka] -------------------------
+  let introT = null;
+  function stopIntro() { if (introT) { introT.stop(); introT = null; } }
+  function rotateTo(lonLat, ms) {
+    stopIntro();
+    const from = projection.rotate();
+    const to = [-lonLat[0], -lonLat[1]];
+    let dl = to[0] - from[0];
+    dl = ((dl % 360) + 540) % 360 - 180; // nejkratší cestou kolem
+    if (prefersReduced || !ms) {
+      projection.rotate([from[0] + dl, to[1], 0]);
+      redraw();
+      return;
+    }
+    introT = d3.timer(elapsed => {
+      const t = Math.min(1, elapsed / ms);
+      const e = d3.easeCubicOut(t);
+      projection.rotate([from[0] + dl * e, from[1] + (to[1] - from[1]) * e, 0]);
+      redraw();
+      if (t >= 1) stopIntro();
+    });
+  }
+
+  // ---- Řádek kontinentů pod glóbusem --------------------------------
+  chips.forEach(c => {
+    const cont = c.dataset.globeCont;
+    const on = () => { setActive(cont); if (CENTER[cont]) rotateTo(CENTER[cont], 700); };
+    c.addEventListener('mouseenter', on);
+    c.addEventListener('focus', on);
+    c.addEventListener('mouseleave', () => setActive(null));
+    c.addEventListener('blur', () => setActive(null));
+    c.addEventListener('click', e => {
+      if (!CONT[cont]) return;
+      e.preventDefault();
+      scrollToAnchor(CONT[cont].anchor);
+    });
+  });
+
   // ---- Tooltip (follows cursor, floats above it) -----------------------
+  function showTooltipAt(x, y, text) {
+    const rect = stage.getBoundingClientRect();
+    tooltip.textContent = text;
+    tooltip.style.left = (x - rect.left) + 'px';
+    tooltip.style.top  = (y - rect.top)  + 'px';
+    tooltip.classList.add('is-visible');
+  }
   function showTooltip(event, text) {
     tooltip.textContent = text;
     tooltip.classList.add('is-visible');
@@ -222,6 +342,7 @@
   // ---- Drag to rotate --------------------------------------------------
   let dragging = false;
   let didDrag = false;
+  let touchAxis = null; // dotyk: 'x' = otáčíme, 'y' = necháme stránku scrollovat
   let lastP = null;
   let lastRot = null;
 
@@ -238,7 +359,8 @@
   function dragStart(event) {
     dragging = true;
     didDrag = false;
-    stopAutoRotate();
+    touchAxis = null;
+    stopIntro();
     lastP = pointFromEvent(event);
     lastRot = projection.rotate();
     stage.classList.add('is-dragging');
@@ -248,11 +370,20 @@
     const p = pointFromEvent(event);
     const dx = p[0] - lastP[0];
     const dy = p[1] - lastP[1];
+    if (event.touches) {
+      // Na dotyku rozhodne první pohyb: svisle = scroll stránky (glóbus
+      // pustí), vodorovně = otáčení jen kolem osy.
+      if (!touchAxis) {
+        if (Math.abs(dx) + Math.abs(dy) < 6) return;
+        touchAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      }
+      if (touchAxis === 'y') { dragEnd(); return; }
+    }
     if (Math.abs(dx) + Math.abs(dy) > 3) didDrag = true;
     const k = 0.4; // sensitivity
     const rot = [
       lastRot[0] + dx * k,
-      Math.max(-85, Math.min(85, lastRot[1] - dy * k)),
+      event.touches ? lastRot[1] : Math.max(-85, Math.min(85, lastRot[1] - dy * k)),
       lastRot[2]
     ];
     projection.rotate(rot);
@@ -262,9 +393,6 @@
   function dragEnd() {
     dragging = false;
     stage.classList.remove('is-dragging');
-    // resume auto-rotate after brief pause
-    clearTimeout(autoResumeT);
-    autoResumeT = setTimeout(startAutoRotate, 3200);
   }
 
   svg.on('mousedown', dragStart);
@@ -279,21 +407,6 @@
     svg.select('.globe-sphere').attr('d', path);
     svg.select('.globe-graticule').attr('d', path);
     gLand.selectAll('.globe-country').attr('d', path);
-  }
-
-  // ---- Auto-rotate -----------------------------------------------------
-  let autoT = 0, autoResumeT = 0;
-  function startAutoRotate() {
-    if (prefersReduced) return;
-    stopAutoRotate();
-    autoT = setInterval(() => {
-      if (dragging || stage.classList.contains('is-hover')) return;
-      const r = projection.rotate();
-      projection.rotate([r[0] + 0.18, r[1], r[2]]);
-      redraw();
-    }, 33);
-  }
-  function stopAutoRotate() {
-    if (autoT) { clearInterval(autoT); autoT = 0; }
+    placeDots();
   }
 })();

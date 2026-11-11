@@ -1518,6 +1518,76 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 }
 .globe-tooltip.is-visible { opacity: 1; }
 
+/* Glóbus, listopad 2026: tečky zemí v nabídce, řádek kontinentů, legenda.
+   Na dotyku svislý tah posouvá stránku (pan-y), vodorovný otáčí glóbus. */
+.globe-svg { touch-action: pan-y; }
+.globe-dot { cursor: pointer; }
+.globe-dot.is-hidden { display: none; }
+.globe-dot-hit { fill: transparent; }
+.globe-dot-mark {
+  fill: var(--gold);
+  stroke: var(--cream);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+  transition: opacity .25s var(--ease);
+}
+.globe-dot.is-featured .globe-dot-mark { fill: var(--gold-deep); stroke-width: 1.5px; }
+.globe-dot.is-dim .globe-dot-mark { opacity: .25; }
+.globe-dot:focus { outline: none; }
+.globe-dot:focus-visible .globe-dot-mark { stroke: var(--ink); stroke-width: 2px; }
+
+.globe-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 12px;
+  margin: 32px auto 0;
+}
+.globe-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 15px;
+  white-space: nowrap;
+  transition: border-color .25s var(--ease), background-color .25s var(--ease);
+}
+.globe-chip-n { color: var(--gold-deep); font-size: 13px; }
+.globe-chip:hover, .globe-chip.is-active { border-color: var(--gold); background: var(--cream-2); }
+.globe-chip:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 2px; }
+
+.globe-legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 20px 0 0;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.globe-legend-item { display: inline-flex; align-items: center; gap: 8px; }
+.globe-legend-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+.globe-legend-dot.is-featured { width: 12px; height: 12px; background: var(--gold-deep); }
+
+@media (max-width: 620px) {
+  .globe-chips {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin: 24px -20px 0;
+    padding: 0 20px 4px;
+    scrollbar-width: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .globe-dot-mark, .globe-chip { transition: none; }
+}
+
 .dest-map.is-fallback { display: none !important; }
 .dest-map-caption {
   text-align: center;
