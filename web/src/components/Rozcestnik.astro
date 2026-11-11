@@ -17,12 +17,16 @@ export interface Props {
 }
 
 const { items } = Astro.props;
+// Plná cesta stránky před #id: kvůli <base href> by holé "#id" vedlo na
+// homepage, kdykoli klik nezachytí dest-toc.js (Ctrl+klik, nová záložka,
+// chyba skriptu).
+const cesta = Astro.url.pathname;
 ---
 
 <nav class="dest-toc" id="destToc" aria-label="Rychlá navigace po stránce">
   <div class="dest-toc-inner">
     {items.map((item) => (
-      <a href={`#${item.id}`} class="dest-toc-link" data-toc-link data-target={item.id}>
+      <a href={`${cesta}#${item.id}`} class="dest-toc-link" data-toc-link data-target={item.id}>
         {item.label}
       </a>
     ))}

@@ -203,6 +203,10 @@
     mobileNav.querySelectorAll("a").forEach(function (a) {
       a.addEventListener("click", function () { setMenu(false); });
     });
+    // Esc zavře menu
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && document.body.classList.contains("menu-open")) setMenu(false);
+    });
   }
 
   /* ---------- Contact form (front-end feedback only) ---------- */
