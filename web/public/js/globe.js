@@ -1,7 +1,8 @@
 /* Snail Travel — interactive globe
    D3 orthographic globe. Drag to rotate. Hover a continent → gold tint +
    floating label. Click → smooth-scroll to the continent's country grid.
-   Listopad 2026: po načtení se jednou dotočí na Evropu (žádné stálé točení),
+   Listopad 2026: po načtení se dotočí na Evropu a pak se pomalu otáčí
+   (pauza, když je myš nad glóbusem; po tažení/kliknutí na chvíli stojí),
    zlaté tečky = země v nabídce (klik → detail země, data window.__GLOBE_BODY
    z destinace/index.astro), na dotyku se otáčí jen vodorovným tahem (svislý
    posouvá stránku), řádek kontinentů pod glóbusem natočí glóbus na kontinent.
@@ -192,8 +193,9 @@
       const loading = stage.querySelector('.globe-loading');
       if (loading) loading.remove();
 
-      // Úvodní dotočení na Evropu (jednou, pak už se glóbus sám netočí)
-      if (!prefersReduced) rotateTo(HOME, 2600);
+      // Úvodní dotočení na Evropu, pak pomalé točení (pauza při najetí myší
+      // na glóbus, po tažení/kliknutí se rozjede až po chvíli nečinnosti)
+      if (!prefersReduced) rotateTo(HOME, 2600, () => resumeAutoRotate(1500));
     })
     .catch(err => {
       console.error('Globe: failed to load atlas', err);
@@ -282,8 +284,9 @@
   // ---- Plynulé natočení na bod [délka, šířka] -------------------------
   let introT = null;
   function stopIntro() { if (introT) { introT.stop(); introT = null; } }
-  function rotateTo(lonLat, ms) {
+  function rotateTo(lonLat, ms, done) {
     stopIntro();
+    stopAutoRotate();
     const from = projection.rotate();
     const to = [-lonLat[0], -lonLat[1]];
     let dl = to[0] - from[0];
@@ -298,18 +301,56 @@
       const e = d3.easeCubicOut(t);
       projection.rotate([from[0] + dl * e, from[1] + (to[1] - from[1]) * e, 0]);
       redraw();
-      if (t >= 1) stopIntro();
+      if (t >= 1) { stopIntro(); if (done) done(); }
     });
+  }
+
+  // ---- Pomalé automatické točení ---------------------------------------
+  // Výkon: točí se jen na zařízení s myší (na telefonu ne, šetří baterii)
+  // a jen když je glóbus na obrazovce; d3.timer běží přes
+  // requestAnimationFrame, takže se v neaktivní záložce sám zastaví.
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  let inView = true, chipHover = false;
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      inView = entries[0].isIntersecting;
+      if (inView) resumeAutoRotate(800); else stopAutoRotate();
+    }).observe(stage);
+  }
+  let autoT = null, autoResumeT = 0;
+  function startAutoRotate() {
+    if (prefersReduced || !canHover || !inView || autoT) return;
+    // Max ~30 snímků/s: přepočet ~180 obrysů zemí stojí jednotky až
+    // desítky ms, při pomalém točení je rozdíl proti 60 fps neviditelný.
+    let last = 0;
+    autoT = d3.timer(elapsed => {
+      if (elapsed - last < 33) return;
+      const dt = Math.min(elapsed - last, 100);
+      last = elapsed;
+      if (dragging || chipHover || stage.matches(':hover') || stage.classList.contains('is-hover')) return;
+      const r = projection.rotate();
+      projection.rotate([r[0] + dt * 0.0072, r[1], r[2]]); // ~7°/s
+      redraw();
+    });
+  }
+  function stopAutoRotate() {
+    clearTimeout(autoResumeT);
+    if (autoT) { autoT.stop(); autoT = null; }
+  }
+  function resumeAutoRotate(ms) {
+    clearTimeout(autoResumeT);
+    autoResumeT = setTimeout(startAutoRotate, ms);
   }
 
   // ---- Řádek kontinentů pod glóbusem --------------------------------
   chips.forEach(c => {
     const cont = c.dataset.globeCont;
-    const on = () => { setActive(cont); if (CENTER[cont]) rotateTo(CENTER[cont], 700); };
+    const on = () => { chipHover = true; setActive(cont); if (CENTER[cont]) rotateTo(CENTER[cont], 700); };
+    const off = () => { chipHover = false; setActive(null); resumeAutoRotate(4000); };
     c.addEventListener('mouseenter', on);
     c.addEventListener('focus', on);
-    c.addEventListener('mouseleave', () => setActive(null));
-    c.addEventListener('blur', () => setActive(null));
+    c.addEventListener('mouseleave', off);
+    c.addEventListener('blur', off);
     c.addEventListener('click', e => {
       if (!CONT[cont]) return;
       e.preventDefault();
@@ -361,6 +402,7 @@
     didDrag = false;
     touchAxis = null;
     stopIntro();
+    stopAutoRotate();
     lastP = pointFromEvent(event);
     lastRot = projection.rotate();
     stage.classList.add('is-dragging');
@@ -393,6 +435,7 @@
   function dragEnd() {
     dragging = false;
     stage.classList.remove('is-dragging');
+    resumeAutoRotate(4000);
   }
 
   svg.on('mousedown', dragStart);
