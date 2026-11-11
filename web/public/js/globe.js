@@ -135,6 +135,18 @@
   // Container for country / continent paths
   const gLand = svg.append('g').attr('class', 'globe-land');
   const gDots = svg.append('g').attr('class', 'globe-dots').attr('aria-hidden', 'true');
+  // Názvy kontinentů přímo na glóbusu — viditelné jen na dotykových
+  // zařízeních (CSS @media (hover: none)), kde není najetí myší.
+  const gLabels = svg.append('g').attr('class', 'globe-labels').attr('aria-hidden', 'true');
+  const LABELS = [
+    { text: 'Evropa',          at: [15, 52] },
+    { text: 'Afrika',          at: [20, 5] },
+    { text: 'Asie',            at: [90, 45] },
+    { text: 'Severní Amerika', at: [-100, 45] },
+    { text: 'Jižní Amerika',   at: [-60, -15] },
+    { text: 'Austrálie',       at: [134, -25] },
+    { text: 'Antarktida',      at: [0, -80] }
+  ];
 
   // ---- Load world atlas -------------------------------------------------
   const ATLAS = 'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json';
@@ -183,6 +195,13 @@
         .data(points.slice().sort((a, b) => (a.vybrana === b.vybrana ? 0 : a.vybrana ? 1 : -1)))
         .join('circle')
           .attr('class', d => 'globe-dot-mark' + (d.vybrana ? ' is-featured' : ''));
+      gLabels.selectAll('text')
+        .data(LABELS)
+        .join('text')
+          .attr('class', 'globe-label')
+          .attr('text-anchor', 'middle')
+          .attr('dominant-baseline', 'central')
+          .text(d => d.text);
       sizeDots();
       placeDots();
       window.addEventListener('resize', sizeDots, { passive: true });
@@ -318,12 +337,24 @@
         const xy = projection([d.lng, d.lat]);
         return xy ? `translate(${xy[0]},${xy[1]})` : null;
       });
+    // Popisky: plně viditelné uprostřed, k okraji koule zesvětlí a za
+    // ~80° od středu zmizí (na odvrácené straně se nekreslí).
+    gLabels.selectAll('text')
+      .each(function (d) {
+        const dist = d3.geoDistance(d.at, center);
+        const fade = Math.max(0, Math.min(1, (1.4 - dist) / 0.5));
+        const xy = projection(d.at);
+        this.setAttribute('opacity', fade.toFixed(2));
+        this.setAttribute('display', fade > 0 && xy ? '' : 'none');
+        if (xy) { this.setAttribute('x', xy[0]); this.setAttribute('y', xy[1]); }
+      });
   }
   // Velikost v obrazovkových px nezávisle na velikosti glóbusu
   function sizeDots() {
     const w = svg.node().getBoundingClientRect().width || SIZE;
     const k = SIZE / w;
     gDots.selectAll('circle').attr('r', d => (d.vybrana ? 5 : 3) * k);
+    gLabels.selectAll('text').attr('font-size', 14 * k);
   }
 
   // ---- Auto-rotate -----------------------------------------------------
