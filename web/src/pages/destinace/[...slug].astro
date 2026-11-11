@@ -296,14 +296,17 @@ const pageDescription =
           <h1 class="display reveal" data-delay="2">{d!.nazev}</h1>
         </>
       )}
-      {heroFoto && tocItems.length > 0 && (
-        <a href={`#${tocItems[0].id}`} class="hero-scroll" aria-label="Posunout dolů">
+      {heroFoto && (
+        <a href={`${Astro.url.pathname}#${tocItems[0]?.id ?? 'po-hero'}`} class="hero-scroll" aria-label="Posunout dolů">
           <span>Posuňte níže</span>
           <span class="hero-scroll-line"></span>
         </a>
       )}
     </div>
   </section>
+  {/* Cíl šipky „Posuňte níže" u stránek bez rozcestníku (oblast). Odkaz
+      šipky má plnou cestu — kvůli <base href> by holé „#id" vedlo na homepage. */}
+  <div id="po-hero" style="scroll-margin-top: var(--header-h, 84px)"></div>
 
   <!-- ============ ODZNÁČKY HOTELU — ukázka z docs/navrh-stitky-hotelu.html,
        natvrdo pár příkladů (ne z dat), umístění pod hero/nad rozcestníkem
