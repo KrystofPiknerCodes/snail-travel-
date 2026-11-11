@@ -1525,8 +1525,9 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
    prochází na kontinent). Na dotyku svislý tah posouvá stránku (pan-y). */
 .globe-svg { touch-action: pan-y; }
 .globe-dots { pointer-events: none; }
-.globe-dot-mark { fill: var(--gold); stroke: var(--cream); stroke-width: 1px; vector-effect: non-scaling-stroke; }
-.globe-dot-mark.is-featured { fill: var(--gold-deep); stroke-width: 1.5px; }
+/* Bez krémového lemu — tečky mají působit vepsané do pevniny, ne položené navrch. */
+.globe-dot-mark { fill: var(--gold); }
+.globe-dot-mark.is-featured { fill: var(--gold-deep); }
 /* Názvy kontinentů na glóbusu — jen dotyková zařízení (bez najetí myší). */
 .globe-labels { display: none; pointer-events: none; }
 @media (hover: none) {

@@ -331,11 +331,20 @@
   function placeDots() {
     const r = projection.rotate();
     const center = [-r[0], -r[1]];
+    // Tečky „vepsané“ do povrchu: k okraji koule se zploští ve směru od
+    // středu (cos úhlu = zkrácení na kouli) a vyblednou, za ~80° zmizí,
+    // ať nepřečuhují přes obrys glóbusu.
+    const c = SIZE / 2;
     gDots.selectAll('circle')
-      .attr('display', d => (d3.geoDistance([d.lng, d.lat], center) < Math.PI / 2 - 0.05 ? null : 'none'))
-      .attr('transform', d => {
+      .each(function (d) {
+        const dist = d3.geoDistance([d.lng, d.lat], center);
         const xy = projection([d.lng, d.lat]);
-        return xy ? `translate(${xy[0]},${xy[1]})` : null;
+        if (!xy || dist > 1.4) { this.setAttribute('display', 'none'); return; }
+        const squash = Math.max(0.15, Math.cos(dist));
+        const angle = Math.atan2(xy[1] - c, xy[0] - c) * 180 / Math.PI;
+        this.removeAttribute('display');
+        this.setAttribute('opacity', Math.max(0, Math.min(1, (1.4 - dist) / 0.45)).toFixed(2));
+        this.setAttribute('transform', `translate(${xy[0]},${xy[1]}) rotate(${angle}) scale(${squash},1)`);
       });
     // Popisky: plně viditelné uprostřed, k okraji koule zesvětlí a za
     // ~80° od středu zmizí (na odvrácené straně se nekreslí).
