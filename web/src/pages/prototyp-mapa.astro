@@ -1,0 +1,132 @@
+---
+// PROTOTYP (listopad 2026): plochá mapa místo glóbusu na /destinace — jen na
+// porovnání, nikde v navigaci. Pokud se uživatel rozhodne pro mapu, přesune
+// se sekce do destinace/index.astro místo .globe-wrap a tahle stránka zmizí.
+// Body teček: src/data/destinace-body.json (orientační střed země/ostrova,
+// jen pro umístění tečky na mapě světa — ne přesná poloha).
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import body from '../data/destinace-body.json';
+
+const destinace = (await getCollection('destinace')).filter((d) => d.data.typ === 'destinace');
+const souradnice = body as Record<string, { lat: number; lng: number }>;
+
+const points = destinace
+  .filter((d) => souradnice[d.id])
+  .map((d) => ({
+    slug: d.id,
+    nazev: d.data.nazev,
+    kontinent: d.data.kontinent,
+    vybrana: d.data.vybrana,
+    lat: souradnice[d.id].lat,
+    lng: souradnice[d.id].lng,
+  }));
+
+const KONTINENTY = [
+  { kod: 'EU', nazev: 'Evropa', kotva: 'kontinent-evropa' },
+  { kod: 'AF', nazev: 'Afrika', kotva: 'kontinent-afrika' },
+  { kod: 'AS', nazev: 'Asie', kotva: 'kontinent-asie' },
+  { kod: 'NA', nazev: 'Severní a Střední Amerika', kotva: 'kontinent-amerika-sever' },
+  { kod: 'SA', nazev: 'Jižní Amerika', kotva: 'kontinent-amerika-jih' },
+  { kod: 'OC', nazev: 'Austrálie a Oceánie', kotva: 'kontinent-australie' },
+  { kod: 'AA', nazev: 'Antarktida', kotva: 'kontinent-antarktida' },
+];
+const pocet = (kod: string) => destinace.filter((d) => d.data.kontinent === kod).length;
+---
+<Base title="Prototyp mapy — Snail Travel" description="Prototyp ploché mapy destinací na porovnání s glóbusem.">
+
+  <section class="section wmap-head">
+    <div class="wrap">
+      <p class="wmap-proto">Prototyp na porovnání — současná verze s&nbsp;glóbusem je na <a href="destinace">/destinace</a></p>
+      <h1 class="display">Vyberte si, kam vás<br />zavedeme</h1>
+      <p class="wmap-lead">Klikněte na zemi na mapě, nebo vyberte kontinent.</p>
+
+      <nav class="wmap-chips" aria-label="Kontinenty">
+        {KONTINENTY.map((k) => (
+          <a class="wmap-chip" href={`destinace#${k.kotva}`} data-map-cont={k.kod}>
+            {k.nazev} <span class="wmap-chip-n">{pocet(k.kod)}</span>
+          </a>
+        ))}
+      </nav>
+
+      <div class="wmap-stage" id="worldMap">
+        <div class="wmap-tip" id="worldMapTip" aria-hidden="true"></div>
+      </div>
+
+      <p class="wmap-legend">
+        <span class="wmap-legend-item"><span class="wmap-legend-dot is-featured" aria-hidden="true"></span>Vybrané destinace</span>
+        <span class="wmap-legend-item"><span class="wmap-legend-dot" aria-hidden="true"></span>Další země v&nbsp;nabídce</span>
+      </p>
+    </div>
+  </section>
+
+</Base>
+
+<style is:global>
+  .wmap-head { padding-top: calc(var(--header-h, 92px) + 64px); padding-bottom: 96px; text-align: center; }
+  .wmap-proto {
+    display: inline-block; margin: 0 0 32px; padding: 8px 16px;
+    border: 1px dashed var(--gold-deep); border-radius: 999px;
+    font-size: 14px; color: var(--ink-soft);
+  }
+  .wmap-proto a { color: var(--gold-deep); text-decoration: underline; }
+  .wmap-lead { margin: 20px auto 0; color: var(--ink-soft); font-size: 17px; }
+
+  .wmap-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 12px; margin: 40px auto 32px; }
+  .wmap-chip {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px;
+    border: 1px solid var(--line); border-radius: 999px; background: var(--cream);
+    color: var(--ink); font-size: 15px; white-space: nowrap;
+    transition: border-color .25s var(--ease), background-color .25s var(--ease);
+  }
+  .wmap-chip-n { color: var(--gold-deep); font-size: 13px; }
+  .wmap-chip:hover, .wmap-chip.is-active { border-color: var(--gold); background: var(--cream-2); }
+  .wmap-chip:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 2px; }
+
+  .wmap-stage { position: relative; max-width: 1200px; margin: 0 auto; min-height: 200px; }
+  .wmap-stage.is-ready { min-height: 0; }
+  .wmap-svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .wmap-stage.is-failed::after { content: 'Mapu se nepodařilo načíst.'; color: var(--ink-soft); }
+
+  .wmap-country { fill: #CFC7B4; stroke: var(--cream); stroke-width: 0.5; cursor: pointer; transition: fill .3s var(--ease); }
+  .wmap-country[data-cont=""] { cursor: default; }
+  .wmap-country.is-active { fill: #B8AF9A; }
+
+  .wmap-dot { cursor: pointer; }
+  .wmap-dot-hit { fill: transparent; }
+  .wmap-dot-mark { fill: var(--gold); stroke: var(--cream); stroke-width: 1px; vector-effect: non-scaling-stroke; transition: opacity .25s var(--ease); }
+  .wmap-dot.is-featured .wmap-dot-mark { fill: var(--gold-deep); stroke-width: 1.5px; }
+  .wmap-dot.is-dim .wmap-dot-mark { opacity: .25; }
+  .wmap-dot:focus { outline: none; }
+  .wmap-dot:focus-visible .wmap-dot-mark { stroke: var(--ink); stroke-width: 2px; }
+
+  .wmap-tip {
+    position: absolute; z-index: 5; transform: translate(-50%, calc(-100% - 12px));
+    padding: 8px 14px; border: 1px solid var(--gold-soft); border-radius: 8px;
+    background: var(--cream); box-shadow: 0 6px 18px rgba(33, 30, 24, .12);
+    font-size: 14px; line-height: 1.35; color: var(--ink); white-space: nowrap;
+    pointer-events: none; opacity: 0; transition: opacity .15s var(--ease);
+  }
+  .wmap-tip strong { display: block; font-weight: 600; }
+  .wmap-tip span { color: var(--ink-soft); font-size: 13px; }
+  .wmap-tip.is-visible { opacity: 1; }
+
+  .wmap-legend { display: flex; justify-content: center; gap: 24px; margin: 24px 0 0; font-size: 14px; color: var(--ink-soft); }
+  .wmap-legend-item { display: inline-flex; align-items: center; gap: 8px; }
+  .wmap-legend-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+  .wmap-legend-dot.is-featured { width: 12px; height: 12px; background: var(--gold-deep); }
+
+  @media (max-width: 620px) {
+    .wmap-head { padding-top: calc(var(--header-h, 84px) + 40px); padding-bottom: 64px; }
+    .wmap-chips { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; margin: 32px -20px 24px; padding: 0 20px 4px; scrollbar-width: none; }
+    .wmap-legend { flex-wrap: wrap; gap: 8px 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wmap-country, .wmap-dot-mark, .wmap-chip, .wmap-tip { transition: none; }
+  }
+</style>
+
+<script is:inline define:vars={{ points }}>window.__MAPA_BODY = points;</script>
+<script is:inline src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script is:inline src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script is:inline src="js/world-map.js?v=1"></script>
