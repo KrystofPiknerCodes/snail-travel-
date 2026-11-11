@@ -1537,12 +1537,10 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   font-family: var(--serif); /* Playfair Display jako nadpisy webu */
   font-weight: 600;
   letter-spacing: 0.01em;
+  /* Bez světlého lemu (křičel) — jen tmavé písmo webu, lehce ztlumené,
+     jako popisek na tištěné mapě. */
   fill: var(--ink);
-  stroke: var(--cream);
-  stroke-width: 3px;
-  stroke-linejoin: round;
-  paint-order: stroke;
-  vector-effect: non-scaling-stroke;
+  fill-opacity: 0.82;
 }
 
 .dest-map.is-fallback { display: none !important; }
