@@ -1819,6 +1819,9 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .country-grid .country-refs::after { content: none; }
 
 .country-refs-n { font-variant-numeric: tabular-nums; }
+/* Číslo a slovo v jednom řádku („2 reference“) — obecná pravidla karet
+   jinak dělají ze spanů bloky a slovo spadlo pod číslo. */
+.country-grid .country-refs { white-space: nowrap; flex-direction: row; }
 .country-grid .country-refs:hover,
 .country-grid .country-refs:focus-visible {
   background: var(--gold);
@@ -1886,9 +1889,9 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   .country-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .country-name { font-size: 16px; }
   .country-body { padding: 12px 14px 14px; }
-  .country-grid .country-refs { top: 6px; right: 6px; padding: 3px 7px; font-size: 10px; }
-  .country-refs-w { display: none; }
-  .country-grid li.is-featured .country-refs-w { display: inline; }
+  .country-grid .country-refs { top: 6px; right: 6px; padding: 3px 8px; font-size: 10.5px; gap: 4px; }
+  /* Slovo „reference“ se dřív na úzkých obrazovkách schovávalo a zůstalo
+     jen samotné číslo, které nic neříkalo (listopad 2026) — vejde se. */
   .dest-search { padding-left: 16px; }
   .dest-search input { font-size: 15px; padding: 14px 10px; }
 }
