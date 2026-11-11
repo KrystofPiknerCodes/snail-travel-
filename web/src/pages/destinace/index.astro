@@ -34,7 +34,7 @@ const KONTINENTY = [
 // první, zbytek abecedně za nimi.
 const VIDITELNYCH = 6;
 
-// Zlaté tečky na glóbusu (globe.js přes window.__GLOBE_BODY). Body jsou
+// Zlaté tečky na glóbusu, jen ozdoba (globe.js přes window.__GLOBE_BODY). Body jsou
 // orientační střed země/ostrova (src/data/destinace-body.json), jen pro
 // umístění tečky — ne přesná poloha.
 const souradnice = body as Record<string, { lat: number; lng: number }>;
@@ -48,11 +48,6 @@ const globeBody = destinace
     lat: souradnice[d.id].lat,
     lng: souradnice[d.id].lng,
   }));
-const CHIP_NAZEV: Record<string, string> = {
-  EU: 'Evropa', AF: 'Afrika', AS: 'Asie', NA: 'Severní a Střední Amerika',
-  SA: 'Jižní Amerika', OC: 'Austrálie a Oceánie', AA: 'Antarktida',
-};
-const strankaCesta = Astro.url.pathname;
 
 // GitHub Pages běží pod podadresářem (viz astro.config.mjs SITE_BASE) — Base.astro
 // řeší statické cesty přes <base>, ale absolutní cesty uložené přímo v obsahu
@@ -101,7 +96,7 @@ function poKontinentu(kod: string) {
   <!-- ============ GLOBUS ============ -->
   <section class="section dest-map-section" id="mapa">
     <div class="wrap">
-      <p class="dest-map-caption reveal">Otočte glóbus a&nbsp;klikněte na zemi, nebo na celý kontinent.</p>
+      <p class="dest-map-caption reveal">Otočte glóbus a&nbsp;klikněte na kontinent, který vás láká.</p>
 
       <div class="globe-wrap reveal" data-delay="1">
         <div class="globe-backdrop" aria-hidden="true">
@@ -127,18 +122,6 @@ function poKontinentu(kod: string) {
         </div>
         <div class="globe-tooltip" id="globeTooltip" aria-hidden="true"></div>
       </div>
-
-      <nav class="globe-chips reveal" data-delay="2" aria-label="Kontinenty">
-        {KONTINENTY.map((k) => (
-          <a class="globe-chip" href={`${strankaCesta}#${k.id}`} data-globe-cont={k.kod}>
-            {CHIP_NAZEV[k.kod]} <span class="globe-chip-n">{poKontinentu(k.kod).length}</span>
-          </a>
-        ))}
-      </nav>
-      <p class="globe-legend reveal" data-delay="2">
-        <span class="globe-legend-item"><span class="globe-legend-dot is-featured" aria-hidden="true"></span>Vybrané destinace</span>
-        <span class="globe-legend-item"><span class="globe-legend-dot" aria-hidden="true"></span>Další země v&nbsp;nabídce</span>
-      </p>
     </div>
   </section>
 
@@ -212,4 +195,4 @@ function poKontinentu(kod: string) {
 <script is:inline src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 <script is:inline src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 <script is:inline define:vars={{ globeBody }}>window.__GLOBE_BODY = globeBody;</script>
-<script is:inline src="js/globe.js?v=8"></script>
+<script is:inline src="js/globe.js?v=9"></script>
