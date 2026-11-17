@@ -41,7 +41,7 @@ const {
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css?v=84" />
+<link rel="stylesheet" href="css/style.css?v=94" />
 <link rel="stylesheet" href="css/destinace-detail.css?v=76" />
 </head>
 <body class:list={[{ 'page-light': !transparentHero }]}>
@@ -60,7 +60,7 @@ const {
       <a href="reference" class={activeNav === 'reference' ? 'is-active' : ''}>Reference</a>
       <a href="#zazitky" class={activeNav === 'zazitky' ? 'is-active' : ''}>Zážitky</a>
       <a href="#kontakt" class={activeNav === 'kontakt' ? 'is-active' : ''}>Kontakt</a>
-      <a href="https://www.snailtravelgolf.cz/" target="_blank" rel="noopener">Golf</a>
+      <a class="nav-golf" href="https://www.snailtravelgolf.cz/" target="_blank" rel="noopener">Golf<svg class="nav-golf-flag" viewBox="0 0 10 14" aria-hidden="true"><path d="M1.5 13.5V1" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M1.5 1.2 L8.6 3.6 L1.5 6Z" fill="currentColor"/></svg></a>
       <!-- "Více" — rozbalovací menu pro vedlejší stránky (VIP služby, Podmínky,
            časem další), ať hlavní řádek nenarůstá do nekonečna. Čistě CSS
            (:hover/:focus-within) — nad 860px (kde tohle menu vůbec existuje,
