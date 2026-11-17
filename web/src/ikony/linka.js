@@ -148,6 +148,17 @@ export const LINKA = [
      <g data-n="t"><path d="M12.5 17.2 C12.5 13.5 11.6 10.4 10 8"/><path d="M10 8 C8 6.6 5.8 7 4.8 8.6 M10 8 C10.2 5.8 8.8 4.2 7 3.8 M10 8 C12 6 14.6 6.2 16 7.6 M10 8 C12.4 8.6 13.8 10.4 13.9 12.2"/></g>`,
     O, (p, E) => set(E.t, { transform: rot(7 * rattle(p.o, 3), 12.5, 17.2) })),
 
+  // Pojištění: štít se lehce nadechne a fajfka se znovu napíše.
+  icon('shield',
+    `<g data-n="s"><path d="M12 3.2 L19 6 V11.5 C19 15.8 16 19.2 12 20.8 C8 19.2 5 15.8 5 11.5 V6 Z" ${SOFT}/></g>
+     <path data-n="c" d="M9 12.1 L11.2 14.3 L15.2 10.2" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>`,
+    O, (p, E) => { const b = bump(p.o); set(E.s, { transform: `translate(12 12) scale(${f(1 + 0.05 * b)}) translate(-12 -12)` }); set(E.c, { 'stroke-dashoffset': f(Math.min(1, 2 * b)) }); }),
+
+  // Garanční fond: budova banky — sloupy se zvednou a sednou zpět.
+  icon('landmark',
+    `<path d="M3.5 9 L12 4 L20.5 9 Z" ${SOFT}/><g data-n="c"><path d="M6.5 11v6 M10 11v6 M14 11v6 M17.5 11v6"/></g><path d="M3.5 19.5h17"/>`,
+    O, (p, E) => set(E.c, { transform: `translate(0 17) scale(1 ${f(1 + 0.15 * bump(p.o))}) translate(0 -17)` })),
+
   // Slunce: paprsky se pootočí a mírně se prodlouží.
   icon('sun',
     `<circle cx="12" cy="12" r="4.2" ${SOFT}/><g data-n="r"><path d="M12 2.8v2 M12 19.2v2 M2.8 12h2 M19.2 12h2 M5.5 5.5l1.4 1.4 M17.1 17.1l1.4 1.4 M5.5 18.5l1.4-1.4 M17.1 6.9l1.4-1.4"/></g>`,

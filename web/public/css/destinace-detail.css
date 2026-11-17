@@ -341,12 +341,16 @@
    zůstávají uvnitř zarovnané vlevo, ať se dobře čtou. */
 #poznavejte .dest-accordion,
 #relaxujte .dest-accordion,
-#info .dest-accordion {
+#info .dest-accordion,
+#pojisteni .dest-accordion,
+#garancni-fond .dest-accordion {
   text-align: center;
 }
 #poznavejte .dest-accordion-inner,
 #relaxujte .dest-accordion-inner,
-#info .dest-accordion-inner {
+#info .dest-accordion-inner,
+#pojisteni .dest-accordion-inner,
+#garancni-fond .dest-accordion-inner {
   margin: 0 auto;
 }
 #poznavejte .dest-accordion-lists,
@@ -359,7 +363,9 @@
    vazba Krystof, 21.9.2026). */
 #poznavejte .dest-accordion-inner > p,
 #relaxujte .dest-accordion-inner > p,
-#info .dest-accordion-inner > p {
+#info .dest-accordion-inner > p,
+#pojisteni .dest-accordion-inner > p,
+#garancni-fond .dest-accordion-inner > p {
   text-align: left;
 }
 /* Mezititulky uvnitř spojeného hotelového "Info" bloku (Poloha, Vybavení
@@ -506,11 +512,11 @@
 
 /* ---------- Sekce s pruhem (reference: Black Tomato "Similar experiences" —
    celý pruh má vlastní pozadí, ne jen karty). Světlá varianta — zapadá do
-   krémového feelu webu, ne černá. Dekorace jsou dvě vlastní kreslené
-   spirály (echo naší ulity z loga, ne generický vzor) — vlevo nahoře
-   dvojlinková spirála, vpravo dole plynulá jednolinková, obě otočené o
-   180° (klientovo přání). Jméno třídy zůstává .section-dark (historicky),
-   i když je teď světlá — používá ji [...slug].astro. ---------- */
+   krémového feelu webu, ne černá. Dekorace: spirála ulity namalovaná štětcem
+   (assets/ulita-stetec.png, dodal Krystof, listopad 2026 — „nic na tom neměň“,
+   jen odstraněná vypálená šachovnice z JPG), velká vlevo, menší vpravo dole.
+   Jméno třídy zůstává .section-dark (historicky), i když je teď světlá —
+   používá ji i [...slug].astro. ---------- */
 .section-dark {
   position: relative;
   overflow: hidden;
@@ -521,29 +527,15 @@
 .section-dark::after {
   content: "";
   position: absolute;
-  width: 384px;
-  height: 384px;
-  background-repeat: no-repeat;
-  background-size: contain;
-  opacity: 0.85;
+  background: url("../assets/ulita-stetec.png") no-repeat center / contain;
   pointer-events: none;
 }
-.section-dark::before {
-  top: 2%;
-  left: 1%;
-  transform: rotate(180deg) scaleX(1.3);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23BD9A45' stroke-width='1.2'%3E%3Cpath d='M100 100 C 100 60, 140 60, 140 100 C 140 150, 70 150, 70 90 C 70 30, 160 30, 160 100 C 160 180, 30 180, 30 90'/%3E%3Cpath d='M100 105 C 100 65, 140 65, 140 105 C 140 155, 75 155, 75 95 C 75 35, 155 35, 155 105 C 155 175, 35 175, 35 95' opacity='0.6'/%3E%3C/g%3E%3C/svg%3E");
-}
-.section-dark::after {
-  bottom: 2%;
-  right: 1%;
-  transform: rotate(180deg);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath d='M100,100 Q120,80 140,100 T100,140 T60,100 T100,60 T160,100 T100,180 T20,100 T100,20' fill='none' stroke='%23BD9A45' stroke-width='1'/%3E%3C/svg%3E");
-}
+.section-dark::before { width: 560px; height: 500px; left: -220px; top: 30px; }
+.section-dark::after  { width: 380px; height: 340px; right: -150px; bottom: -70px; }
 .section-dark .wrap { position: relative; z-index: 1; }
 @media (max-width: 620px) {
-  .section-dark::before,
-  .section-dark::after { width: 240px; height: 240px; }
+  .section-dark::before { width: 300px; height: 268px; left: -150px; top: 10px; }
+  .section-dark::after  { width: 220px; height: 196px; right: -100px; bottom: -50px; }
 }
 
 /* ---------- Placeholder fotky oblasti/hotelu (chybí od klienta) — sdílí

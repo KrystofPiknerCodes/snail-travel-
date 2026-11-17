@@ -113,13 +113,17 @@ import Base from '../layouts/Base.astro';
   </section>
 
   <!-- ============ POJIŠTĚNÍ ZÁJEZDU (akordeon) ============ -->
-  <section class="section dest-accordion-section" id="pojisteni" style="background: var(--cream-2);">
+  <section class="section dest-accordion-section" id="pojisteni" style="background: var(--cream-2); --fade-to: var(--cream-2);">
     <div class="wrap">
-      <div class="dest-accordion" data-collapse>
-        <button type="button" class="dest-accordion-trigger reveal" data-collapse-trigger aria-expanded="false">
+      <div class="dest-accordion-head reveal">
+        <span class="dest-accordion-trigger-label">
           <h2 class="display">Pojištění zájezdu</h2>
-          <span class="dest-accordion-chevron" aria-hidden="true">↓</span>
-        </button>
+          <span class="icon-circle" aria-hidden="true">
+            <Ikona name="shield" size={32} />
+          </span>
+        </span>
+      </div>
+      <div class="dest-accordion" data-collapse>
         <div class="dest-accordion-panel" data-collapse-panel>
           <div class="dest-accordion-inner">
             <p>
@@ -139,6 +143,15 @@ import Base from '../layouts/Base.astro';
             </p>
           </div>
         </div>
+        <button
+          type="button"
+          class="dest-intro-more"
+          data-collapse-trigger
+          data-label-more="Přečíst více ↓"
+          data-label-less="Skrýt ↑"
+        >
+          Přečíst více ↓
+        </button>
       </div>
     </div>
   </section>
@@ -146,11 +159,15 @@ import Base from '../layouts/Base.astro';
   <!-- ============ GARANČNÍ FOND (akordeon) ============ -->
   <section class="section dest-accordion-section" id="garancni-fond">
     <div class="wrap">
-      <div class="dest-accordion" data-collapse>
-        <button type="button" class="dest-accordion-trigger reveal" data-collapse-trigger aria-expanded="false">
+      <div class="dest-accordion-head reveal">
+        <span class="dest-accordion-trigger-label">
           <h2 class="display">Garanční fond</h2>
-          <span class="dest-accordion-chevron" aria-hidden="true">↓</span>
-        </button>
+          <span class="icon-circle" aria-hidden="true">
+            <Ikona name="landmark" size={32} />
+          </span>
+        </span>
+      </div>
+      <div class="dest-accordion" data-collapse>
         <div class="dest-accordion-panel" data-collapse-panel>
           <div class="dest-accordion-inner">
             <p>
@@ -167,6 +184,15 @@ import Base from '../layouts/Base.astro';
             </p>
           </div>
         </div>
+        <button
+          type="button"
+          class="dest-intro-more"
+          data-collapse-trigger
+          data-label-more="Přečíst více ↓"
+          data-label-less="Skrýt ↑"
+        >
+          Přečíst více ↓
+        </button>
       </div>
     </div>
   </section>
