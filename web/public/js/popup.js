@@ -19,11 +19,11 @@
   var thisScript = document.currentScript;
   var basePath = thisScript ? thisScript.src.replace(/js\/popup\.js.*$/, "") : "";
 
-  // Ikony (inline SVG, currentColor)
-  var icoClose = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>';
-  var icoMail  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7 L12 13 L20.5 7"/></svg>';
-  var icoPhone = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3 H9 L10.5 8 L8.5 9.5 C9.5 12 12 14.5 14.5 15.5 L16 13.5 L21 15 V18 C21 19.5 19.7 21 18 21 C10.8 20.5 3.5 13.2 3 6 C3 4.3 4.5 3 6 3 Z"/></svg>';
-  var icoChat  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5 H20 A1 1 0 0 1 21 6 V15 A1 1 0 0 1 20 16 H9 L5 20 V16 H4 A1 1 0 0 1 3 15 V6 A1 1 0 0 1 4 5 Z"/></svg>';
+  // Piktogramy Kubai Icons: zástupce nahradí src/scripts/ikony.ts (Astro bundle).
+  var icoClose = '<i data-kubai="circle-x" data-size="26" aria-hidden="true"></i>';
+  var icoMail  = '<i data-kubai="mail" data-size="20" aria-hidden="true"></i>';
+  var icoPhone = '<i data-kubai="phone" data-size="20" aria-hidden="true"></i>';
+  var icoChat  = '<i data-kubai="message-circle" data-size="22" aria-hidden="true"></i>';
 
   // --- Overlay + popup ---
   var overlay = document.createElement("div");
@@ -33,7 +33,7 @@
   overlay.setAttribute("aria-hidden", "true");
   overlay.innerHTML =
     '<div class="cpop">' +
-      '<button class="cpop-close" type="button" aria-label="Zavřít">' + icoClose + '</button>' +
+      '<button class="cpop-close" type="button" data-kubai-trigger aria-label="Zavřít">' + icoClose + '</button>' +
       '<img class="cpop-photo" src="' + basePath + 'assets/barbora.jpg" alt="Bára Blaschke" ' +
         'onerror="this.onerror=null;this.src=\'' + basePath + 'assets/logo-mark.png\';this.classList.add(\'is-fallback\')" />' +
       '<p class="kicker">Váš osobní kontakt</p>' +
@@ -43,8 +43,8 @@
       '<p class="cpop-person">Bára Blaschke</p>' +
       '<p class="cpop-role">Travel designer</p>' +
       '<div class="cpop-lines">' +
-        '<a href="mailto:barbora@snailtravel.cz">' + icoMail + 'barbora@snailtravel.cz</a>' +
-        '<a href="tel:+420602552624">' + icoPhone + '+420&nbsp;602&nbsp;552&nbsp;624</a>' +
+        '<a href="mailto:barbora@snailtravel.cz" data-kubai-trigger>' + icoMail + 'barbora@snailtravel.cz</a>' +
+        '<a href="tel:+420602552624" data-kubai-trigger>' + icoPhone + '+420&nbsp;602&nbsp;552&nbsp;624</a>' +
       '</div>' +
       '<a class="btn btn-solid" href="mailto:barbora@snailtravel.cz">Napsat Báře</a>' +
     '</div>';
@@ -53,6 +53,7 @@
   var launcher = document.createElement("button");
   launcher.className = "cpop-launcher";
   launcher.type = "button";
+  launcher.setAttribute("data-kubai-trigger", "");
   launcher.setAttribute("aria-label", "Otevřít kontakt na Báru");
   launcher.innerHTML = icoChat + '<span>Kontakt</span>';
 

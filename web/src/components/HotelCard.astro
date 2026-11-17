@@ -32,8 +32,8 @@ const { hotel, href, lokace, rel, class: className } = Astro.props;
       )}
       <span class="country-badge-stack">
         {hotel.data.hvezdy && (
-          <span class="country-badge">
-            <span class="country-stars-on">{'★'.repeat(hotel.data.hvezdy)}</span><span class="country-stars-off">{'★'.repeat(5 - hotel.data.hvezdy)}</span>
+          <span class="country-badge" data-rate>
+            <span class="country-stars-on">{Array.from({ length: hotel.data.hvezdy }, (_, i) => <span class="rate-ch" style={`--i:${i}`}>★</span>)}</span><span class="country-stars-off">{'★'.repeat(5 - hotel.data.hvezdy)}</span>
           </span>
         )}
         <span class="country-badge country-badge-price"><CenaTag cenaOd={hotel.data.cena_od} variant="karta" /></span>

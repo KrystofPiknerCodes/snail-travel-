@@ -84,7 +84,7 @@
       current.classList.remove("is-active");
       // pause the outgoing clip once the crossfade has finished
       setTimeout(function () { try { current.pause(); } catch (e) {} }, 1500);
-    }, 7000);
+    }, 4500);
   }
 
   /* ---------- Destinations slider (arrows + drag-to-scroll) ---------- */

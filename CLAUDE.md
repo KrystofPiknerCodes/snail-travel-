@@ -128,6 +128,17 @@ pokud o to uživatel výslovně nepožádá — každá běžná úprava jde do 
   sekcí/komponent do ní nahlédnout pro nápady (doporučený výběr v
   `docs/inspirace/README.md`), ale přebírat jen principy, ne barvy/fonty/identitu
   cizí značky. Pravidla v téhle sekci mají vždy přednost.
+- **Piktogramy** (Krystof, listopad 2026): vlastní sada tenkých linkových ikon
+  s animací při najetí — `web/src/ikony/linka.js` (mřížka 24×24, linka 1.5 se
+  stejnou tloušťkou v každé velikosti díky `.ki-line`, jemná výplň 14 % currentColor,
+  barva = currentColor z CSS). Krystof chtěl „jemné tenké jako původní, ale s animacemi“;
+  plné vrstvené ikony Kubai Icons zkoušel a byly mu moc těžké. Pohyb pohání runtime
+  z npm `kubai-icons` (animate/bindTrigger), proto mají ikony jeho formát
+  `{ name, markup, target, draw }`. V Astru `<Ikona name="…" size={…} />`
+  (`src/components/Ikona.astro`, SSR), v JS z `public/` zástupce
+  `<i data-kubai="…" data-size="…">`, který nahradí `src/scripts/ikony.ts`. Hover
+  spouští nejbližší předek s `data-kubai-trigger` (karta, tlačítko). Nová ikona =
+  nakreslit ji do `linka.js` stejným stylem. Nemíchat s jinými SVG ikonami.
 - **`.country-grid` (mřížka zemí na `/destinace` a v seznamu oblastí/hotelů)**:
   dlaždice mají jednotnou velikost (`minmax(200px,1fr)`, `aspect-ratio: 4/5`).
   `li.is-featured` dřív dostávalo `grid-column: span 2` (dvojnásobná šířka) —

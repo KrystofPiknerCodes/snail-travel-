@@ -1,4 +1,5 @@
 ---
+import Ikona from '../components/Ikona.astro';
 import Base from '../layouts/Base.astro';
 ---
 <Base
@@ -27,12 +28,9 @@ import Base from '../layouts/Base.astro';
   <section class="section" id="sluzby">
     <div class="wrap">
       <div class="feature-list">
-        <div class="feature-item reveal">
+        <div class="feature-item reveal" data-kubai-trigger>
           <span class="icon-circle" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="10" r="3" />
-              <path d="M12 21c-4-4.5-7-8-7-11a7 7 0 0 1 14 0c0 3-3 6.5-7 11z" />
-            </svg>
+            <Ikona name="map-pin" size={30} />
           </span>
           <span class="feature-item-text">
             <h3>Výběr destinace</h3>
@@ -46,13 +44,9 @@ import Base from '../layouts/Base.astro';
           </span>
         </div>
 
-        <div class="feature-item reveal" data-delay="1">
+        <div class="feature-item reveal" data-kubai-trigger data-delay="1">
           <span class="icon-circle" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4" />
-              <path d="M4 11h16v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4z" />
-              <path d="M6 17v2M18 17v2" />
-            </svg>
+            <Ikona name="sofa" size={30} />
           </span>
           <span class="feature-item-text">
             <h3>VIP salónky na letištích</h3>
@@ -64,12 +58,9 @@ import Base from '../layouts/Base.astro';
           </span>
         </div>
 
-        <div class="feature-item reveal" data-delay="2">
+        <div class="feature-item reveal" data-kubai-trigger data-delay="2">
           <span class="icon-circle" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 2 15 22l-4-9-9-4 20-7z" />
-              <path d="M22 2 11 13" />
-            </svg>
+            <Ikona name="plane" size={30} />
           </span>
           <span class="feature-item-text">
             <h3>Letecká doprava</h3>
@@ -81,14 +72,9 @@ import Base from '../layouts/Base.astro';
           </span>
         </div>
 
-        <div class="feature-item reveal" data-delay="3">
+        <div class="feature-item reveal" data-kubai-trigger data-delay="3">
           <span class="icon-circle" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11" />
-              <rect x="3" y="11" width="18" height="6" rx="2" />
-              <circle cx="7.5" cy="17" r="1.5" />
-              <circle cx="16.5" cy="17" r="1.5" />
-            </svg>
+            <Ikona name="car" size={30} />
           </span>
           <span class="feature-item-text">
             <h3>Privátní transfery</h3>
@@ -99,12 +85,9 @@ import Base from '../layouts/Base.astro';
           </span>
         </div>
 
-        <div class="feature-item reveal" data-delay="4">
+        <div class="feature-item reveal" data-kubai-trigger data-delay="4">
           <span class="icon-circle" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="8" cy="15" r="3" />
-              <path d="M10.5 12.5 20 3M17 6l3 3M14 9l2 2" />
-            </svg>
+            <Ikona name="plane-takeoff" size={30} />
           </span>
           <span class="feature-item-text">
             <h3>Privátní lety</h3>

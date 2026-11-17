@@ -1,4 +1,5 @@
 ---
+import Ikona from '../../components/Ikona.astro';
 // Jedna šablona pro celý strom Destinace/Oblast/Hotel (klientovo zadání:
 // Hlavní strana > Destinace > Evropa > Madeira > Funchal > Hotel).
 //
@@ -126,7 +127,7 @@ const hotelGalerie =
 
 // "Info" — všechny textové sekce hotelu pohromadě, jeden blok s "Přečíst
 // více" (viz sekce INFO níž), ne rozsekané na samostatné sekce/kotvy.
-// `ikona` je SVG path/tvary pro drobný piktogram před každým mezititulkem
+// `ikona` je jméno piktogramu Kubai Icons (src/ikony/index.ts) před každým mezititulkem
 // (na přání Krystof, září 2026 — "klidně u toho info taky přidej nějaké
 // piktogramy"), stejný monoline styl jako ikony u Poznávejte/Relaxujte.
 const hotelInfoText = h
@@ -134,32 +135,32 @@ const hotelInfoText = h
       {
         nadpis: 'Poloha',
         text: h.poloha_text,
-        ikona: '<circle cx="12" cy="10" r="3"/><path d="M12 21c-4-4.3-7-7.9-7-11a7 7 0 0 1 14 0c0 3.1-3 6.7-7 11z"/>',
+        ikona: 'map-pin',
       },
       {
         nadpis: 'Vybavení hotelu',
         text: h.vybaveni_hotelu,
-        ikona: '<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 16h2"/>',
+        ikona: 'hotel',
       },
       {
         nadpis: 'Vybavení pokoje',
         text: h.vybaveni_pokoje,
-        ikona: '<path d="M3 19v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 19v2M21 19v2M3 13V8a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v3"/>',
+        ikona: 'bed',
       },
       {
         nadpis: 'Stravování',
         text: h.stravovani,
-        ikona: '<path d="M7 2v7a2 2 0 0 0 4 0V2M9 9v13M17 2c-1.4 0-2 1.3-2 3v4c0 1.1.9 2 2 2M17 2v18"/>',
+        ikona: 'utensils',
       },
       {
         nadpis: 'Pláž',
         text: h.plaz,
-        ikona: '<path d="M12 3c4.5 0 8 4 9 9H3c1-5 4.5-9 9-9zM12 3v18M9 21a2 2 0 0 0 4 0"/>',
+        ikona: 'beach-umbrella',
       },
       {
         nadpis: 'Sport a zábava',
         text: h.sport_zabava,
-        ikona: '<path d="M6 7v10M4 9v6M20 7v10M22 9v6M6 12h12"/>',
+        ikona: 'dumbbell',
       },
     ].filter((s) => s.text) as Array<{ nadpis: string; text: string; ikona: string }>)
   : [];
@@ -172,32 +173,32 @@ const hotelBadgesDemo = h
       {
         skupina: 'A',
         label: 'All inclusive',
-        ikona: '<path d="M5 5h14L12 13Z"/><path d="M12 13v6"/><path d="M9 19h6"/>',
+        ikona: 'cocktail',
       },
       {
         skupina: 'A',
         label: 'Wellness',
-        ikona: '<path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11Z"/>',
+        ikona: 'droplet',
       },
       {
         skupina: 'A',
         label: 'Plážové hotely',
-        ikona: '<path d="M4 13A8 8 0 0 1 20 13L18 15.3 16 13 14 15.3 12 13 10 15.3 8 13 6 15.3 4 13Z"/><path d="M12 13v8"/><path d="M9 21h6"/>',
+        ikona: 'beach-umbrella',
       },
       {
         skupina: 'B',
         label: 'Golfový zájezd',
-        ikona: '<path d="M12 21V4"/><path d="M12 4l8 3-8 3"/><ellipse cx="12" cy="21" rx="3.2" ry="1"/>',
+        ikona: 'golf-flag',
       },
       {
         skupina: 'B',
         label: 'Eurovíkend',
-        ikona: '<path d="M9.5 9V6.5A1.5 1.5 0 0 1 11 5h2a1.5 1.5 0 0 1 1.5 1.5V9"/><rect x="6" y="9" width="12" height="11.5" rx="1.6"/><path d="M6 13.5h12"/><path d="M9.7 20.5v1.2M14.3 20.5v1.2"/>',
+        ikona: 'luggage',
       },
       {
         skupina: 'B',
         label: 'Pobytový zájezd',
-        ikona: '<circle cx="12" cy="10" r="4.2"/><path d="M12 2.3v2M12 15.7v2M4.3 10h2M17.7 10h2M6.6 4.6l1.4 1.4M16 4.6l-1.4 1.4"/><path d="M3 19.5c2.3-1.6 4.7-1.6 7 0s4.7 1.6 7 0"/>',
+        ikona: 'island',
       },
     ]
   : [];
@@ -278,8 +279,8 @@ const pageDescription =
           <h1 class="display reveal" data-delay="2">{h!.nazev}</h1>
           <div class="hotel-hero-meta reveal" data-delay="3">
             {h!.hvezdy ? (
-              <div class="hotel-stars" aria-label={`${h!.hvezdy} hvězdičky`}>
-                <span class="country-stars-on">{'★'.repeat(h!.hvezdy)}</span><span class="country-stars-off">{'★'.repeat(5 - h!.hvezdy)}</span>
+              <div class="hotel-stars" data-rate aria-label={`${h!.hvezdy} hvězdičky`}>
+                <span class="country-stars-on">{Array.from({ length: h!.hvezdy }, (_, i) => <span class="rate-ch" style={`--i:${i}`}>★</span>)}</span><span class="country-stars-off">{'★'.repeat(5 - h!.hvezdy)}</span>
               </div>
             ) : <span />}
             <span class="hotel-hero-meta-sep" aria-hidden="true"></span>
@@ -317,9 +318,9 @@ const pageDescription =
         <p class="hotel-badges-label">Tento hotel nabízí</p>
         <div class="badge-row">
           {hotelBadgesDemo.map(({ skupina, label, ikona }) => (
-            <div class={`badge ${skupina === 'A' ? 'badge-fill' : 'badge-outline'}`}>
+            <div data-kubai-trigger class={`badge ${skupina === 'A' ? 'badge-fill' : 'badge-outline'}`}>
               <span class="badge-ring">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ikona} />
+                <Ikona name={ikona} size={32} />
               </span>
               <span class="badge-label">{label}</span>
             </div>
@@ -351,7 +352,7 @@ const pageDescription =
                   {hotelInfoText.map(({ nadpis, text, ikona }) => (
                     <>
                       <h3>
-                        <svg class="dest-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ikona} />
+                        <Ikona name={ikona} size={22} class="dest-info-icon" />
                         {nadpis}
                       </h3>
                       <p>{czechNbsp(text)}</p>
@@ -517,10 +518,7 @@ const pageDescription =
               <span class="dest-accordion-trigger-label">
                 <h2 class="display">Poznávejte</h2>
                 <span class="icon-circle" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-                  </svg>
+                  <Ikona name="compass" size={32} />
                 </span>
               </span>
             </div>
@@ -570,10 +568,7 @@ const pageDescription =
               <span class="dest-accordion-trigger-label">
                 <h2 class="display">Relaxujte</h2>
                 <span class="icon-circle" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="5" />
-                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-                  </svg>
+                  <Ikona name="sun" size={32} />
                 </span>
               </span>
             </div>

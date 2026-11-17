@@ -1,4 +1,5 @@
 ---
+import Ikona from '../components/Ikona.astro';
 import Base from '../layouts/Base.astro';
 ---
 <Base
@@ -10,10 +11,26 @@ import Base from '../layouts/Base.astro';
   <!-- ============ HERO ============ -->
   <section class="hero" id="hero">
     <div class="hero-media">
-      <!-- Až dorazí finální video, nahraď assets/hero.mp4 a přegeneruj assets/hero-poster.jpg (první snímek videa, viz CLAUDE.md). -->
+      <!-- Mix stockových klipů (Pexels, volná licence) v assets/hero/, střídá je main.js po 4,5 s.
+           Až dorazí finální video od klienta, nahradit (viz CLAUDE.md). Poster = první snímek prvního klipu. -->
       <div class="hero-video-zoom is-active">
-        <video class="hero-video is-active" autoplay muted loop playsinline preload="auto" poster="assets/hero-poster.jpg?v=1">
-          <source src="assets/hero.mp4?v=7" type="video/mp4" />
+        <video class="hero-video is-active" autoplay muted loop playsinline preload="auto" poster="assets/hero-poster.jpg?v=2">
+          <source src="assets/hero/more-laguna.mp4?v=2" type="video/mp4" />
+        </video>
+        <video class="hero-video" muted loop playsinline preload="metadata">
+          <source src="assets/hero/afrika-sloni.mp4?v=2" type="video/mp4" />
+        </video>
+        <video class="hero-video" muted loop playsinline preload="metadata">
+          <source src="assets/hero/japonsko-fudzi.mp4?v=2" type="video/mp4" />
+        </video>
+        <video class="hero-video" muted loop playsinline preload="metadata">
+          <source src="assets/hero/maledivy-resort.mp4?v=2" type="video/mp4" />
+        </video>
+        <video class="hero-video" muted loop playsinline preload="metadata">
+          <source src="assets/hero/turecko-kapadokie.mp4?v=2" type="video/mp4" />
+        </video>
+        <video class="hero-video" muted loop playsinline preload="metadata">
+          <source src="assets/hero/seychely-balvany.mp4?v=2" type="video/mp4" />
         </video>
       </div>
       <div class="hero-scrim"></div>
@@ -134,37 +151,26 @@ import Base from '../layouts/Base.astro';
       </header>
 
       <div class="pillar-grid">
-        <div class="pillar reveal">
-          <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="9.5" />
-            <polygon points="15.5 8.5 10.8 10.8 8.5 15.5 13.2 13.2" />
-          </svg>
+        <div class="pillar reveal" data-kubai-trigger>
+          <Ikona name="compass" size={52} class="pillar-icon" />
           <h3>Na míru</h3>
           <p>Žádné dvě cesty nejsou stejné. Vše tvoříme od základu podle vašich přání a&nbsp;tempa.</p>
         </div>
 
-        <div class="pillar reveal" data-delay="1">
-          <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="8" cy="8" r="4.5" />
-            <path d="M11.2 11.2 L20 20 M16.5 16.5 L19 14 M14 14 L16.5 11.5" />
-          </svg>
+        <div class="pillar reveal" data-kubai-trigger data-delay="1">
+          <Ikona name="lock" size={52} class="pillar-icon" />
           <h3>Soukromí</h3>
           <p>Diskrétnost a&nbsp;exkluzivní přístup k&nbsp;místům, kam se běžný cestovatel nedostane.</p>
         </div>
 
-        <div class="pillar reveal" data-delay="2">
-          <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M7 3 H17 M7 21 H17 M7 3 C7 8 17 8 17 3 M7 21 C7 16 17 16 17 21" />
-            <path d="M12 8 V12 M12 12 C9.5 13.5 9.5 18 12 18 C14.5 18 14.5 13.5 12 12Z" />
-          </svg>
+        <div class="pillar reveal" data-kubai-trigger data-delay="2">
+          <Ikona name="hourglass" size={52} class="pillar-icon" />
           <h3>Čas</h3>
           <p>Dáváme vám prostor cestu skutečně prožít — bez spěchu, bez kompromisů.</p>
         </div>
 
-        <div class="pillar reveal" data-delay="3">
-          <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M6.5 3.5h3l1.5 4-2 1.5a12 12 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.7 2 2 0 0 1 6.5 3.5z" />
-          </svg>
+        <div class="pillar reveal" data-kubai-trigger data-delay="3">
+          <Ikona name="phone" size={52} class="pillar-icon" />
           <h3>Osobní vztah</h3>
           <p>Nejste číslo v systému. Telefon vám zvedneme kdykoliv, ne jen v úředních hodinách.</p>
         </div>

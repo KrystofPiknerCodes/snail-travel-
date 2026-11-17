@@ -29,8 +29,8 @@ const kategorie = typeof cenaOd === 'number' ? cenovaKategorie(cenaOd) : null;
       aria-expanded="false"
       aria-label={`Cenová kategorie ${kategorie.uroven} z 5 — ${kategorie.popis}. Klikněte pro vysvětlení.`}
     >
-      <span class="price-tag-symbol" aria-hidden="true">
-        <span class="price-tag-symbol-on">{kategorie.symbol}</span><span class="price-tag-symbol-off">{'$'.repeat(5 - kategorie.uroven)}</span>
+      <span class="price-tag-symbol" data-rate aria-hidden="true">
+        <span class="price-tag-symbol-on">{Array.from(kategorie.symbol, (ch, i) => <span class="rate-ch" style={`--i:${i}`}>{ch}</span>)}</span><span class="price-tag-symbol-off">{'$'.repeat(5 - kategorie.uroven)}</span>
       </span>
     </span>
     <template>

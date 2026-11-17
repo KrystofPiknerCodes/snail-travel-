@@ -1,0 +1,18 @@
+---
+// Piktogram z tenké linkové sady (src/ikony/linka.js). SVG se vykreslí už při buildu,
+// animaci při najetí připojí src/scripts/ikony.ts. Hover spouští nejbližší předek
+// s atributem data-kubai-trigger (karta, tlačítko), jinak ikona sama.
+// Barva se dědí z CSS (currentColor).
+import { IKONY, ikonaSvg } from '../ikony';
+
+interface Props {
+  name: string;
+  size?: number;
+  class?: string;
+}
+const { name, size = 24, class: className } = Astro.props;
+const ic = IKONY[name];
+if (!ic) throw new Error(`Ikona "${name}" není v src/ikony/linka.js`);
+const html = ikonaSvg(ic, { size, className });
+---
+<Fragment set:html={html} />

@@ -301,11 +301,11 @@
   font-size: clamp(1.5rem, 2.6vw, 2rem);
 }
 .dest-accordion-head .icon-circle { width: 55px; height: 55px; }
-.dest-accordion-head .icon-circle svg { width: 28px; height: 28px; }
+.dest-accordion-head .icon-circle svg { width: 32px; height: 32px; }
 @media (max-width: 620px) {
   .dest-accordion-trigger-label { gap: 12px; }
   .dest-accordion-head .icon-circle { width: 45px; height: 45px; }
-  .dest-accordion-head .icon-circle svg { width: 22px; height: 22px; }
+  .dest-accordion-head .icon-circle svg { width: 28px; height: 28px; }
 }
 .dest-accordion-panel {
   max-height: 150px;
@@ -378,7 +378,7 @@
   margin: 24px 0 8px;
 }
 .dest-accordion-inner > h3:first-child { margin-top: 0; }
-.dest-info-icon { flex: none; width: 18px; height: 18px; color: var(--gold); }
+.dest-info-icon { flex: none; width: 22px; height: 22px; color: var(--gold); }
 .dest-accordion-lists {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -421,7 +421,7 @@
   width: 62px; height: 62px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
 }
-.badge-ring svg { width: 27.5px; height: 27.5px; }
+.badge-ring svg { width: 32px; height: 32px; }
 .badge-fill .badge-ring {
   background: var(--gold); color: var(--cream);
   box-shadow: inset 0 0 0 3px var(--cream), 0 0 0 1px var(--gold);
@@ -768,7 +768,10 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
   letter-spacing: 0.02em;
 }
 .dest-map .leaflet-popup-content-wrapper { border-radius: 3px; font-family: var(--serif); font-size: 15px; }
-.dest-map-pin { background: none; border: none; filter: drop-shadow(0 3px 6px rgba(33, 30, 24, 0.35)); }
+.dest-map-pin { background: none; border: none; color: var(--gold-deep); filter: drop-shadow(0 2px 3px rgba(33, 30, 24, 0.35)); }
+/* Na rušné mapě tenký špendlík zaniká: bílá výplň + silnější linka. */
+.dest-map-pin .ki-line > g { stroke-width: 2.2; }
+.dest-map-pin .ki-line [fill-opacity] { fill: #fff; fill-opacity: 1; }
 
 @media (max-width: 620px) {
   .dest-map { height: 340px; }
@@ -1002,3 +1005,23 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
   opacity: 1;
   color: rgba(250, 248, 243, 0.42);
 }
+
+/* ---------- Hvězdy a $ — animace „naplnění“ při zobrazení ----------
+   Aktivní znaky (.rate-ch) se jeden po druhém rozsvítí s jemným poskočením.
+   Třídu .rate-anim přidá až JS (src/scripts/hodnoceni.ts), takže bez JS
+   i s prefers-reduced-motion je vše rovnou vidět. */
+.rate-ch { display: inline-block; }
+.rate-anim .rate-ch { opacity: 0.35; }
+.rate-anim.is-in .rate-ch {
+  animation: rate-pop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i) * 180ms + 120ms);
+}
+@keyframes rate-pop {
+  0%   { opacity: 0.35; transform: scale(1); }
+  50%  { opacity: 1; transform: scale(1.32); }
+  100% { opacity: 1; transform: scale(1); }
+}
+/* $ až po hvězdách; v hlavičce hotelu až po najetí textu (.reveal data-delay="3"). */
+.price-tag-symbol.rate-anim.is-in .rate-ch { animation-delay: calc(var(--i) * 180ms + 900ms); }
+.hotel-hero-meta .hotel-stars.rate-anim.is-in .rate-ch { animation-delay: calc(var(--i) * 180ms + 750ms); }
+.hotel-hero-meta .price-tag-symbol.rate-anim.is-in .rate-ch { animation-delay: calc(var(--i) * 180ms + 1650ms); }

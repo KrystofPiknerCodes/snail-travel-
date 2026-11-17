@@ -1,4 +1,5 @@
 ---
+import Ikona from '../components/Ikona.astro';
 import Base from '../layouts/Base.astro';
 ---
 <Base
@@ -23,13 +24,10 @@ import Base from '../layouts/Base.astro';
   <section class="section" id="dokumenty">
     <div class="wrap">
       <div class="doc-grid reveal" data-delay="1">
-        <a class="doc-card" href="docs/STI-smlouva-o-zajezdu.xls" download>
+        <a class="doc-card" data-kubai-trigger href="docs/STI-smlouva-o-zajezdu.xls" download>
           <span class="doc-card-main">
             <span class="icon-circle doc-card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <path d="M14 2v6h6" />
-              </svg>
+              <Ikona name="file-text" size={24} />
             </span>
             <span class="doc-card-text">
               <span class="doc-card-title">Cestovní smlouva</span>
@@ -39,13 +37,10 @@ import Base from '../layouts/Base.astro';
           <span class="doc-card-arrow" aria-hidden="true">↓</span>
         </a>
 
-        <a class="doc-card" href="docs/STI-vseobecne-podminky.pdf" download>
+        <a class="doc-card" data-kubai-trigger href="docs/STI-vseobecne-podminky.pdf" download>
           <span class="doc-card-main">
             <span class="icon-circle doc-card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <path d="M14 2v6h6" />
-              </svg>
+              <Ikona name="file-text" size={24} />
             </span>
             <span class="doc-card-text">
               <span class="doc-card-title">Všeobecné podmínky účasti na zájezdu</span>
@@ -55,13 +50,10 @@ import Base from '../layouts/Base.astro';
           <span class="doc-card-arrow" aria-hidden="true">↓</span>
         </a>
 
-        <div class="doc-card is-disabled">
+        <div class="doc-card is-disabled" data-kubai-trigger>
           <span class="doc-card-main">
             <span class="icon-circle doc-card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <path d="M14 2v6h6" />
-              </svg>
+              <Ikona name="file-text" size={24} />
             </span>
             <span class="doc-card-text">
               <span class="doc-card-title">Víza</span>
@@ -70,13 +62,10 @@ import Base from '../layouts/Base.astro';
           </span>
         </div>
 
-        <a class="doc-card" href="docs/STI-pojistka-proti-upadku.pdf" download>
+        <a class="doc-card" data-kubai-trigger href="docs/STI-pojistka-proti-upadku.pdf" download>
           <span class="doc-card-main">
             <span class="icon-circle doc-card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <path d="M14 2v6h6" />
-              </svg>
+              <Ikona name="file-text" size={24} />
             </span>
             <span class="doc-card-text">
               <span class="doc-card-title">Pojistka proti úpadku</span>
@@ -86,13 +75,10 @@ import Base from '../layouts/Base.astro';
           <span class="doc-card-arrow" aria-hidden="true">↓</span>
         </a>
 
-        <a class="doc-card" href="docs/STI-gdpr.pdf" download>
+        <a class="doc-card" data-kubai-trigger href="docs/STI-gdpr.pdf" download>
           <span class="doc-card-main">
             <span class="icon-circle doc-card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <path d="M14 2v6h6" />
-              </svg>
+              <Ikona name="file-text" size={24} />
             </span>
             <span class="doc-card-text">
               <span class="doc-card-title">Ochrana osobních údajů (GDPR)</span>
@@ -102,13 +88,10 @@ import Base from '../layouts/Base.astro';
           <span class="doc-card-arrow" aria-hidden="true">↓</span>
         </a>
 
-        <a class="doc-card" href="docs/STI-osvedceni-ackca-2020.pdf" download>
+        <a class="doc-card" data-kubai-trigger href="docs/STI-osvedceni-ackca-2020.pdf" download>
           <span class="doc-card-main">
             <span class="icon-circle doc-card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <path d="M14 2v6h6" />
-              </svg>
+              <Ikona name="file-text" size={24} />
             </span>
             <span class="doc-card-text">
               <span class="doc-card-title">Osvědčení o členství AČCKA</span>
