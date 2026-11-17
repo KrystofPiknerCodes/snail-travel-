@@ -15,25 +15,19 @@
   var header = document.querySelector('.header-inner');
   if (!header) return;
 
-  var ICON_SEARCH =
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" ' +
-      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-      '<circle cx="11" cy="11" r="7" /><path d="M20 20 L16 16" /></svg>';
-  var ICON_PHONE =
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" ' +
-      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-      '<path d="M6.5 3.5h3l1.5 4-2 1.5a12 12 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.7 2 2 0 0 1 6.5 3.5z" />' +
-    '</svg>';
+  // Piktogramy Kubai Icons: zástupce nahradí src/scripts/ikony.ts (Astro bundle).
+  var ICON_SEARCH = '<i data-kubai="magnifier" data-size="22" aria-hidden="true"></i>';
+  var ICON_PHONE = '<i data-kubai="phone" data-size="22" aria-hidden="true"></i>';
 
   // ---- Injekce tlačítek do hlavičky ------------------------------------
   var actions = document.createElement('div');
   actions.className = 'hact';
   actions.innerHTML =
-    '<button type="button" class="hact-btn" id="hactSearchBtn" aria-label="Hledat" ' +
+    '<button type="button" class="hact-btn" data-kubai-trigger id="hactSearchBtn" aria-label="Hledat" ' +
       'aria-expanded="false" title="Hledat">' + ICON_SEARCH + '</button>' +
     '<div class="hact-phone" id="hactPhoneWrap">' +
       '<a class="hact-phone-num" href="' + PHONE_HREF + '" tabindex="-1">' + PHONE + '</a>' +
-      '<button type="button" class="hact-btn" id="hactPhoneBtn" aria-label="Zobrazit telefonní číslo" ' +
+      '<button type="button" class="hact-btn" data-kubai-trigger id="hactPhoneBtn" aria-label="Zobrazit telefonní číslo" ' +
         'aria-expanded="false" title="Telefon">' + ICON_PHONE + '</button>' +
     '</div>';
 

@@ -289,7 +289,7 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
   transition: background .35s var(--ease), border-color .35s var(--ease), color .35s var(--ease);
 }
-.hact-btn svg { width: 18px; height: 18px; display: block; }
+.hact-btn svg { width: 22px; height: 22px; display: block; }
 .hact-btn:hover,
 .hact-btn[aria-expanded="true"] {
   background: var(--gold);
@@ -874,7 +874,7 @@ body.menu-open .mobile-nav {
 }
 .pillar { text-align: left; }
 .pillar-icon {
-  width: 44px; height: 44px;
+  width: 52px; height: 52px;
   color: var(--gold-deep);
   margin-bottom: 26px;
 }
@@ -1340,7 +1340,7 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   box-shadow: 0 14px 40px -20px rgba(146, 114, 51, 0.55);
 }
 .dest-search-icon {
-  width: 20px; height: 20px;
+  width: 22px; height: 22px;
   flex: none;
   color: var(--gold-deep);
 }
@@ -2256,7 +2256,7 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   color: var(--gold);
   transform: rotate(90deg);
 }
-.cpop-close svg { width: 20px; height: 20px; display: block; }
+.cpop-close svg { width: 26px; height: 26px; display: block; }
 
 .cpop-photo {
   width: 108px;
@@ -2329,7 +2329,7 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 }
 .cpop-lines a:hover { color: var(--gold-deep); }
 .cpop-lines svg {
-  width: 16px; height: 16px;
+  width: 20px; height: 20px;
   flex: none;
   color: var(--gold-deep);
 }
@@ -2369,7 +2369,7 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   visibility: visible;
 }
 .cpop-launcher:hover { background: var(--gold-deep); color: #fff; }
-.cpop-launcher svg { width: 18px; height: 18px; flex: none; }
+.cpop-launcher svg { width: 22px; height: 22px; flex: none; }
 
 /* Popup nikdy nesmí být vyšší než displej (je position: fixed, takže by
    přečuhující část nešla doscrollovat) — na nízkém displeji se scrolluje
@@ -2410,6 +2410,8 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   color: var(--gold-deep);
 }
 .icon-circle svg { display: block; }
+/* Tenké piktogramy (src/ikony/linka.js): linka má stejnou tloušťku v každé velikosti. */
+.ki-line * { vector-effect: non-scaling-stroke; }
 
 /* ---------- Dokumenty ke stažení (dulezite-informace.astro) ---------- */
 .doc-grid {
@@ -2433,7 +2435,7 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .doc-card:hover { border-color: var(--gold); box-shadow: 0 18px 44px -30px rgba(33, 30, 24, 0.4); }
 .doc-card-main { display: flex; align-items: center; gap: 16px; min-width: 0; }
 .doc-card-icon { width: 40px; height: 40px; }
-.doc-card-icon svg { width: 18px; height: 18px; }
+.doc-card-icon svg { width: 24px; height: 24px; }
 .doc-card-text { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .doc-card-title { font-family: var(--serif); font-size: 1.05rem; line-height: 1.3; }
 .doc-card-format {
@@ -2457,7 +2459,7 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .feature-list { display: flex; flex-direction: column; gap: 40px; max-width: 780px; margin: 0 auto; }
 .feature-item { display: flex; align-items: flex-start; gap: 22px; }
 .feature-item .icon-circle { width: 52px; height: 52px; margin-top: 4px; }
-.feature-item .icon-circle svg { width: 24px; height: 24px; }
+.feature-item .icon-circle svg { width: 30px; height: 30px; }
 .feature-item h3 {
   font-family: var(--serif);
   font-size: 1.3rem;
@@ -2467,7 +2469,7 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 @media (max-width: 560px) {
   .feature-item { gap: 16px; }
   .feature-item .icon-circle { width: 44px; height: 44px; }
-  .feature-item .icon-circle svg { width: 20px; height: 20px; }
+  .feature-item .icon-circle svg { width: 26px; height: 26px; }
 }
 /* Aktivní položka menu na průhledné hlavičce nad fotkou (hero hotelu) —
    tmavá --gold-deep tam zaniká, nad fotkou světlejší zlatá. */
