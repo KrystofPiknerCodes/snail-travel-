@@ -25,9 +25,16 @@
     return header ? header.offsetHeight : 84;
   }
 
+  // Spodní hrana rozcestníku při přilepení: hlavička + mezera nad kapslí
+  // (CSS --dest-toc-gap, viz destinace-detail.css) + výška kapsle.
+  function tocBottom() {
+    var gap = parseFloat(getComputedStyle(toc).getPropertyValue('--dest-toc-gap')) || 0;
+    return headerHeight() + gap + toc.offsetHeight;
+  }
+
   function updateOffsets() {
     document.documentElement.style.setProperty('--header-h', headerHeight() + 'px');
-    var offset = headerHeight() + toc.offsetHeight + 16;
+    var offset = tocBottom() + 16;
     document.documentElement.style.setProperty('--dest-scroll-offset', offset + 'px');
   }
 
@@ -48,7 +55,7 @@
       activeLinks.push(link);
       link.addEventListener('click', function (e) {
         e.preventDefault();
-        var top = section.getBoundingClientRect().top + window.scrollY - (headerHeight() + toc.offsetHeight + 16);
+        var top = section.getBoundingClientRect().top + window.scrollY - (tocBottom() + 16);
         window.scrollTo({ top: top, behavior: 'smooth' });
         // Nikdy jen "#" + id — <base href> (viz komentář výš) by ten
         // relativní fragment přepočítal vůči kořeni webu a URL by v adresním
@@ -87,7 +94,7 @@
   function rebuildSpy() {
     if (!('IntersectionObserver' in window)) return;
     if (spy) spy.disconnect();
-    var topMargin = headerHeight() + toc.offsetHeight + 10;
+    var topMargin = tocBottom() + 10;
     spy = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
