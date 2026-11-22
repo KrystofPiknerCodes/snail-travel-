@@ -6,8 +6,7 @@
    otočí a teprve pak stránka sjede dolů, ať je otočení vidět.
 
    Odkazy mají plnou cestu stránky + #id (kvůli <base href>, viz dest-toc.js),
-   skok řešíme sami, se stejným odsazením pod hlavičkou a rozcestníkem
-   (--dest-scroll-offset nastavuje js/dest-toc.js). */
+   skok řešíme sami, s odsazením pod pevnou hlavičkou. */
 (function () {
   'use strict';
 
@@ -37,7 +36,8 @@
   function scrollToSection(id) {
     var section = document.getElementById(id);
     if (!section) return;
-    var offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dest-scroll-offset')) || 150;
+    var header = document.getElementById('header');
+    var offset = (header ? header.offsetHeight : 84) + 24;
     var top = section.getBoundingClientRect().top + window.scrollY - offset;
     window.scrollTo({ top: top, behavior: prefersReduced ? 'auto' : 'smooth' });
     if (history.pushState) history.pushState(null, '', location.pathname + location.search + '#' + id);

@@ -1,6 +1,5 @@
 ---
 import Ikona from '../../components/Ikona.astro';
-import Rozcestnik from '../../components/Rozcestnik.astro';
 // Výpiska destinací — Astro náhrada za statický destinace.html (viz
 // CLAUDE.md "Astro verze" a úkol migrace katalogu zemí, srpen 2026).
 //
@@ -103,7 +102,6 @@ function poKontinentu(kod: string) {
   <!-- ============ GLOBUS ============ -->
   <section class="section dest-map-section" id="mapa">
     <div class="wrap">
-      <p class="dest-map-caption reveal">Vyberte kontinent a&nbsp;glóbus se&nbsp;otočí za&nbsp;vámi.</p>
 
       <div class="globe-layout">
       <div class="globe-wrap reveal" data-delay="1">
@@ -154,14 +152,6 @@ function poKontinentu(kod: string) {
       </div>
     </div>
   </section>
-
-  <!-- ============ ROZCESTNÍK KONTINENTŮ ============
-       Glóbus je efektní, ale hledat na něm kontinent je pomalé (Krystof,
-       listopad 2026) — stejná sticky kapsle jako na detailu destinace,
-       jen kontinenty, které reálně mají nějakou destinaci. -->
-  <Rozcestnik
-    items={KONTINENTY.filter((k) => poKontinentu(k.kod).length > 0).map((k) => ({ id: k.id, label: k.zkratka }))}
-  />
 
   <!-- ============ SEKCE PODLE KONTINENTU ============ -->
   {KONTINENTY.map((k) => {
@@ -234,4 +224,4 @@ function poKontinentu(kod: string) {
 <script is:inline src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 <script is:inline define:vars={{ globeBody }}>window.__GLOBE_BODY = globeBody;</script>
 <script is:inline src="js/globe.js?v=14"></script>
-<script is:inline src="js/dest-continents.js?v=1"></script>
+<script is:inline src="js/dest-continents.js?v=2"></script>
