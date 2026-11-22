@@ -57,6 +57,14 @@ const globeBody = destinace
 // zbavit úvodního lomítka ručně, ať zůstanou relativní vůči <base>.
 const rel = (p?: string) => (p ? p.replace(/^\//, '') : '');
 
+// Dlaždice kontinentů vedle glóbusu: fotka = hlavní foto první destinace
+// kontinentu v pořadí výpisu (vybrané první), počet = kolik destinací má.
+function sklonujDestinace(n: number) {
+  if (n === 1) return '1 destinace';
+  if (n >= 2 && n <= 4) return `${n} destinace`;
+  return `${n} destinací`;
+}
+
 function poKontinentu(kod: string) {
   return destinace
     .filter((d) => d.data.kontinent === kod)
@@ -95,8 +103,9 @@ function poKontinentu(kod: string) {
   <!-- ============ GLOBUS ============ -->
   <section class="section dest-map-section" id="mapa">
     <div class="wrap">
-      <p class="dest-map-caption reveal">Otočte glóbus a&nbsp;klikněte na kontinent, který vás láká, nebo ho vyberte v&nbsp;liště pod glóbusem.</p>
+      <p class="dest-map-caption reveal">Vyberte kontinent a&nbsp;glóbus se&nbsp;otočí za&nbsp;vámi.</p>
 
+      <div class="globe-layout">
       <div class="globe-wrap reveal" data-delay="1">
         <div class="globe-backdrop" aria-hidden="true">
           <svg viewBox="0 0 900 900" class="globe-backdrop-grid" preserveAspectRatio="xMidYMid meet">
@@ -120,6 +129,28 @@ function poKontinentu(kod: string) {
           <div class="globe-loading">Nahrávám glóbus…</div>
         </div>
         <div class="globe-tooltip" id="globeTooltip" aria-hidden="true"></div>
+      </div>
+
+      <!-- Dlaždice kontinentů: najetí/fokus otočí glóbus na kontinent
+           (js/dest-continents.js → window.snailGlobe), klik skočí na sekci. -->
+      <ul class="cont-tiles reveal" data-delay="2">
+        {KONTINENTY.map((k) => {
+          const zeme = poKontinentu(k.kod);
+          if (zeme.length === 0) return null;
+          const foto = zeme.find((d) => d.data.hlavni_foto)?.data.hlavni_foto;
+          return (
+            <li>
+              <a href={`${Astro.url.pathname}#${k.id}`} class="cont-tile" data-cont={k.kod} data-target={k.id}>
+                {foto && <img src={rel(foto)} alt="" loading="lazy" width="480" height="300" />}
+                <span class="cont-tile-text">
+                  <span class="cont-tile-name">{k.zkratka}</span>
+                  <span class="cont-tile-count">{sklonujDestinace(zeme.length)}</span>
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
       </div>
     </div>
   </section>
@@ -202,4 +233,5 @@ function poKontinentu(kod: string) {
 <script is:inline src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 <script is:inline src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 <script is:inline define:vars={{ globeBody }}>window.__GLOBE_BODY = globeBody;</script>
-<script is:inline src="js/globe.js?v=13"></script>
+<script is:inline src="js/globe.js?v=14"></script>
+<script is:inline src="js/dest-continents.js?v=1"></script>

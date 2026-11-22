@@ -1562,6 +1562,72 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .globe-stage.is-hover { cursor: pointer; }
 .globe-svg { width: 100%; height: 100%; display: block; overflow: visible; }
 
+/* ---- Glóbus + dlaždice kontinentů vedle sebe (Krystof, listopad 2026) ----
+   Dlaždice jsou hlavní cesta (rychlé, čitelné), glóbus na ně reaguje — najetí
+   na dlaždici ho natočí na kontinent (js/dest-continents.js). */
+.globe-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+.cont-tiles {
+  position: relative;
+  z-index: 2;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+/* Lichý počet → poslední dlaždice přes celou šířku, ať řádek nevisí. */
+.cont-tiles li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.cont-tile {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  height: 118px;
+  padding: 14px 18px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--cream-2);
+  color: #fff;
+  border: 1px solid transparent;
+  transition: border-color .3s var(--ease), box-shadow .3s var(--ease);
+}
+.cont-tile img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .8s var(--ease);
+}
+.cont-tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(20, 16, 10, .62) 0%, rgba(20, 16, 10, .18) 55%, rgba(20, 16, 10, .05) 100%);
+  transition: background .3s var(--ease);
+}
+.cont-tile-text { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 2px; }
+.cont-tile-name { font-family: var(--serif); font-size: 21px; line-height: 1.15; }
+.cont-tile-count { font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; opacity: .88; }
+.cont-tile:hover img,
+.cont-tile.is-active img { transform: scale(1.06); }
+.cont-tile.is-active { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-soft); }
+.cont-tile.is-active::after { background: linear-gradient(to top, rgba(20, 16, 10, .55) 0%, rgba(20, 16, 10, .1) 60%, rgba(20, 16, 10, 0) 100%); }
+.cont-tile:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+@media (max-width: 900px) {
+  .globe-layout { grid-template-columns: 1fr; gap: 28px; }
+  .globe-layout .globe-wrap { max-width: 340px; }
+  .cont-tile { height: 96px; padding: 12px 14px; }
+  .cont-tile-name { font-size: 18px; }
+  .cont-tile-count { font-size: 10.5px; }
+}
+
 .globe-loading {
   position: absolute;
   inset: 0;

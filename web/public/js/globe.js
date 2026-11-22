@@ -180,7 +180,7 @@
         })
         .on('mousemove', event => moveTooltip(event))
         .on('mouseleave', () => {
-          setActive(null);
+          setActive(focusedCont);
           hideTooltip();
           stage.classList.remove('is-hover');
         })
@@ -238,6 +238,53 @@
       });
   }
 
+  // ---- Natočení na kontinent z dlaždic (js/dest-continents.js) ---------
+  // Střed pohledu [lng, lat] pro každý kontinent.
+  const FOCUS = {
+    EU: [15, 48], AF: [20, 2], AS: [95, 32], NA: [-95, 35],
+    SA: [-60, -18], OC: [140, -25], AA: [0, -72]
+  };
+  let focusedCont = null, focusAnim = 0;
+
+  function focusContinent(code) {
+    const c = FOCUS[code];
+    if (!c) return;
+    focusedCont = code;
+    stopAutoRotate();
+    clearTimeout(autoResumeT);
+    setActive(code);
+    cancelAnimationFrame(focusAnim);
+    const from = projection.rotate();
+    // Nejkratší cesta po zeměpisné délce (ne přes celou zeměkouli).
+    let dLng = (-c[0] - from[0]) % 360;
+    if (dLng > 180) dLng -= 360;
+    if (dLng < -180) dLng += 360;
+    const to = [from[0] + dLng, -c[1], 0];
+    if (prefersReduced) { projection.rotate(to); redraw(); return; }
+    const t0 = performance.now(), DUR = 900;
+    const step = (now) => {
+      const t = Math.min(1, (now - t0) / DUR);
+      const e = 1 - Math.pow(1 - t, 3); // ease-out
+      projection.rotate([
+        from[0] + (to[0] - from[0]) * e,
+        from[1] + (to[1] - from[1]) * e,
+        from[2] + (to[2] - from[2]) * e
+      ]);
+      redraw();
+      if (t < 1) focusAnim = requestAnimationFrame(step);
+    };
+    focusAnim = requestAnimationFrame(step);
+  }
+
+  function releaseContinent() {
+    focusedCont = null;
+    setActive(null);
+    clearTimeout(autoResumeT);
+    autoResumeT = setTimeout(startAutoRotate, 3200);
+  }
+
+  window.snailGlobe = { focus: focusContinent, release: releaseContinent };
+
   // ---- Tooltip (follows cursor, floats above it) -----------------------
   function showTooltip(event, text) {
     tooltip.textContent = text;
@@ -271,6 +318,7 @@
   }
 
   function dragStart(event) {
+    cancelAnimationFrame(focusAnim); // tažení přebíjí natáčení z dlaždic
     dragging = true;
     didDrag = false;
     touchAxis = null;
@@ -372,7 +420,7 @@
     if (prefersReduced) return;
     stopAutoRotate();
     autoT = setInterval(() => {
-      if (dragging || stage.classList.contains('is-hover')) return;
+      if (dragging || focusedCont || stage.classList.contains('is-hover')) return;
       const r = projection.rotate();
       projection.rotate([r[0] + 0.18, r[1], r[2]]);
       redraw();
