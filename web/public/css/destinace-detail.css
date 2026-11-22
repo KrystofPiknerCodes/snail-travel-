@@ -685,22 +685,24 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
 /* ============================================================
    ROZCESTNÍK — sticky kotevní navigace pod hero sekcí
    ============================================================ */
-/* Plovoucí „kapsle" (varianta A, vybral Krystof, listopad 2026): dřív to byl
-   krémový pruh přes celou šířku, který se při scrollu slil s hlavičkou do
-   jednoho bloku. Teď je pruh sám průhledný a viditelná je jen bílá zaoblená
-   lišta s mezerou pod hlavičkou (--dest-toc-gap). Mezeru počítá i
-   js/dest-toc.js do odsazení sekcí při skoku na kotvu — měnit obojí. */
+/* Bílá „kapsle" uvnitř krémového pruhu přes celou šířku (Krystof, listopad
+   2026). Samotný krémový pruh se při scrollu slil s hlavičkou do jednoho
+   bloku; plovoucí kapsle bez pruhu zase přečnívala přes obsah. Pruh je tedy
+   zpátky a odlišení dělá až kapsle v něm. --dest-toc-gap = mezera mezi
+   hlavičkou a pruhem, počítá ji i js/dest-toc.js do odsazení sekcí při skoku
+   na kotvu (teď 0, pruh sedí přímo pod hlavičkou). */
 .dest-toc {
-  --dest-toc-gap: 12px;
+  --dest-toc-gap: 0px;
   position: sticky;
   top: calc(var(--header-h, 84px) + var(--dest-toc-gap));
   z-index: 90;
-  margin-top: 20px;
-  padding: 0 16px;
-  pointer-events: none; /* průhledné okolí kapsle nesmí blokovat kliky na obsah */
+  padding: 9px 16px;
+  background: rgba(250, 248, 243, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
 }
 .dest-toc-inner {
-  pointer-events: auto;
   box-sizing: border-box;
   width: max-content;
   max-width: 100%;
@@ -714,7 +716,7 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
   background: rgba(255, 255, 255, 0.97);
   border: 1px solid var(--line);
   border-radius: 999px;
-  box-shadow: 0 8px 24px -12px rgba(33, 30, 24, 0.35);
+  box-shadow: 0 2px 8px -4px rgba(33, 30, 24, 0.18);
 }
 .dest-toc-inner::-webkit-scrollbar { display: none; }
 .dest-toc-link {
