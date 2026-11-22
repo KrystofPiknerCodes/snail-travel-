@@ -12,7 +12,6 @@ import Ikona from '../../components/Ikona.astro';
 // collection `destinace` místo natvrdo psaného HTML.
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import body from '../../data/destinace-body.json';
 
 const vse = await getCollection('destinace');
 // Top-level destinace = typ 'destinace' (oblasti typu Funchal/ostrovy Seychel
@@ -35,20 +34,6 @@ const KONTINENTY = [
 // první, zbytek abecedně za nimi.
 const VIDITELNYCH = 6;
 
-// Zlaté tečky na glóbusu, jen ozdoba (globe.js přes window.__GLOBE_BODY). Body jsou
-// orientační střed země/ostrova (src/data/destinace-body.json), jen pro
-// umístění tečky — ne přesná poloha.
-const souradnice = body as Record<string, { lat: number; lng: number }>;
-const globeBody = destinace
-  .filter((d) => souradnice[d.id])
-  .map((d) => ({
-    slug: d.id,
-    nazev: d.data.nazev,
-    kontinent: d.data.kontinent,
-    vybrana: d.data.vybrana,
-    lat: souradnice[d.id].lat,
-    lng: souradnice[d.id].lng,
-  }));
 
 // GitHub Pages běží pod podadresářem (viz astro.config.mjs SITE_BASE) — Base.astro
 // řeší statické cesty přes <base>, ale absolutní cesty uložené přímo v obsahu
@@ -222,6 +207,5 @@ function poKontinentu(kod: string) {
 <script is:inline src="js/destinations.js?v=5"></script>
 <script is:inline src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 <script is:inline src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
-<script is:inline define:vars={{ globeBody }}>window.__GLOBE_BODY = globeBody;</script>
-<script is:inline src="js/globe.js?v=16"></script>
+<script is:inline src="js/globe.js?v=17"></script>
 <script is:inline src="js/dest-continents.js?v=3"></script>

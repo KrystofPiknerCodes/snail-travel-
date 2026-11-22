@@ -1,10 +1,10 @@
 /* Snail Travel — interactive globe
    D3 orthographic globe. Drag to rotate. Hover a continent → gold tint +
    floating label. Click → smooth-scroll to the continent's country grid.
-   Listopad 2026: zlaté tečky = země v nabídce (data window.__GLOBE_BODY
-   z destinace/index.astro). Jen ozdoba: bez tooltipu a prokliku, myš jimi
-   prochází na kontinent. Na dotyku svislý tah posouvá stránku, glóbus se
-   otáčí jen vodorovným tahem.
+   Na dotyku svislý tah posouvá stránku, glóbus se otáčí jen vodorovným
+   tahem. Dlaždice kontinentů vedle glóbusu ho natáčejí přes
+   window.snailGlobe (js/dest-continents.js). Zlaté tečky destinací a let
+   z Prahy byly vyzkoušené a na přání Krystofa (listopad 2026) odebrané.
    ============================================================ */
 (function () {
   'use strict';
@@ -14,7 +14,6 @@
   if (!stage || !window.d3 || !window.topojson) return;
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const points = window.__GLOBE_BODY || [];
 
   // Continent labels + section anchors
   const CONT = {
@@ -134,14 +133,6 @@
 
   // Container for country / continent paths
   const gLand = svg.append('g').attr('class', 'globe-land');
-  // Trasa letu z Prahy při výběru kontinentu (focusContinent níž).
-  const gRoute = svg.append('g').attr('class', 'globe-route').attr('aria-hidden', 'true');
-  const routeLine = gRoute.append('path').attr('class', 'globe-route-line');
-  const routeHome = gRoute.append('circle').attr('class', 'globe-route-home').attr('display', 'none');
-  const routePlane = gRoute.append('circle').attr('class', 'globe-route-plane').attr('display', 'none');
-  const gDots = svg.append('g').attr('class', 'globe-dots').attr('aria-hidden', 'true');
-  // Pulzující kroužky kolem destinací vybraného kontinentu.
-  const gPulse = svg.append('g').attr('class', 'globe-pulses').attr('aria-hidden', 'true');
   // Názvy kontinentů přímo na glóbusu — viditelné jen na dotykových
   // zařízeních (CSS @media (hover: none)), kde není najetí myší.
   const gLabels = svg.append('g').attr('class', 'globe-labels').attr('aria-hidden', 'true');
@@ -200,11 +191,6 @@
           scrollToAnchor(CONT[d.__cont].anchor);
         });
 
-      // decorative dots (vybrané navrch, ať je menší nepřekryjí)
-      gDots.selectAll('circle')
-        .data(points.slice().sort((a, b) => (a.vybrana === b.vybrana ? 0 : a.vybrana ? 1 : -1)))
-        .join('circle')
-          .attr('class', d => 'globe-dot-mark' + (d.vybrana ? ' is-featured' : ''));
       gLabels.selectAll('text')
         .data(LABELS)
         .join('text')
@@ -212,9 +198,9 @@
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'central')
           .text(d => d.text.toLocaleUpperCase('cs'));
-      sizeDots();
-      placeDots();
-      window.addEventListener('resize', sizeDots, { passive: true });
+      sizeLabels();
+      placeLabels();
+      window.addEventListener('resize', sizeLabels, { passive: true });
 
       // remove loading placeholder
       const loading = stage.querySelector('.globe-loading');
@@ -249,106 +235,39 @@
   }
 
   // ---- Natočení na kontinent z dlaždic (js/dest-continents.js) ---------
-  // Let z Prahy: zlatý oblouk (ortodroma) z Prahy na typickou destinaci
-  // kontinentu, po kterém doletí tečka. Glóbus se natočí na bod mezi Prahou
-  // a cílem (polovina cesty), ať je vidět Praha, trasa i cíl. Cíle jsou jen pro kresbu
-  // trasy, ne tvrzení o konkrétní nabídce.
-  const PRAHA = [14.42, 50.08];
-  const ROUTE_TARGET = {
-    EU: [-16.9, 32.7],   // Madeira
-    AF: [57.5, -20.2],   // Mauricius
-    AS: [115.2, -8.4],   // Bali
-    NA: [-79.5, 21.6],   // Karibik (Kuba)
-    SA: [-72.5, -13.2],  // Peru
-    OC: [151.2, -33.9],  // Sydney
-    AA: [-62.0, -64.0]   // Antarktický poloostrov
+  // Střed pohledu [lng, lat] pro každý kontinent.
+  const FOCUS = {
+    EU: [15, 48], AF: [20, 2], AS: [95, 32], NA: [-95, 35],
+    SA: [-60, -18], OC: [140, -25], AA: [0, -72]
   };
   let focusedCont = null, focusAnim = 0;
-  let route = null; // { interp, progress }
-  let routeFadeT = 0;
-
-  function visible(lnglat) {
-    const r = projection.rotate();
-    return d3.geoDistance(lnglat, [-r[0], -r[1]]) < Math.PI / 2 - 0.02;
-  }
-
-  function drawRoute() {
-    if (!route) return;
-    const n = Math.max(2, Math.round(64 * route.progress));
-    const coords = [];
-    for (let i = 0; i <= n; i++) coords.push(route.interp((i / n) * route.progress));
-    routeLine.attr('d', path({ type: 'LineString', coordinates: coords }) || '');
-    const home = projection(PRAHA);
-    routeHome.attr('display', visible(PRAHA) ? null : 'none')
-      .attr('cx', home[0]).attr('cy', home[1]);
-    const head = route.interp(route.progress);
-    const hp = projection(head);
-    routePlane.attr('display', route.progress > 0 && visible(head) ? null : 'none')
-      .attr('cx', hp[0]).attr('cy', hp[1]);
-  }
-
-  function setPulses(code) {
-    gDots.classed('is-focus', !!code);
-    gDots.selectAll('circle').classed('is-lit', d => !!code && d.kontinent === code);
-    const lit = code ? points.filter(p => p.kontinent === code) : [];
-    gPulse.selectAll('g')
-      .data(lit, d => d.slug)
-      .join(enter => {
-        const g = enter.append('g');
-        g.append('circle').attr('class', 'globe-pulse-ring');
-        return g;
-      })
-      .each(function (d, i) {
-        this.firstChild.style.animationDelay = (Math.min(i, 24) * 70) + 'ms';
-      });
-    sizeDots();
-    placeDots();
-  }
 
   function focusContinent(code) {
-    const target = ROUTE_TARGET[code];
-    if (!target) return;
+    const c = FOCUS[code];
+    if (!c) return;
     focusedCont = code;
     stopAutoRotate();
     clearTimeout(autoResumeT);
-    clearTimeout(routeFadeT);
     setActive(code);
-    setPulses(code);
     cancelAnimationFrame(focusAnim);
-
-    const interp = d3.geoInterpolate(PRAHA, target);
-    const view = interp(0.5);
-    route = { interp, progress: 0 };
-    gRoute.classed('is-out', false);
-
     const from = projection.rotate();
     // Nejkratší cesta po zeměpisné délce (ne přes celou zeměkouli).
-    let dLng = (-view[0] - from[0]) % 360;
+    let dLng = (-c[0] - from[0]) % 360;
     if (dLng > 180) dLng -= 360;
     if (dLng < -180) dLng += 360;
-    const to = [from[0] + dLng, -view[1], 0];
-
-    if (prefersReduced) {
-      projection.rotate(to);
-      route.progress = 1;
-      redraw();
-      return;
-    }
-    const t0 = performance.now();
-    const ROT = 900, FLY_START = 350, FLY = 1300;
+    const to = [from[0] + dLng, -c[1], 0];
+    if (prefersReduced) { projection.rotate(to); redraw(); return; }
+    const t0 = performance.now(), DUR = 900;
     const step = (now) => {
-      const el = now - t0;
-      const t = Math.min(1, el / ROT);
+      const t = Math.min(1, (now - t0) / DUR);
       const e = 1 - Math.pow(1 - t, 3); // ease-out
       projection.rotate([
         from[0] + (to[0] - from[0]) * e,
         from[1] + (to[1] - from[1]) * e,
         from[2] + (to[2] - from[2]) * e
       ]);
-      const f = Math.max(0, Math.min(1, (el - FLY_START) / FLY));
-      route.progress = f < 0.5 ? 2 * f * f : 1 - Math.pow(-2 * f + 2, 2) / 2; // ease-in-out
       redraw();
-      if (t < 1 || f < 1) focusAnim = requestAnimationFrame(step);
+      if (t < 1) focusAnim = requestAnimationFrame(step);
     };
     focusAnim = requestAnimationFrame(step);
   }
@@ -356,17 +275,6 @@
   function releaseContinent() {
     focusedCont = null;
     setActive(null);
-    setPulses(null);
-    gRoute.classed('is-out', true);
-    clearTimeout(routeFadeT);
-    routeFadeT = setTimeout(() => {
-      if (focusedCont) return;
-      cancelAnimationFrame(focusAnim);
-      route = null;
-      routeLine.attr('d', '');
-      routeHome.attr('display', 'none');
-      routePlane.attr('display', 'none');
-    }, 450);
     clearTimeout(autoResumeT);
     autoResumeT = setTimeout(startAutoRotate, 3200);
   }
@@ -460,39 +368,13 @@
     svg.select('.globe-sphere').attr('d', path);
     svg.select('.globe-graticule').attr('d', path);
     gLand.selectAll('.globe-country').attr('d', path);
-    placeDots();
-    drawRoute();
+    placeLabels();
   }
 
-  // ---- Dekorativní tečky ---------------------------------------------
-  function placeDots() {
+  // ---- Popisky kontinentů (jen dotyk) ----------------------------------
+  function placeLabels() {
     const r = projection.rotate();
     const center = [-r[0], -r[1]];
-    // Tečky „vepsané“ do povrchu: k okraji koule se zploští ve směru od
-    // středu (cos úhlu = zkrácení na kouli) a vyblednou, za ~80° zmizí,
-    // ať nepřečuhují přes obrys glóbusu.
-    const c = SIZE / 2;
-    gDots.selectAll('circle')
-      .each(function (d) {
-        const dist = d3.geoDistance([d.lng, d.lat], center);
-        const xy = projection([d.lng, d.lat]);
-        if (!xy || dist > 1.4) { this.setAttribute('display', 'none'); return; }
-        const squash = Math.max(0.15, Math.cos(dist));
-        const angle = Math.atan2(xy[1] - c, xy[0] - c) * 180 / Math.PI;
-        this.removeAttribute('display');
-        this.setAttribute('opacity', Math.max(0, Math.min(1, (1.4 - dist) / 0.45)).toFixed(2));
-        this.setAttribute('transform', `translate(${xy[0]},${xy[1]}) rotate(${angle}) scale(${squash},1)`);
-      });
-    // Pulzy: jen posun na místo destinace, zvětšování dělá CSS animace na
-    // vnitřním kroužku (transform atributu <g> se tak nebije s CSS).
-    gPulse.selectAll('g')
-      .each(function (d) {
-        const dist = d3.geoDistance([d.lng, d.lat], center);
-        const xy = projection([d.lng, d.lat]);
-        if (!xy || dist > 1.3) { this.setAttribute('display', 'none'); return; }
-        this.removeAttribute('display');
-        this.setAttribute('transform', `translate(${xy[0]},${xy[1]})`);
-      });
     // Popisky: plně viditelné uprostřed, k okraji koule zesvětlí a za
     // ~80° od středu zmizí (na odvrácené straně se nekreslí).
     gLabels.selectAll('text')
@@ -506,16 +388,10 @@
       });
   }
   // Velikost v obrazovkových px nezávisle na velikosti glóbusu
-  function sizeDots() {
+  function sizeLabels() {
     const w = svg.node().getBoundingClientRect().width || SIZE;
     const k = SIZE / w;
-    gDots.selectAll('circle').attr('r', d => (d.vybrana ? 5 : 3) * k);
     gLabels.selectAll('text').attr('font-size', 11 * k);
-    gPulse.selectAll('.globe-pulse-ring').attr('r', 5 * k);
-    // Trasa a její body taky v obrazovkových px.
-    routeLine.attr('stroke-width', 2 * k);
-    routeHome.attr('r', 4 * k).attr('stroke-width', 2 * k);
-    routePlane.attr('r', 5.5 * k).attr('stroke-width', 2 * k);
   }
 
   // ---- Auto-rotate -----------------------------------------------------
