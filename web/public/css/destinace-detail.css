@@ -685,16 +685,14 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
 /* ============================================================
    ROZCESTNÍK — sticky kotevní navigace pod hero sekcí
    ============================================================ */
-/* Tmavý pruh (inkoust z palety, stejný jako patička), aby se rozcestník
-   při scrollu nelepil na krémovou hlavičku a nečetl se jako její druhý
-   řádek: hlavní navigace = světlá, navigace po stránce = tmavá
-   (Krystofovo zadání, listopad 2026). */
 .dest-toc {
   position: sticky;
   top: var(--header-h, 84px);
   z-index: 90;
-  background: var(--ink);
-  box-shadow: 0 6px 18px -10px rgba(33, 30, 24, 0.55);
+  background: rgba(250, 248, 243, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
 }
 .dest-toc-inner {
   max-width: var(--container);
@@ -710,22 +708,20 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
 .dest-toc-inner::-webkit-scrollbar { display: none; }
 .dest-toc-link {
   flex: none;
-  padding: 14px 4px 12px;
-  margin-right: 26px;
-  font-size: 11.5px;
+  padding: 16px 4px;
+  margin-right: 22px;
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(250, 248, 243, 0.72);
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
   white-space: nowrap;
   border-bottom: 2px solid transparent;
   transition: color .3s var(--ease), border-color .3s var(--ease);
 }
 .dest-toc-link:last-child { margin-right: 0; }
-.dest-toc-link:hover { color: var(--cream); }
-.dest-toc-link:focus-visible { outline: 2px solid var(--gold-soft); outline-offset: -4px; }
+.dest-toc-link:hover { color: var(--ink); }
 .dest-toc-link.is-active {
-  color: var(--gold-soft);
+  color: var(--gold-deep);
   border-bottom-color: var(--gold);
 }
 
@@ -771,7 +767,7 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
 
 @media (max-width: 620px) {
   .dest-map { height: 340px; }
-  .dest-toc-link { padding: 12px 4px 10px; margin-right: 20px; font-size: 11px; }
+  .dest-toc-link { padding: 13px 4px; margin-right: 18px; font-size: 12.5px; }
   .dest-toc-inner { justify-content: flex-start; }
 }
 
