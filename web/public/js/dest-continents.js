@@ -57,6 +57,12 @@
     });
   });
 
+  // Opačný směr: najetí na kontinent přímo na glóbusu rozsvítí dlaždici.
+  window.addEventListener('snailglobe:hover', function (e) {
+    var code = e.detail;
+    tiles.forEach(function (t) { t.classList.toggle('is-hover', !!code && t.dataset.cont === code); });
+  });
+
   if (list) {
     list.addEventListener('mouseleave', release);
     list.addEventListener('focusout', function (e) {

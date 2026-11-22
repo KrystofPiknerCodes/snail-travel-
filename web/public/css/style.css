@@ -1619,6 +1619,56 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .cont-tile.is-active { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-soft); }
 .cont-tile.is-active::after { background: linear-gradient(to top, rgba(20, 16, 10, .55) 0%, rgba(20, 16, 10, .1) 60%, rgba(20, 16, 10, 0) 100%); }
 .cont-tile:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+/* Najetí na kontinent přímo na glóbusu rozsvítí jeho dlaždici. */
+.cont-tile.is-hover { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-soft); }
+.cont-tile.is-hover img { transform: scale(1.06); }
+
+/* Let z Prahy (globe.js → focusContinent) */
+.globe-route { pointer-events: none; transition: opacity .45s var(--ease); }
+.globe-route.is-out { opacity: 0; }
+.globe-route-line {
+  fill: none;
+  stroke: var(--ink);
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, .9));
+}
+.globe-route-home { fill: #fff; stroke: var(--gold-deep); }
+.globe-route-plane {
+  fill: var(--gold);
+  stroke: #fff;
+  filter: drop-shadow(0 0 6px rgba(189, 154, 69, .8));
+}
+
+/* Rozsvícení destinací vybraného kontinentu: ostatní tečky zešednou,
+   kolem vybraných se postupně rozbíhají zlaté kroužky. */
+.globe-dots .globe-dot-mark { transition: fill .4s var(--ease); }
+.globe-dots.is-focus .globe-dot-mark:not(.is-lit) { fill: #CFC5B2; }
+/* Na zlatě vybarveném kontinentu by zlaté tečky zanikly → bílé se zlatým
+   obrysem. */
+.globe-dots.is-focus .globe-dot-mark.is-lit {
+  fill: #fff;
+  stroke: var(--gold-deep);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+.globe-pulses { pointer-events: none; }
+.globe-pulse-ring {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: globe-pulse 2.2s var(--ease) infinite;
+}
+@keyframes globe-pulse {
+  0%   { transform: scale(1);   opacity: .85; }
+  100% { transform: scale(3.4); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .globe-pulse-ring { animation: none; opacity: .6; }
+}
 
 @media (max-width: 900px) {
   .globe-layout { grid-template-columns: 1fr; gap: 28px; }
