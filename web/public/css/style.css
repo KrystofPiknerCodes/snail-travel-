@@ -1625,7 +1625,9 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 
 @media (max-width: 900px) {
   .globe-layout { grid-template-columns: 1fr; gap: 28px; }
-  .globe-layout .globe-wrap { max-width: 340px; }
+  /* Na mobilu jen dlaždice — glóbus je tam malý a spíš překáží (Krystof, listopad 2026). */
+  .globe-layout .globe-wrap { display: none; }
+  .dest-map-section { padding-top: 24px; padding-bottom: 24px; }
   .cont-tile { height: 96px; padding: 12px 14px; }
   .cont-tile-name { font-size: 18px; }
   .cont-tile-count { font-size: 10.5px; }

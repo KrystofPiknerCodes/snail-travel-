@@ -400,7 +400,7 @@
     if (prefersReduced) return;
     stopAutoRotate();
     autoT = setInterval(() => {
-      if (dragging || focusedCont || stage.classList.contains('is-hover')) return;
+      if (stage.offsetParent === null || dragging || focusedCont || stage.classList.contains('is-hover')) return;
       const r = projection.rotate();
       projection.rotate([r[0] + 0.18, r[1], r[2]]);
       redraw();

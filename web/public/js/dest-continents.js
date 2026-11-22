@@ -52,7 +52,8 @@
       var alreadyTurned = current === tile.dataset.cont;
       focusTile(tile);
       // Když se glóbus teprve otáčí (ťuknutí na mobilu), chvilku počkat.
-      var delay = alreadyTurned || prefersReduced || !globe() ? 0 : 750;
+      var globeHidden = !document.getElementById('globe') || document.getElementById('globe').offsetParent === null;
+      var delay = alreadyTurned || prefersReduced || !globe() || globeHidden ? 0 : 750;
       setTimeout(function () { scrollToSection(tile.dataset.target); }, delay);
     });
   });
