@@ -1,5 +1,6 @@
 ---
 import Ikona from '../../components/Ikona.astro';
+import Rozcestnik from '../../components/Rozcestnik.astro';
 // Výpiska destinací — Astro náhrada za statický destinace.html (viz
 // CLAUDE.md "Astro verze" a úkol migrace katalogu zemí, srpen 2026).
 //
@@ -20,13 +21,13 @@ const vse = await getCollection('destinace');
 const destinace = vse.filter((d) => d.data.typ === 'destinace');
 
 const KONTINENTY = [
-  { kod: 'EU', id: 'kontinent-evropa', trida: '', kicker: 'Destinace · Evropa', nadpis: 'Kontinent u dosahu', vLokaci: 'v Evropě' },
-  { kod: 'AF', id: 'kontinent-afrika', trida: 'alt', kicker: 'Destinace · Afrika', nadpis: 'Divoké kontinentální srdce', vLokaci: 'v Africe' },
-  { kod: 'AS', id: 'kontinent-asie', trida: '', kicker: 'Destinace · Asie', nadpis: 'Vůně a barvy Východu', vLokaci: 'v Asii' },
-  { kod: 'NA', id: 'kontinent-amerika-sever', trida: 'alt', kicker: 'Destinace · Střední &amp; Severní Amerika', nadpis: 'Od kaňonů po karibské pláže', vLokaci: 've Střední a Severní Americe' },
-  { kod: 'SA', id: 'kontinent-amerika-jih', trida: '', kicker: 'Destinace · Jižní Amerika', nadpis: 'Andy, Amazonie, konec světa', vLokaci: 'v Jižní Americe' },
-  { kod: 'OC', id: 'kontinent-australie', trida: 'alt', kicker: 'Destinace · Austrálie a Oceánie', nadpis: 'Ostrovy na konci mapy', vLokaci: 'v Austrálii a Oceánii' },
-  { kod: 'AA', id: 'kontinent-antarktida', trida: '', kicker: 'Destinace · Antarktida', nadpis: 'Bílý kontinent na kraji světa', vLokaci: 'v Antarktidě' },
+  { kod: 'EU', id: 'kontinent-evropa', trida: '', kicker: 'Destinace · Evropa', nadpis: 'Kontinent u dosahu', vLokaci: 'v Evropě', zkratka: 'Evropa' },
+  { kod: 'AF', id: 'kontinent-afrika', trida: 'alt', kicker: 'Destinace · Afrika', nadpis: 'Divoké kontinentální srdce', vLokaci: 'v Africe', zkratka: 'Afrika' },
+  { kod: 'AS', id: 'kontinent-asie', trida: '', kicker: 'Destinace · Asie', nadpis: 'Vůně a barvy Východu', vLokaci: 'v Asii', zkratka: 'Asie' },
+  { kod: 'NA', id: 'kontinent-amerika-sever', trida: 'alt', kicker: 'Destinace · Střední &amp; Severní Amerika', nadpis: 'Od kaňonů po karibské pláže', vLokaci: 've Střední a Severní Americe', zkratka: 'Severní Amerika' },
+  { kod: 'SA', id: 'kontinent-amerika-jih', trida: '', kicker: 'Destinace · Jižní Amerika', nadpis: 'Andy, Amazonie, konec světa', vLokaci: 'v Jižní Americe', zkratka: 'Jižní Amerika' },
+  { kod: 'OC', id: 'kontinent-australie', trida: 'alt', kicker: 'Destinace · Austrálie a Oceánie', nadpis: 'Ostrovy na konci mapy', vLokaci: 'v Austrálii a Oceánii', zkratka: 'Austrálie a Oceánie' },
+  { kod: 'AA', id: 'kontinent-antarktida', trida: '', kicker: 'Destinace · Antarktida', nadpis: 'Bílý kontinent na kraji světa', vLokaci: 'v Antarktidě', zkratka: 'Antarktida' },
 ] as const;
 
 // Kolik destinací na kontinent se ukáže rovnou — zbytek jde za tlačítko
@@ -94,7 +95,7 @@ function poKontinentu(kod: string) {
   <!-- ============ GLOBUS ============ -->
   <section class="section dest-map-section" id="mapa">
     <div class="wrap">
-      <p class="dest-map-caption reveal">Otočte glóbus a&nbsp;klikněte na kontinent, který vás láká.</p>
+      <p class="dest-map-caption reveal">Otočte glóbus a&nbsp;klikněte na kontinent, který vás láká, nebo ho vyberte v&nbsp;liště pod glóbusem.</p>
 
       <div class="globe-wrap reveal" data-delay="1">
         <div class="globe-backdrop" aria-hidden="true">
@@ -122,6 +123,14 @@ function poKontinentu(kod: string) {
       </div>
     </div>
   </section>
+
+  <!-- ============ ROZCESTNÍK KONTINENTŮ ============
+       Glóbus je efektní, ale hledat na něm kontinent je pomalé (Krystof,
+       listopad 2026) — stejná sticky kapsle jako na detailu destinace,
+       jen kontinenty, které reálně mají nějakou destinaci. -->
+  <Rozcestnik
+    items={KONTINENTY.filter((k) => poKontinentu(k.kod).length > 0).map((k) => ({ id: k.id, label: k.zkratka }))}
+  />
 
   <!-- ============ SEKCE PODLE KONTINENTU ============ -->
   {KONTINENTY.map((k) => {
