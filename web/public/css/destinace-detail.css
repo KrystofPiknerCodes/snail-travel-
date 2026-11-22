@@ -685,44 +685,54 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
 /* ============================================================
    ROZCESTNÍK — sticky kotevní navigace pod hero sekcí
    ============================================================ */
+/* Plovoucí „kapsle" (varianta A, vybral Krystof, listopad 2026): dřív to byl
+   krémový pruh přes celou šířku, který se při scrollu slil s hlavičkou do
+   jednoho bloku. Teď je pruh sám průhledný a viditelná je jen bílá zaoblená
+   lišta s mezerou pod hlavičkou (--dest-toc-gap). Mezeru počítá i
+   js/dest-toc.js do odsazení sekcí při skoku na kotvu — měnit obojí. */
 .dest-toc {
+  --dest-toc-gap: 12px;
   position: sticky;
-  top: var(--header-h, 84px);
+  top: calc(var(--header-h, 84px) + var(--dest-toc-gap));
   z-index: 90;
-  background: rgba(250, 248, 243, 0.96);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--line);
+  margin-top: 20px;
+  padding: 0 16px;
+  pointer-events: none; /* průhledné okolí kapsle nesmí blokovat kliky na obsah */
 }
 .dest-toc-inner {
-  max-width: var(--container);
+  pointer-events: auto;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 5px;
   display: flex;
-  justify-content: center;
-  gap: 8px;
+  gap: 2px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px -12px rgba(33, 30, 24, 0.35);
 }
 .dest-toc-inner::-webkit-scrollbar { display: none; }
 .dest-toc-link {
   flex: none;
-  padding: 16px 4px;
-  margin-right: 22px;
+  padding: 8px 16px;
+  border-radius: 999px;
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.04em;
   color: var(--ink-soft);
   white-space: nowrap;
-  border-bottom: 2px solid transparent;
-  transition: color .3s var(--ease), border-color .3s var(--ease);
+  transition: color .3s var(--ease), background-color .3s var(--ease);
 }
-.dest-toc-link:last-child { margin-right: 0; }
 .dest-toc-link:hover { color: var(--ink); }
+.dest-toc-link:focus-visible { outline: 2px solid var(--gold-soft); outline-offset: -2px; }
 .dest-toc-link.is-active {
+  background: #F4EAD2; /* světlá zlatá, mezi --cream-2 a --gold-soft */
   color: var(--gold-deep);
-  border-bottom-color: var(--gold);
 }
 
 /* ============================================================
@@ -767,8 +777,7 @@ section[id] { scroll-margin-top: var(--dest-scroll-offset, 150px); }
 
 @media (max-width: 620px) {
   .dest-map { height: 340px; }
-  .dest-toc-link { padding: 13px 4px; margin-right: 18px; font-size: 12.5px; }
-  .dest-toc-inner { justify-content: flex-start; }
+  .dest-toc-link { padding: 7px 12px; font-size: 12.5px; }
 }
 
 /* ============================================================
