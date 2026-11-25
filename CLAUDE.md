@@ -96,7 +96,20 @@ pokud o to uživatel výslovně nepožádá — každá běžná úprava jde do 
   hotelů v okolí; použitá na destinaci, oblasti i hotelu, vykreslí se jen když
   má dané místo vyplněné souřadnice — `mapa` u destinace/oblasti, `poloha` u
   hotelu). Nahradila starší `MapaOblasti.astro` (zobrazovala všechny hotely
-  destinace najednou) — rozhodnutí Krystof, září 2026.
+  destinace najednou) — rozhodnutí Krystof, září 2026. `HotelCard.astro`
+  (karta hotelu — stejná komponenta pro výpis pod oblastí/destinací i pro
+  novou sekci "Hotely v okolí" na kartě hotelu, listopad 2026).
+- **"Hotely v okolí" a "Poptat hotel"** (karta hotelu, listopad 2026,
+  `[...slug].astro` + `web/src/lib/hierarchie.ts`): `hotelyVOkoli()` najde
+  nejbližší hotely podle GPS (`poloha`, haversine) **napříč celou kolekcí**
+  hotelů, ne jen v rámci stejné destinace/oblasti — Krystofovo zadání
+  "ber podle gps lokace tech ostatních hotelu a dáš ty co jsou blízko".
+  Golfová hřiště v okolí (z Calheta Beach PDF) záměrně NEřešeno zde — podle
+  Krystofa patří spíš na `snailtravelgolf.cz`. Tlačítko "Poptat hotel" vede
+  na `/?hotel=...&misto=...#kontakt` (homepage, protože kontaktní formulář
+  žije jen tam, `index.astro#kontakt`) — `web/public/js/kontakt-prefill.js`
+  z query stringu předvyplní pole "Kam vás to láká?" a pak URL vyčistí
+  (`history.replaceState`), ať nezůstane v adrese.
 - **Styly**: `web/public/css/style.css` (design system — CSS proměnné, hlavička/
   patička, `.country-grid`, atd. — historicky 1:1 kopie root `css/style.css`, dnes
   už se vyvíjí nezávisle, root kopii needitovat) + `web/public/css/destinace-detail.css`
@@ -148,7 +161,7 @@ pokud o to uživatel výslovně nepožádá — každá běžná úprava jde do 
   zpátky rozšiřování šířky bez přepočtu, kolik featured karet na kontinent smí
   být, aby řádky vycházely rovně.
 - **Sbalování dlouhých seznamů zemí** (`/destinace`, `web/src/pages/destinace/index.astro`):
-  na kontinent se rovnou ukáže jen `VIDITELNYCH = 10` destinací (řazeno `vybrana`
+  na kontinent se rovnou ukáže jen `VIDITELNYCH = 6` destinací (řazeno `vybrana`
   první, pak abecedně), zbytek za tlačítkem „Zobrazit všechny destinace v/ve
   <kontinent> (N)" (`.country-grid-toggle`, logika v `web/public/js/destinations.js`).
   Aktivní hledání (`.is-filtering`) odkryje i sbalené položky, ať je najde fulltext.
@@ -206,10 +219,15 @@ správně — je to jen `gen-refs.py`/`gen-search-index.py`, co zůstaly pozadu.
       ukázat „normální lidi", zvýšit důvěryhodnost) — čekáme na podklady od klienta,
       nefabrikovat.
 - [ ] Nahradit stockové fotky destinací fotkami z vlastních zájezdů klienta.
-- [ ] Sehnat fotky do dlaždic Golf a Formule 1 v sekci Zážitky s poměrem stran
-      blízkým 3:2 — `assets/zaz-golf.jpg` (1600×1463) a `assets/zaz-f1.jpg`
-      (1600×877) na to nesedí, dočasně mají `data-fit="cover"` v `index.astro`
-      (mírné oříznutí místo celé fotky) — po výměně ten atribut odstranit.
+- [ ] Sehnat fotku do dlaždice Formule 1 v sekci Zážitky s poměrem stran
+      blízkým 3:2 — `assets/zaz-f1.jpg` (1600×877) na to nesedí, dočasně má
+      `data-fit="cover"` v `index.astro` (mírné oříznutí místo celé fotky) —
+      po výměně ten atribut odstranit. `assets/zaz-golf.jpg`, `zaz-poznavani.jpg`,
+      `zaz-svatby.jpg` a `zaz-wellness.jpg` jsou dnes reálné klientovy fotky
+      (25.11.2026) místo stocku — žádná z nich není přesně 3:2, všechny čtyři
+      proto mají `data-fit="cover"` v `index.astro` (Krystofovo zadání
+      "roztáhni, ať nejsou prázdné okraje") — neodstraňovat bez nové fotky
+      přesně 3:2.
 - [ ] Doplnit tvrdé signály existence (pojištění proti úpadku, IČO, počet
       klientů) na `o-nas.astro`.
 - [ ] Rozšířit content kolekci o další destinace/oblasti/hotely — vzor hotový

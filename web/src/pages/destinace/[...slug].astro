@@ -21,6 +21,7 @@ import {
   resolveAncestors,
   childOblasti,
   hotelyPod,
+  hotelyVOkoli,
   buildBreadcrumb,
   resolveKontinent,
   KONTINENT_NAZEV,
@@ -125,6 +126,24 @@ const h = kind === 'hotel' ? (entry as HotelEntry).data : null;
 const hotelGalerie =
   h && h.galerie.length > 0 ? h.galerie : h?.foto ? [{ src: h.foto, alt: h.nazev }] : [];
 
+// "Hotely v okolí" — podle GPS napříč celou kolekcí, ne jen v rámci stejné
+// destinace/oblasti (Krystof, listopad 2026: "ber podle gps lokace tech
+// ostatních hotelu a dáš ty co jsou blízko" — golfová hřiště v okolí
+// záměrně vynechána, budou řešit na snailtravelgolf.cz, ne tady).
+const hotelyBlizko = kind === 'hotel' ? hotelyVOkoli(entry as HotelEntry, hotelyAll) : [];
+
+// "Poptat hotel" — odkaz na kontaktní formulář (jen na homepage, viz
+// index.astro#kontakt) s hotelem a lokací v query stringu; formulář si je
+// přečte a předvyplní pole "Kam vás to láká?" (public/js/kontakt-prefill.js).
+// Krystofovo zadání, listopad 2026: "poptávka by rovnou vyplnila hotel...
+// i Destinaci a oblast".
+const poptatHotelHref =
+  kind === 'hotel'
+    ? `?hotel=${encodeURIComponent((entry as HotelEntry).data.nazev)}&misto=${encodeURIComponent(
+        chain.map((c) => c.data.nazev).join(', ')
+      )}#kontakt`
+    : '';
+
 // "Info" — všechny textové sekce hotelu pohromadě, jeden blok s "Přečíst
 // více" (viz sekce INFO níž), ne rozsekané na samostatné sekce/kotvy.
 // `ikona` je jméno piktogramu Kubai Icons (src/ikony/index.ts) před každým mezititulkem
@@ -228,6 +247,7 @@ const tocItems =
         hotelInfoText.length > 0 && { id: 'info', label: 'Info' },
         hotelGalerie.length > 0 && { id: 'fotogalerie', label: 'Fotogalerie' },
         h.poloha && { id: 'mapa', label: 'Mapa' },
+        hotelyBlizko.length > 0 && { id: 'hotely-okoli', label: 'V okolí' },
         h.nas_nazor && { id: 'nas-nazor', label: 'Tip od šneků' },
       ].filter(Boolean) as Array<{ id: string; label: string }>)
     : [];
@@ -390,6 +410,29 @@ const pageDescription =
         <MapaMista lat={h!.poloha.lat} lng={h!.poloha.lng} zoom={15} nazev={h!.nazev} />
       )}
 
+      <!-- ============ HOTELY V OKOLÍ ============ -->
+      {hotelyBlizko.length > 0 && (
+        <section class="section" id="hotely-okoli" style="background: var(--cream-2);">
+          <div class="wrap">
+            <header class="section-head reveal">
+              <p class="kicker">V okolí</p>
+              <h2 class="display">Hotely v okolí</h2>
+              <p class="lead">Další adresy naší nabídky nedaleko {h!.nazev}.</p>
+            </header>
+            <ul class="country-grid reveal" data-delay="1">
+              {hotelyBlizko.map(({ hotel, vzdalenost }) => (
+                <HotelCard
+                  hotel={hotel}
+                  href={hotelHref(hotel)}
+                  lokace={`${vzdalenost < 1 ? 'pod 1 km' : `${Math.round(vzdalenost)} km`} odsud`}
+                  rel={rel}
+                />
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
       <!-- ============ TIP OD ŠNEKŮ ============ -->
       {h!.nas_nazor && (
         <section class="section" id="nas-nazor">
@@ -416,7 +459,7 @@ const pageDescription =
               &nbsp;·&nbsp;
               <a href="tel:+420602552624">+420&nbsp;602&nbsp;552&nbsp;624</a>
             </p>
-            <a href="#kontakt" class="btn btn-pill">Naplánovat cestu</a>
+            <a href={poptatHotelHref} class="btn btn-pill">Poptat hotel</a>
             <p style="margin-top:18px;"><a href={`destinace/${[...chain.map((c) => c.id)].join('/')}`}>&larr; Zpět na {chain[chain.length - 1]?.data.nazev}</a></p>
           </div>
         </div>

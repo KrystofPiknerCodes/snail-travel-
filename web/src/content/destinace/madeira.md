@@ -18,11 +18,11 @@ hlavni_foto: /assets/madeira/madeira-hero-1.jpg
 # viz konverzace, needitovat zpátky bez ověření lokality.
 galerie:
   - src: /assets/madeira/madeira-hero-1.jpg
-    alt: Letecký pohled na ostrov Madeira nad Atlantikem
+    alt: Letecký pohled na pobřežní vesnici na Madeiře za slunečného dne
   - src: /assets/madeira/madeira-hero-2.jpg
     alt: Skalnaté útesy pobřeží Madeiry
   - src: /assets/madeira/madeira-hero-3.jpg
-    alt: Vesnice Porto Moniz na severním pobřeží Madeiry
+    alt: Letecký pohled na vesnici Porto da Cruz při západu slunce
   - src: /assets/madeira/madeira-hero-4.jpg
     alt: Fialové květiny s výhledem na pobřeží Madeiry
   - src: /assets/madeira/madeira-gallery-5.jpg

@@ -126,3 +126,38 @@ export function buildBreadcrumb(
   crumbs.push({ label: entry.data.nazev });
   return crumbs;
 }
+
+/** Vzdálenost dvou bodů po povrchu Země v km (haversine) — pro "Hotely
+ * v okolí" na kartě hotelu, napříč destinacemi (Krystof, listopad 2026:
+ * "ber podle gps lokace tech ostatních hotelu a dáš ty co jsou blízko"). */
+export function vzdalenostKm(
+  a: { lat: number; lng: number },
+  b: { lat: number; lng: number }
+): number {
+  const R = 6371;
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const dLat = toRad(b.lat - a.lat);
+  const dLng = toRad(b.lng - a.lng);
+  const sa =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(sa));
+}
+
+/** Nejbližší hotely k danému hotelu podle `poloha` (GPS), napříč celou
+ * kolekcí — ne jen v rámci stejné destinace/oblasti. Vrací max `limit`
+ * hotelů do `maxKm`, seřazené od nejbližšího. */
+export function hotelyVOkoli(
+  hotel: HotelEntry,
+  vsechnyHotely: HotelEntry[],
+  maxKm = 40,
+  limit = 4
+): Array<{ hotel: HotelEntry; vzdalenost: number }> {
+  if (!hotel.data.poloha) return [];
+  return vsechnyHotely
+    .filter((h) => h.id !== hotel.id && h.data.poloha)
+    .map((h) => ({ hotel: h, vzdalenost: vzdalenostKm(hotel.data.poloha!, h.data.poloha!) }))
+    .filter((x) => x.vzdalenost <= maxKm)
+    .sort((a, b) => a.vzdalenost - b.vzdalenost)
+    .slice(0, limit);
+}
