@@ -1,7 +1,11 @@
 ---
-import { readFileSync } from 'node:fs';
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+// `?raw` nechá Vite/Astro načíst obsah souboru při buildu jako řetězec —
+// na rozdíl od `node:fs` + `import.meta.url` to funguje i po zabalení do
+// dist/.prerender (ten runtime má jinou adresářovou strukturu než src,
+// relativní cesta přes fs tam spadla s ENOENT).
+import referenceJs from '../../public/js/references-data.js?raw';
 
 // Statistiky v hlavičce se dřív psaly ručně a postupem času se rozešly se
 // skutečností (destinací přibývá/ubývá migrací, referencí přibývá) — klient
@@ -13,10 +17,6 @@ const pocetDestinaci = destinaceVse.filter((d) => d.data.typ !== 'oblast').lengt
 // references-data.js je čistý JS soubor (window.SNAIL_REFERENCES = [...]),
 // ne content kolekce — počet referencí proto spočítáme prostým napočítáním
 // výskytů "date" klíče, bez parsování/evalu celého souboru.
-const referenceJs = readFileSync(
-  new URL('../../public/js/references-data.js', import.meta.url),
-  'utf-8'
-);
 const pocetReferenci = (referenceJs.match(/"date":/g) ?? []).length;
 ---
 <Base
