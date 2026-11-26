@@ -1940,6 +1940,24 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 }
 .country-grid li.is-featured .country-name { font-size: 19px; }
 
+/* Hvězdy + cena na kartě hotelu — dřív badge přes fotku, rušilo to (zpětná
+   vazba klient, listopad 2026). Teď vlastní řádek POD jménem přes celou
+   šířku karty, ne vedle (dlouhého) jména — to by se s většími hvězdami
+   (druhá zpětná vazba: "ať jsou větší") nevešlo vedle sebe. */
+.hotel-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.hotel-card-stars {
+  font-size: 17px;
+  letter-spacing: 2px;
+  color: var(--gold-deep);
+}
+.hotel-card-meta .price-tag-karta .price-tag-symbol { color: var(--gold-deep); font-size: 18px; }
+
 /* Odznak s počtem klientských referencí (js/dest-refs.js).
    Selektor musí být .country-grid .country-refs — jinak ho přebije
    .country-grid a výš (aspect-ratio, display: block, overlaye). */

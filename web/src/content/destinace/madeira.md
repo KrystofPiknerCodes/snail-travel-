@@ -141,20 +141,25 @@ golf:
     jamky: 18
 
 poznavejte:
+  # Přepsáno listopad 2026 (zpětná vazba klient: "úplně chybí levády a
+  # příroda, na Madeiru se přece jezdí hlavně kvůli tomu" — historie,
+  # Funchal a festivaly přesunuty z úvodu na doplňkové info na konec.
   text: >
-    Usměvaví a příjemní Madeiřané si život na nádherném ostrově opravdu
-    užívají. Oslavy, svátky, festivaly a slavnosti probíhají téměř po celý
-    rok. Mezi nejznámější patří květinové slavnosti a karneval, k oblíbeným
-    oslavám patří ty, které slaví přírodu — bujaré veselí v ulicích zažijete
-    při slavnostech citrónu, cibule, třešní, banánů či kaštanů. Madeira si
-    kromě krásné přírody uchovala i starobylý nádech. Milovníci historie by
-    neměli minout hlavní město Funchal — malebné přístavní město s
-    překrásnou plážovou promenádou, dominantním kostelem a atrakcí, kterou
-    jinde neuvidíte: jízdou na saních. Opálení "carreiros" v bílém vás od
-    funchalského kostela Igreja de Nossa Senhora obratně provezou úzkými
-    uličkami na speciálních saních, upravených na jízdu po silnici. Carreiros
-    je prestižní povolání, které se předává z otce na syna.
+    Na Madeiru se jezdí hlavně kvůli přírodě — stovky kilometrů pěších tras
+    vedou podél staletých zavlažovacích kanálů zvaných levády hluboko do
+    vavřínového pralesa Laurisilva, zapsaného na seznamu UNESCO, a dál až
+    k vyhlídkám nad mraky na vrcholcích Pico Ruivo a Pico do Arieiro. Cestou
+    potkáte vodopády padající přímo do kanálu, endemické druhy rostlin
+    i ptáků a výhledy, které se nedají popsat, jen prožít. Kromě přírody si
+    Madeira uchovala i starobylý nádech — hlavní město Funchal láká
+    plážovou promenádou, dominantním kostelem a atrakcí, kterou jinde
+    neuvidíte: jízdou na saních, kterou vás úzkými uličkami proveze opálený
+    "carreiro" v bílém, řemeslník předávající svůj um z otce na syna. Oslavy,
+    svátky a festivaly tu navíc probíhají téměř po celý rok, od květinových
+    slavností po karneval.
   tipy:
+    - "Procházka po slavné levádě pralesem Laurisilva (např. Levada do Caldeirão Verde)"
+    - "Výstup na Pico Ruivo nebo Pico do Arieiro nad mraky"
     - "Kostel Igreja de Nossa Senhora (krásný kostel, ve kterém jsou uloženy ostatky Karla I., Funchal)"
     - "Jízda na saních (Funchal)"
     - "Mercado dos Lavradores (hlavní tržnice, Funchal)"

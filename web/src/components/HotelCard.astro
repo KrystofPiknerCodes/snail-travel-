@@ -30,18 +30,22 @@ const { hotel, href, lokace, rel, class: className } = Astro.props;
       ) : (
         <div class="hotel-photo-ph">⚠ Foto hotelu chybí — doplnit od klienta</div>
       )}
-      <span class="country-badge-stack">
-        {hotel.data.hvezdy && (
-          <span class="country-badge" data-rate>
-            <span class="country-stars-on">{Array.from({ length: hotel.data.hvezdy }, (_, i) => <span class="rate-ch" style={`--i:${i}`}>★</span>)}</span><span class="country-stars-off">{'★'.repeat(5 - hotel.data.hvezdy)}</span>
-          </span>
-        )}
-        <span class="country-badge country-badge-price"><CenaTag cenaOd={hotel.data.cena_od} variant="karta" /></span>
-      </span>
       <span class="country-cta">Prohlédnout</span>
     </div>
     <div class="country-body">
       <span class="country-name">{hotel.data.nazev}</span>
+      <!-- Hvězdy a cena byly přes fotku — rušilo to (zpětná vazba klient,
+           listopad 2026: "na fotce je to rušivé"). Teď pod názvem, na
+           vlastním řádku přes celou šířku karty — vedle (dlouhého) jména
+           by se velké hvězdy nevešly (druhá zpětná vazba: "ať jsou větší"). -->
+      <span class="hotel-card-meta">
+        {hotel.data.hvezdy && (
+          <span class="hotel-card-stars" data-rate>
+            <span class="country-stars-on">{Array.from({ length: hotel.data.hvezdy }, (_, i) => <span class="rate-ch" style={`--i:${i}`}>★</span>)}</span><span class="country-stars-off">{'★'.repeat(5 - hotel.data.hvezdy)}</span>
+          </span>
+        )}
+        <CenaTag cenaOd={hotel.data.cena_od} variant="karta" />
+      </span>
       <span class="country-location">{lokace}</span>
     </div>
   </a>

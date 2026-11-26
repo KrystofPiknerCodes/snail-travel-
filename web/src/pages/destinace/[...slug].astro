@@ -245,10 +245,10 @@ const tocItems =
     : kind === 'hotel' && h
     ? ([
         hotelInfoText.length > 0 && { id: 'info', label: 'Info' },
+        h.nas_nazor && { id: 'nas-nazor', label: 'Tip od Turbošneka' },
         hotelGalerie.length > 0 && { id: 'fotogalerie', label: 'Fotogalerie' },
         h.poloha && { id: 'mapa', label: 'Mapa' },
         hotelyBlizko.length > 0 && { id: 'hotely-okoli', label: 'V okolí' },
-        h.nas_nazor && { id: 'nas-nazor', label: 'Tip od šneků' },
       ].filter(Boolean) as Array<{ id: string; label: string }>)
     : [];
 
@@ -394,9 +394,30 @@ const pageDescription =
         </section>
       )}
 
+      <!-- ============ TIP OD TURBOŠNEKA ============ -->
+      <!-- Hned pod úvodním popisem hotelu, ne až za fotogalerií/mapou —
+           zpětná vazba klient, listopad 2026: "posunula bych to výš,
+           ideálně hned pod úvodní popis hotelu". -->
+      {h!.nas_nazor && (
+        <section class="section" id="nas-nazor" style="background: var(--cream-2);">
+          <div class="wrap dest-intro">
+            <div class="dest-intro-head reveal">
+              <h2 class="display">Tip od Turbošneka</h2>
+            </div>
+            <div class="dest-intro-text-full reveal" data-delay="1">
+              <p>{czechNbsp(h!.nas_nazor)}</p>
+            </div>
+          </div>
+        </section>
+      )}
+
       <!-- ============ FOTOGALERIE ============ -->
       <section class="section" id="fotogalerie">
         <div class="wrap">
+          <header class="section-head reveal" style="text-align:center;">
+            <p class="kicker">Fotogalerie</p>
+            <h2 class="display">Fotografie hotelu</h2>
+          </header>
           {hotelGalerie.length > 0 ? (
             <PhotoSwiper images={hotelGalerie} rel={rel} />
           ) : (
@@ -433,20 +454,6 @@ const pageDescription =
         </section>
       )}
 
-      <!-- ============ TIP OD ŠNEKŮ ============ -->
-      {h!.nas_nazor && (
-        <section class="section" id="nas-nazor">
-          <div class="wrap dest-intro">
-            <div class="dest-intro-head reveal">
-              <h2 class="display">Tip od šneků</h2>
-            </div>
-            <div class="dest-intro-text-full reveal" data-delay="1">
-              <p>{czechNbsp(h!.nas_nazor)}</p>
-            </div>
-          </div>
-        </section>
-      )}
-
       <!-- ============ CTA ============ -->
       <section class="section dest-cta-band">
         <div class="wrap">
@@ -475,7 +482,7 @@ const pageDescription =
         <div class="wrap">
           <header class="section-head reveal">
             <p class="kicker">Destinace</p>
-            <h2 class="display">{oblasti.length > 0 ? 'Vyberte oblast' : 'Konkrétní hotely'}</h2>
+            <h2 class="display">{oblasti.length > 0 ? 'Vyberte oblast' : 'Pečlivě vybrané hotely'}</h2>
             <p class="lead">
               {oblasti.length > 0
                 ? 'Nabídka je rozdělená podle oblastí — vyberte si tu, která vám sedí.'
@@ -484,11 +491,12 @@ const pageDescription =
           </header>
 
           {oblasti.length > 0 ? (
-            <ul class="country-grid reveal" data-delay="1">
-              {oblasti.map((o) => {
+            <>
+            <ul class="country-grid reveal" data-delay="1" id="oblastiGrid">
+              {oblasti.map((o, i) => {
                 const pocetHotelu = hotelyAll.filter((h2) => h2.data.nadrazena === o.id).length;
                 return (
-                  <li>
+                  <li class={i >= VIDITELNYCH_HOTELU ? 'is-more' : ''}>
                     <a href={`${basePath}/${o.id}`}>
                       <div class="country-media">
                         {o.data.hlavni_foto ? (
@@ -507,6 +515,14 @@ const pageDescription =
                 );
               })}
             </ul>
+            {oblasti.length > VIDITELNYCH_HOTELU && (
+              <div class="cta-row country-grid-cta">
+                <button class="btn btn-ghost country-grid-toggle" type="button" aria-expanded="false" aria-controls="oblastiGrid">
+                  <span class="btn-ghost-label">Zobrazit všechny oblasti ({oblasti.length})</span>
+                </button>
+              </div>
+            )}
+            </>
           ) : (
             <ul class="country-grid reveal" data-delay="1">
               {hotelyPrime.map((hotel) => (
@@ -819,4 +835,4 @@ const pageDescription =
 <script is:inline src="js/photo-swiper.js?v=2"></script>
 {kind === 'destinace' && <script is:inline src="js/weather-live.js?v=2"></script>}
 {(kind === 'destinace' || kind === 'oblast' || kind === 'hotel') && <script is:inline src="js/dest-collapse.js?v=1"></script>}
-{hotelyDestinace.length > VIDITELNYCH_HOTELU && <script is:inline src="js/dest-hotel-toggle.js?v=1"></script>}
+{(hotelyDestinace.length > VIDITELNYCH_HOTELU || oblasti.length > VIDITELNYCH_HOTELU) && <script is:inline src="js/dest-hotel-toggle.js?v=2"></script>}
