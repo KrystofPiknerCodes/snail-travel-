@@ -1085,7 +1085,7 @@ body.menu-open .mobile-nav {
   position: absolute;
   inset: -15% 0;
   background:
-    linear-gradient(rgba(20,15,8,.5), rgba(20,15,8,.5)),
+    linear-gradient(rgba(20,15,8,.425), rgba(20,15,8,.425)),
     url("../assets/footer-bg.jpg") center/cover no-repeat,
     radial-gradient(circle at 40% 30%, var(--gold-deep), #14110b);
   will-change: transform;
@@ -1152,7 +1152,9 @@ body.menu-open .mobile-nav {
   outline: none;
   border-color: var(--gold-deep);
 }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 .contact-form .btn-solid { align-self: flex-start; margin-top: 6px; }
+.form-hint { margin: -10px 0 0; font-size: 13px; color: var(--ink-soft); }
 .form-note { margin: 0; font-size: 14px; color: var(--gold-deep); min-height: 1.2em; }
 
 /* ============================================================
@@ -1284,6 +1286,7 @@ body.menu-open .mobile-nav {
   .dest-card { width: 78vw; }
   body { font-size: 16px; }
   .bento, .bento-extra, .dest-bento, .country-grid { grid-template-columns: 1fr; }
+  .field-row { grid-template-columns: 1fr; gap: 22px; }
 }
 
 /* ============================================================
@@ -1306,6 +1309,9 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 
 /* Page head with search */
 .dest-head {
+  position: relative;
+  z-index: 1;
+  background: var(--cream);
   padding-top: calc(120px + 6vh);
   padding-bottom: 20px;
   text-align: center;
@@ -1414,6 +1420,10 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   min-width: 0;
 }
 .dest-search input::placeholder { color: var(--ink-soft); opacity: 0.75; }
+/* input[type="search"] má vlastní nativní "×" pro vymazání — bez schování
+   duplikuje náš .dest-search-clear kroužek (stejný problém řešený u
+   .hsearch-bar input výš). */
+.dest-search input::-webkit-search-cancel-button { display: none; }
 .dest-search-clear {
   background: var(--cream-2);
   border: none;
@@ -1520,12 +1530,16 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   max-width: 640px;
   margin: 0 auto;
 }
+/* Velikost omezená tak, ať dekorativní kruhy nepřesáhnou mezeru mezi
+   glóbusem a seznamem kontinentů — jinak zasahují do sloupce se seznamem a
+   kříží se s jeho vodorovnými linkami, hlavně u delších řádků (Krystof,
+   listopad 2026, "u Severní Ameriky to nelícuje"). */
 .globe-backdrop {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 168%;
-  height: 168%;
+  width: 108%;
+  height: 108%;
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 0;
@@ -1567,70 +1581,87 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
    na dlaždici ho natočí na kontinent (js/dest-continents.js). */
 .globe-layout {
   display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
   gap: clamp(32px, 5vw, 72px);
-  align-items: center;
+  align-items: start;
 }
+/* Dlaždice s fotkami natrvalo nahoře (foto + popisek pod ním) na 7 kontinentů
+   ve výšce vždy přerostly glóbus — ani 2, ani 3 sloupce, ani sticky glóbus to
+   nevyřešily (zpětná vazba Krystof, listopad 2026). Teď čistý typografický
+   seznam, jedna řada na kontinent — foto se ukáže až při najetí/fokusu
+   (harmonika dole, viz .cont-tile-photo), takže v klidu výška sedí vedle
+   glóbusu, a přesto jde "vidět na destinaci". */
 .cont-tiles {
   position: relative;
   z-index: 2;
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  border-top: 1px solid rgba(189, 154, 69, .35);
 }
-/* Lichý počet → poslední dlaždice přes celou šířku, ať řádek nevisí. */
-.cont-tiles li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.cont-tiles li { position: relative; }
 .cont-tile {
   position: relative;
+  z-index: 1;
   display: flex;
-  align-items: flex-end;
-  height: 118px;
-  padding: 14px 18px;
-  overflow: hidden;
-  border-radius: 4px;
-  background: var(--cream-2);
-  color: #fff;
-  border: 1px solid transparent;
-  transition: border-color .3s var(--ease), box-shadow .3s var(--ease);
+  align-items: center;
+  gap: 18px;
+  padding: 15px 6px;
+  border-bottom: 1px solid rgba(189, 154, 69, .35);
+  background: var(--cream);
+  color: var(--ink);
+  text-decoration: none;
+  transition: background-color .3s var(--ease), padding-left .3s var(--ease);
 }
-.cont-tile img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform .8s var(--ease);
+.cont-tile-body {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  min-width: 0;
 }
-.cont-tile::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(20, 16, 10, .62) 0%, rgba(20, 16, 10, .18) 55%, rgba(20, 16, 10, .05) 100%);
-  transition: background .3s var(--ease);
+.cont-tile-name {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: color .3s var(--ease);
 }
-.cont-tile-text { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 2px; }
-.cont-tile-name { font-family: var(--serif); font-size: 21px; line-height: 1.15; }
-.cont-tile-count { font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; opacity: .88; }
-.cont-tile:hover img,
-.cont-tile.is-active img { transform: scale(1.06); }
-.cont-tile.is-active { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-soft); }
-.cont-tile.is-active::after { background: linear-gradient(to top, rgba(20, 16, 10, .55) 0%, rgba(20, 16, 10, .1) 60%, rgba(20, 16, 10, 0) 100%); }
-.cont-tile:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-/* Najetí na kontinent přímo na glóbusu rozsvítí jeho dlaždici. */
-.cont-tile.is-hover { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-soft); }
-.cont-tile.is-hover img { transform: scale(1.06); }
+.cont-tile-count {
+  flex: none;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.cont-tile-arrow {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--gold-deep);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity .3s var(--ease), transform .3s var(--ease);
+}
+.cont-tile:hover,
+.cont-tile.is-active,
+.cont-tile.is-hover { background: var(--cream-2); padding-left: 14px; }
+.cont-tile:hover .cont-tile-name,
+.cont-tile.is-active .cont-tile-name,
+.cont-tile.is-hover .cont-tile-name { color: var(--gold-deep); }
+.cont-tile:hover .cont-tile-arrow,
+.cont-tile.is-active .cont-tile-arrow,
+.cont-tile.is-hover .cont-tile-arrow { opacity: 1; transform: translateX(0); }
+.cont-tile:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
 
 @media (max-width: 900px) {
   .globe-layout { grid-template-columns: 1fr; gap: 28px; }
   /* Na mobilu jen dlaždice — glóbus je tam malý a spíš překáží (Krystof, listopad 2026). */
   .globe-layout .globe-wrap { display: none; }
   .dest-map-section { padding-top: 24px; padding-bottom: 24px; }
-  .cont-tile { height: 96px; padding: 12px 14px; }
-  .cont-tile-name { font-size: 18px; }
-  .cont-tile-count { font-size: 10.5px; }
 }
 
 .globe-loading {
@@ -1659,12 +1690,12 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .globe-glow { pointer-events: none; }
 
 .globe-country {
-  fill: #B8AF9A;
+  fill: var(--gold-soft);
   stroke: var(--cream);
   stroke-width: 0.4;
-  transition: fill .35s var(--ease);
+  transition: fill .35s var(--ease), opacity .35s var(--ease);
 }
-.globe-country[data-cont=""] { pointer-events: none; opacity: 0.6; }
+.globe-country[data-cont=""] { pointer-events: none; opacity: 0.45; }
 .globe-country.is-active { fill: var(--gold); }
 
 /* Tooltip — floats above cursor, cream pill with gold border */
@@ -2244,6 +2275,20 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .team { background: var(--cream-2); }
 .team-head { max-width: 720px; margin: 0 auto 12px; text-align: center; }
 .team-head .lead { margin: 18px auto 0; color: var(--ink-soft); }
+
+/* Skupinová fotka týmu nad kartami — ukázat "normální lidi" a zvýšit
+   důvěryhodnost (Kristýnin požadavek 27.8.2026, foto dodané 26.11.2026). */
+.team-group-photo {
+  max-width: 920px;
+  margin: 48px auto 0;
+}
+.team-group-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 24px 60px -30px rgba(33, 30, 24, 0.45);
+}
 
 .team-grid {
   display: grid;
