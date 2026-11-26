@@ -1521,7 +1521,13 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 /* overflow-x: clip — kruhová mřížka za glóbusem (.globe-backdrop, 168 %) na
    mobilu přetékala do stran a roztahovala celou stránku (i fixní hlavičku
    a kontaktní popup). clip, ne hidden: nevytváří scroll kontejner. */
-.dest-map-section { padding-top: 40px; padding-bottom: 90px; overflow-x: clip; }
+/* position+z-index (ne jen overflow-x:clip) z téhle sekce dělá vlastní
+   stacking context — jinak `.cont-tiles`'s z-index:2 "unikal" až do root
+   kontextu a tam přebíjel z-index:1 na `.dest-head` výš, takže dlaždice
+   kontinentů prosvítaly přes dropdown výsledků hledání (bug: našeptávač
+   "mad" ukazoval Madagaskar/Maďarsko, ale Madeira byla vizuálně schovaná
+   pod seznamem kontinentů, i když v DOM byla správně, listopad 2026). */
+.dest-map-section { position: relative; z-index: 0; padding-top: 40px; padding-bottom: 90px; overflow-x: clip; }
 
 /* ---- Interactive globe ---- */
 .globe-wrap {
