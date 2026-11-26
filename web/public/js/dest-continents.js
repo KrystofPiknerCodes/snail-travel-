@@ -16,6 +16,13 @@
   var list = tiles[0].closest('.cont-tiles');
   var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var current = null;
+  var rotateTimer = 0;
+  // Projetí myší přes několik řádků rychle za sebou dřív pokaždé přerušilo
+  // rozjetou 900ms rotaci glóbusu novou — výsledek působil sekavě (zpětná
+  // vazba Krystof, listopad 2026). Zvýraznění řádku zůstává okamžité,
+  // samotné otočení glóbusu se spustí, až se kurzor na řádku na chvíli
+  // zastaví — rychlý průjezd pak glóbus vůbec nepřerušuje.
+  var HOVER_INTENT_MS = 90;
 
   function globe() { return window.snailGlobe; }
 
@@ -24,12 +31,20 @@
     tiles.forEach(function (t) { t.classList.toggle('is-active', t === tile); });
     if (current === code) return;
     current = code;
-    if (globe()) globe().focus(code);
+    clearTimeout(rotateTimer);
+    if (prefersReduced) {
+      if (globe()) globe().focus(code);
+      return;
+    }
+    rotateTimer = setTimeout(function () {
+      if (globe()) globe().focus(code);
+    }, HOVER_INTENT_MS);
   }
 
   function release() {
     tiles.forEach(function (t) { t.classList.remove('is-active'); });
     current = null;
+    clearTimeout(rotateTimer);
     if (globe()) globe().release();
   }
 
