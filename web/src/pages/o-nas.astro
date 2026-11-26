@@ -1,5 +1,23 @@
 ---
+import { readFileSync } from 'node:fs';
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+
+// Statistiky v hlavičce se dřív psaly ručně a postupem času se rozešly se
+// skutečností (destinací přibývá/ubývá migrací, referencí přibývá) — klient
+// se ptal "Údaje se automaticky upraví?" (PDF "O nás", listopad 2026).
+// Teď se počítají při buildu ze skutečných dat, ať neujíždí.
+const destinaceVse = await getCollection('destinace');
+const pocetDestinaci = destinaceVse.filter((d) => d.data.typ !== 'oblast').length;
+
+// references-data.js je čistý JS soubor (window.SNAIL_REFERENCES = [...]),
+// ne content kolekce — počet referencí proto spočítáme prostým napočítáním
+// výskytů "date" klíče, bez parsování/evalu celého souboru.
+const referenceJs = readFileSync(
+  new URL('../../public/js/references-data.js', import.meta.url),
+  'utf-8'
+);
+const pocetReferenci = (referenceJs.match(/"date":/g) ?? []).length;
 ---
 <Base
   title="O nás — Snail Travel"
@@ -24,11 +42,11 @@ import Base from '../layouts/Base.astro';
           <span>Rok založení</span>
         </div>
         <div class="ref-stat">
-          <strong>107</strong>
+          <strong>{pocetDestinaci}</strong>
           <span>Destinací v&nbsp;nabídce</span>
         </div>
         <div class="ref-stat">
-          <strong>221</strong>
+          <strong>{pocetReferenci}</strong>
           <span>Klientských referencí</span>
         </div>
       </div>
@@ -80,6 +98,10 @@ import Base from '../layouts/Base.astro';
           a&nbsp;my vás předáme tomu, kdo danou destinaci zná nejlépe.
         </p>
       </header>
+
+      <figure class="team-group-photo reveal" data-delay="1">
+        <img src="assets/team/team-group.jpg" alt="Tým Snail Travel při oslavě na golfovém turnaji" loading="lazy" width="1600" height="900" />
+      </figure>
 
       <div class="team-grid">
         <article class="team-card reveal">

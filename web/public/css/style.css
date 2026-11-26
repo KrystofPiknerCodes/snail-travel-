@@ -2276,6 +2276,20 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .team-head { max-width: 720px; margin: 0 auto 12px; text-align: center; }
 .team-head .lead { margin: 18px auto 0; color: var(--ink-soft); }
 
+/* Skupinová fotka týmu nad kartami — ukázat "normální lidi" a zvýšit
+   důvěryhodnost (Kristýnin požadavek 27.8.2026, foto dodané 26.11.2026). */
+.team-group-photo {
+  max-width: 920px;
+  margin: 48px auto 0;
+}
+.team-group-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 24px 60px -30px rgba(33, 30, 24, 0.45);
+}
+
 .team-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(196px, 1fr));

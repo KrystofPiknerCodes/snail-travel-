@@ -214,10 +214,10 @@ správně — je to jen `gen-refs.py`/`gen-search-index.py`, co zůstaly pozadu.
 
 - [ ] Přepsat `tools/gen-refs.py` a `tools/gen-search-index.py`, ať píšou (i)
       čtou přímo `web/` — viz sekce výše.
-- [ ] Doplnit role/pozice členů týmu na `o-nas.astro` (klient zatím neuvedl).
-- [ ] Přidat fotky z akcí do sekce O nás (Kristýnin požadavek 27.8.2026 — chce
-      ukázat „normální lidi", zvýšit důvěryhodnost) — čekáme na podklady od klienta,
-      nefabrikovat.
+- [x] Role/pozice členů týmu na `o-nas.astro` doplněny.
+- [x] Skupinová fotka týmu v sekci O nás (Kristýnin požadavek 27.8.2026 — chce
+      ukázat „normální lidi", zvýšit důvěryhodnost) — fotka od klienta dodána
+      26.11.2026 (`assets/team/team-group.jpg`, tým na golfovém turnaji).
 - [ ] Nahradit stockové fotky destinací fotkami z vlastních zájezdů klienta.
 - [ ] Sehnat fotku do dlaždice Formule 1 v sekci Zážitky s poměrem stran
       blízkým 3:2 — `assets/zaz-f1.jpg` (1600×877) na to nesedí, dočasně má
