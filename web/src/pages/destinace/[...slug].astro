@@ -201,8 +201,8 @@ const heroGalerie = kind === 'hotel' ? hotelGalerie : (d?.galerie ?? []);
 const tocItems =
   kind === 'destinace' && d
     ? ([
-        (oblasti.length > 0 || hotelyPrime.length > 0) && { id: 'ubytovani', label: 'Destinace' },
         { id: 'info', label: 'Info' },
+        (oblasti.length > 0 || hotelyPrime.length > 0) && { id: 'ubytovani', label: 'Destinace' },
         d.galerie.length > 0 && { id: 'fotogalerie', label: 'Fotogalerie' },
         d.kdy_jet.length > 0 && { id: 'kdy-jet', label: 'Kdy jet' },
         d.mapa && { id: 'mapa', label: 'Mapa' },
@@ -440,6 +440,42 @@ const pageDescription =
     </>
   ) : (
     <>
+      <!-- ============ INFO — nahoře vycentrovaný titulek (kicker + jméno
+           destinace, zlatě), pod tím beze změny původní dvousloupcový layout
+           (nadpis = perex vlevo, text vpravo s "Přečíst více") — na přání
+           Krystof, září 2026, podle přiloženého náhledu. Info je NAD oblastmi
+           (Krystof, 28. 11. 2026: "Info bude nad oblastmi všude").
+           (js/dest-collapse.js — sdílený mechanismus i pro Poznávejte/Relaxujte
+           níž, jen jiné CSS chování: tady jde o odstín/clamp, u akordeonů o
+           úplné sbalení). ============ -->
+      <section class="section" id="info">
+        <div class="wrap">
+          <header class="section-head reveal">
+            <p class="kicker">Info</p>
+            <h2 class="display dest-info-heading">{d!.nazev}</h2>
+          </header>
+          <div class="dest-intro">
+          <div class="dest-intro-head reveal">
+            <h2 class="display">{d!.perex ? czechNbsp(d!.perex) : '⚠ Doplnit od klienta — popis destinace zatím chybí.'}</h2>
+          </div>
+          <div class="dest-intro-body reveal" data-delay="1" data-collapse>
+            <div class="dest-intro-text" data-collapse-panel>
+              <Content />
+            </div>
+            <button
+              type="button"
+              class="dest-intro-more"
+              data-collapse-trigger
+              data-label-more="Přečíst více ↓"
+              data-label-less="Skrýt ↑"
+            >
+              Přečíst více ↓
+            </button>
+          </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ============ UBYTOVÁNÍ (oblasti, nebo přímo hotely, pokud oblast chybí). Sekce se
            nevykreslí vůbec, když není ani jedno — stejná podmínka jako u položky
            v tocItems výš, ať nezůstane prázdná sekce s "doplnit od klienta". ============ -->
@@ -499,41 +535,6 @@ const pageDescription =
         </div>
       </section>
       )}
-
-      <!-- ============ INFO — nahoře vycentrovaný titulek (kicker + jméno
-           destinace, zlatě), pod tím beze změny původní dvousloupcový layout
-           (nadpis = perex vlevo, text vpravo s "Přečíst více") — na přání
-           Krystof, září 2026, podle přiloženého náhledu.
-           (js/dest-collapse.js — sdílený mechanismus i pro Poznávejte/Relaxujte
-           níž, jen jiné CSS chování: tady jde o odstín/clamp, u akordeonů o
-           úplné sbalení). ============ -->
-      <section class="section" id="info">
-        <div class="wrap">
-          <header class="section-head reveal">
-            <p class="kicker">Info</p>
-            <h2 class="display dest-info-heading">{d!.nazev}</h2>
-          </header>
-          <div class="dest-intro">
-          <div class="dest-intro-head reveal">
-            <h2 class="display">{d!.perex ? czechNbsp(d!.perex) : '⚠ Doplnit od klienta — popis destinace zatím chybí.'}</h2>
-          </div>
-          <div class="dest-intro-body reveal" data-delay="1" data-collapse>
-            <div class="dest-intro-text" data-collapse-panel>
-              <Content />
-            </div>
-            <button
-              type="button"
-              class="dest-intro-more"
-              data-collapse-trigger
-              data-label-more="Přečíst více ↓"
-              data-label-less="Skrýt ↑"
-            >
-              Přečíst více ↓
-            </button>
-          </div>
-          </div>
-        </div>
-      </section>
 
       <!-- ============ POZNÁVEJTE (akordeon, sbalené ve výchozím stavu) ============ -->
       {kind === 'destinace' && d!.poznavejte && (
