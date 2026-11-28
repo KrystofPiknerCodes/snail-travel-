@@ -126,7 +126,7 @@ pokud o to uživatel výslovně nepožádá — každá běžná úprava jde do 
 - Směr: světlý editorial + cinematic video hero (reference Rolex + Reschio). Jazyk: **čeština**.
 - Brand zlatá z loga: `--gold: #BD9A45`, `--gold-deep: #927233`, `--gold-soft: #D8BE7E`.
 - Fonty: Playfair Display (nadpisy), Cormorant Garamond (lead), Inter (text),
-  Cinzel jen na dvou místech (`.brand-name` v hlavičce, `.hero-title`) — jinam ho
+  Cinzel jen na třech místech (`.brand-name` v hlavičce, `.hero-title`, citát `.quote` na homepage — Krystof 28. 11. 2026) — jinam ho
   nešířit ([Cinzel decision paměť](../../../.claude/projects/-Users-krystof-Desktop-Claude-Code/memory/typography-cinzel-decision.md) obsahuje odůvodnění).
 - Logo: `web/public/assets/logo-mark.png` (ulita, hlavička), `logo-full.png`
   (ulita + nápis, patička). Zdroj klientův GIF, pokud dorazí vektor, nahradit.
