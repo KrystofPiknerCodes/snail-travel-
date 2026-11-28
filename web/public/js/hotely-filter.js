@@ -1,5 +1,5 @@
 /* Filtr hotelů na /hotely. Bez JS jsou vidět všechny karty (server-side render).
-   Stav filtru se zrcadlí do URL (?q=&zeme=&retezec=&hvezdy=3,4&strava=&odznaky=),
+   Stav filtru se zrcadlí do URL (?q=&zeme=a,b&retezec=&hvezdy=3,4&strava=&odznaky=),
    ať jde filtrovaný pohled sdílet. */
 (function () {
   var form = document.getElementById('hfForm');
@@ -8,17 +8,14 @@
 
   var cards = Array.prototype.slice.call(grid.children);
   var q = document.getElementById('hfQ');
-  var zeme = document.getElementById('hfZeme');
-  var retezec = document.getElementById('hfRetezec');
   var sort = document.getElementById('hfSort');
   var count =document.getElementById('hfCount');
   var empty = document.getElementById('hfEmpty');
-  var toggle = document.getElementById('hfToggle');
+  var dds = Array.prototype.slice.call(form.querySelectorAll('.hf-dd'));
   var chips = Array.prototype.slice.call(form.querySelectorAll('.hf-chip'));
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   document.documentElement.classList.add('hf-ready');
-  if (toggle) toggle.hidden = false;
 
   function norm(s) { return (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim(); }
   // Hledání ignoruje i apostrofy/pomlčky/mezery ("reids" najde "Reid's").
@@ -47,8 +44,8 @@
 
   function apply(updateUrl) {
     var text = norm(q.value);
-    var z = zeme.value;
-    var r = retezec ? retezec.value : '';
+    var z = selected('zeme');
+    var r = selected('retezec');
     var hv = selected('hvezdy');
     var st = selected('strava');
     var ce = selected('cena');
@@ -59,8 +56,8 @@
       var d = li.dataset;
       var ok = true;
       if (text && loose(d.nazev).indexOf(loose(text)) === -1) ok = false;
-      if (ok && z && d.zeme !== z) ok = false;
-      if (ok && r) ok = r === '_nezavisle' ? d.retezec === '' : d.retezec === r;
+      if (ok && z.length && z.indexOf(d.zeme) === -1) ok = false;
+      if (ok && r.length) ok = r.some(function (x) { return x === '_nezavisle' ? d.retezec === '' : d.retezec === x; });
       if (ok && hv.length && hv.indexOf(d.hvezdy) === -1) ok = false;
       if (ok && ce.length && ce.indexOf(d.cena) === -1) ok = false;
       if (ok && st.length && st.indexOf(d.strava) === -1) ok = false;
@@ -79,20 +76,19 @@
     count.textContent = 'Nalezeno ' + plural(shown);
     // Kolik filtrů z panelu je aktivních — číslo na mobilním tlačítku
     // "Další filtry" a viditelnost odkazu "Zrušit filtry".
-    var nPanel = (z ? 1 : 0) + (r ? 1 : 0) + hv.length + st.length + od.length + ce.length;
+    var nPanel = z.length + r.length + hv.length + st.length + od.length + ce.length;
     form.classList.toggle('has-filters', nPanel > 0 || !!text);
     var box = q.closest('.dest-search');
     if (box) box.classList.toggle('has-value', q.value.length > 0);
-    var tn = document.getElementById('hfToggleN');
-    if (tn) tn.textContent = nPanel ? '(' + nPanel + ')' : '';
+    updateDds();
     empty.hidden = shown !== 0;
     grid.hidden = shown === 0;
 
     if (updateUrl) {
       var p = new URLSearchParams();
       if (q.value.trim()) p.set('q', q.value.trim());
-      if (z) p.set('zeme', z);
-      if (r) p.set('retezec', r);
+      if (z.length) p.set('zeme', z.join(','));
+      if (r.length) p.set('retezec', r.join(','));
       if (hv.length) p.set('hvezdy', hv.join(','));
       if (st.length) p.set('strava', st.join(','));
       if (od.length) p.set('odznaky', od.join(','));
@@ -112,17 +108,11 @@
   function readUrl() {
     var p = new URLSearchParams(location.search);
     q.value = p.get('q') || '';
-    zeme.value = p.get('zeme') || '';
-    if (zeme.value !== (p.get('zeme') || '')) zeme.value = '';
-    if (retezec) {
-      retezec.value = p.get('retezec') || '';
-      if (retezec.value !== (p.get('retezec') || '')) retezec.value = '';
-    }
     if (sort) {
       sort.value = p.get('razeni') || 'destinace';
       if (sort.value !== (p.get('razeni') || 'destinace')) sort.value = 'destinace';
     }
-    ['hvezdy', 'cena', 'strava', 'odznaky'].forEach(function (g) {
+    ['zeme', 'retezec', 'hvezdy', 'cena', 'strava', 'odznaky'].forEach(function (g) {
       var v = p.get(g);
       setChips(g, v ? v.split(',') : []);
     });
@@ -146,8 +136,6 @@
   // Křížek v poli hledání (stejné .dest-search jako na /destinace, /reference).
   var qClear = document.getElementById('hfQClear');
   if (qClear) qClear.addEventListener('click', function () { q.value = ''; apply(true); q.focus(); });
-  zeme.addEventListener('change', function () { apply(true); });
-  if (retezec) retezec.addEventListener('change', function () { apply(true); });
   form.addEventListener('submit', function (e) { e.preventDefault(); });
   form.addEventListener('reset', function (e) { e.preventDefault(); reset(); });
   document.getElementById('hfEmptyReset').addEventListener('click', function () {
@@ -155,13 +143,33 @@
     try { form.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); } catch (e) {}
   });
 
-  if (toggle) {
-    toggle.addEventListener('click', function () {
-      var open = toggle.getAttribute('aria-expanded') !== 'true';
-      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      form.classList.toggle('is-open', open);
+  // Rozbalovací tlačítka filtrů (<details>): popisek ukazuje výběr
+  // (nic = název filtru, jedna volba = ta volba, víc = "Hvězdy (2)").
+  function updateDds() {
+    dds.forEach(function (dd) {
+      var on = chips.filter(function (c) { return c.dataset.group === dd.dataset.group && c.getAttribute('aria-pressed') === 'true'; });
+      var t = dd.querySelector('.hf-dd-text');
+      t.textContent = on.length === 0 ? dd.dataset.label
+        : on.length === 1 ? on[0].dataset.short
+        : dd.dataset.label + ' (' + on.length + ')';
+      dd.classList.toggle('is-active', on.length > 0);
     });
   }
+  dds.forEach(function (dd) {
+    dd.addEventListener('toggle', function () {
+      if (dd.open) dds.forEach(function (o) { if (o !== dd) o.open = false; });
+    });
+  });
+  document.addEventListener('click', function (e) {
+    dds.forEach(function (dd) { if (dd.open && !dd.contains(e.target)) dd.open = false; });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    dds.forEach(function (dd) {
+      if (dd.open) { dd.open = false; dd.querySelector('summary').focus(); }
+    });
+  });
+
 
   readUrl();
   apply(false);

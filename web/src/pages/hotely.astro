@@ -45,6 +45,8 @@ const mapData = items
   .filter((i) => i.hotel.data.poloha)
   .map((i) => ({ id: i.hotel.id, nazev: i.hotel.data.nazev, href: i.href, lat: i.hotel.data.poloha!.lat, lng: i.hotel.data.poloha!.lng }));
 const odznakyList = ODZNAKY_SLUGY.filter((s) => items.some((i) => i.hotel.data.odznaky.includes(s)));
+// Zaměření bez All inclusive — to je strava (filtr Strava), dvakrát to mátlo.
+const zamereniList = odznakyList.filter((s) => s !== 'all-inclusive');
 ---
 
 <Base
@@ -76,71 +78,95 @@ const odznakyList = ODZNAKY_SLUGY.filter((s) => items.some((i) => i.hotel.data.o
           <button type="button" class="dest-search-clear" id="hfQClear" aria-label="Vymazat">×</button>
         </div>
 
-        <button type="button" class="btn btn-ghost hf-toggle" id="hfToggle" aria-expanded="false" aria-controls="hfPanel" hidden>
-          <span>Filtry</span> <span class="hf-toggle-n" id="hfToggleN"></span>
-        </button>
-
+        <!-- Filtry (Krystof, listopad 2026: "nevím co kam patří"): jeden řádek
+             stejných tlačítek s rozbalovacím okénkem (jako Booking/Airbnb) —
+             tlačítko ukazuje, co je vybrané. Pod tím jen Zaměření jako kapsle
+             s ikonami. Volby uvnitř okének jsou .hf-chip (aria-pressed), takže
+             je obsluhuje stejná logika filtru (js/hotely-filter.js).
+             <details> funguje i bez JS; JS zavírá ostatní, Esc a klik mimo. -->
         <div class="hf-panel" id="hfPanel">
-          <div class="hf-line">
-            <label class="hf-select">
-              <span class="hf-sr">Země / destinace</span>
-              <select id="hfZeme" name="zeme">
-                <option value="">Všechny destinace</option>
-                {zemeList.map(([z, n]) => <option value={norm(z)}>{z} ({n})</option>)}
-              </select>
-            </label>
-            {retezce.length > 0 && (
-              <label class="hf-select">
-                <span class="hf-sr">Hotelový řetězec</span>
-                <select id="hfRetezec" name="retezec">
-                  <option value="">Všechny řetězce</option>
-                  {retezce.map((r) => <option value={norm(r)}>{r}</option>)}
-                  {hasNezavisle && <option value="_nezavisle">Nezávislé hotely</option>}
-                </select>
-              </label>
-            )}
-
-            {hvezdyList.length > 0 && (
-              <div class="hf-group" role="group" aria-label="Hvězdy">
-                <span class="hf-label" aria-hidden="true">Hvězdy</span>
-                {hvezdyList.map((n) => (
-                  <button type="button" class="hf-chip" data-group="hvezdy" data-value={String(n)} aria-pressed="false" aria-label={`${n} hvězdy`}>{n}<span class="hf-star" aria-hidden="true">★</span></button>
-                ))}
-              </div>
-            )}
-
-            {cenyList.length > 0 && (
-              <div class="hf-group" role="group" aria-label="Cena">
-                <span class="hf-label" aria-hidden="true">Cena</span>
-                {cenyList.map((k) => (
-                  <button type="button" class="hf-chip" data-group="cena" data-value={String(k.uroven)} aria-pressed="false" aria-label={`${k.symbol} — ${k.popis}`} title={k.popis}>{k.symbol}</button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div class="hf-line">
-            {stravaList.length > 0 && (
-              <div class="hf-group" role="group" aria-label="Strava">
-                <span class="hf-label" aria-hidden="true">Strava</span>
-                {stravaList.map((s) => (
-                  <button type="button" class="hf-chip" data-group="strava" data-value={s} aria-pressed="false">{STRAVA_LABEL[s]}</button>
-                ))}
-              </div>
-            )}
-
-            {odznakyList.length > 0 && (
-              <div class="hf-group" role="group" aria-label="Zaměření">
-                <span class="hf-label" aria-hidden="true">Zaměření</span>
-                {odznakyList.map((s) => (
-                  <button type="button" class="hf-chip" data-group="odznaky" data-value={s} aria-pressed="false">
-                    <Ikona name={ODZNAKY[s].ikona} size={18} />
-                    <span>{ODZNAKY[s].label}</span>
+          <div class="hf-dds">
+            <details class="hf-dd" data-group="zeme" data-label="Destinace">
+              <summary class="hf-dd-btn"><span class="hf-dd-text">Destinace</span></summary>
+              <div class="hf-dd-panel" role="group" aria-label="Destinace">
+                {zemeList.map(([z, n]) => (
+                  <button type="button" class="hf-chip hf-opt" data-group="zeme" data-value={norm(z)} data-short={z} aria-pressed="false">
+                    <span class="hf-check" aria-hidden="true"></span><span class="hf-opt-text">{z}</span><span class="hf-opt-n">{n}</span>
                   </button>
                 ))}
               </div>
+            </details>
+
+            {hvezdyList.length > 0 && (
+              <details class="hf-dd" data-group="hvezdy" data-label="Hvězdy">
+                <summary class="hf-dd-btn"><span class="hf-dd-text">Hvězdy</span></summary>
+                <div class="hf-dd-panel" role="group" aria-label="Hvězdy">
+                  {hvezdyList.map((n) => (
+                    <button type="button" class="hf-chip hf-opt" data-group="hvezdy" data-value={String(n)} data-short={`${n}★`} aria-pressed="false" aria-label={`${n} hvězdy`}>
+                      <span class="hf-check" aria-hidden="true"></span><span class="hf-opt-text hf-opt-stars">{'★'.repeat(n)}</span>
+                    </button>
+                  ))}
+                </div>
+              </details>
+            )}
+
+            <details class="hf-dd" data-group="cena" data-label="Cena">
+              <summary class="hf-dd-btn"><span class="hf-dd-text">Cena</span></summary>
+              <div class="hf-dd-panel" role="group" aria-label="Cena za noc">
+                <p class="hf-dd-note">Orientační cena za noc</p>
+                {VSECHNY_KATEGORIE.map((k) => {
+                  const ma = cenyList.some((c) => c.uroven === k.uroven);
+                  return (
+                    <button type="button" class="hf-chip hf-opt" data-group="cena" data-value={String(k.uroven)} data-short={k.symbol} aria-pressed="false" disabled={!ma} aria-label={`${k.symbol} — ${k.popis}`}>
+                      <span class="hf-check" aria-hidden="true"></span><span class="hf-opt-text hf-opt-price">{k.symbol}</span><span class="hf-opt-n">{k.popis}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </details>
+
+            {stravaList.length > 0 && (
+              <details class="hf-dd" data-group="strava" data-label="Strava">
+                <summary class="hf-dd-btn"><span class="hf-dd-text">Strava</span></summary>
+                <div class="hf-dd-panel" role="group" aria-label="Strava">
+                  {stravaList.map((s) => (
+                    <button type="button" class="hf-chip hf-opt" data-group="strava" data-value={s} data-short={STRAVA_LABEL[s]} aria-pressed="false">
+                      <span class="hf-check" aria-hidden="true"></span><span class="hf-opt-text">{STRAVA_LABEL[s]}</span>
+                    </button>
+                  ))}
+                </div>
+              </details>
+            )}
+
+            {retezce.length > 0 && (
+              <details class="hf-dd" data-group="retezec" data-label="Řetězec">
+                <summary class="hf-dd-btn"><span class="hf-dd-text">Řetězec</span></summary>
+                <div class="hf-dd-panel" role="group" aria-label="Hotelový řetězec">
+                  {retezce.map((r) => (
+                    <button type="button" class="hf-chip hf-opt" data-group="retezec" data-value={norm(r)} data-short={r} aria-pressed="false">
+                      <span class="hf-check" aria-hidden="true"></span><span class="hf-opt-text">{r}</span>
+                    </button>
+                  ))}
+                  {hasNezavisle && (
+                    <button type="button" class="hf-chip hf-opt" data-group="retezec" data-value="_nezavisle" data-short="Nezávislé" aria-pressed="false">
+                      <span class="hf-check" aria-hidden="true"></span><span class="hf-opt-text">Nezávislé hotely</span>
+                    </button>
+                  )}
+                </div>
+              </details>
             )}
           </div>
+
+          {zamereniList.length > 0 && (
+            <div class="hf-tags" role="group" aria-label="Zaměření">
+              {zamereniList.map((s) => (
+                <button type="button" class="hf-chip hf-tag" data-group="odznaky" data-value={s} aria-pressed="false" data-kubai-trigger>
+                  <Ikona name={ODZNAKY[s].ikona} size={18} />
+                  <span>{ODZNAKY[s].label}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div class="hf-bar">
@@ -201,7 +227,7 @@ const odznakyList = ODZNAKY_SLUGY.filter((s) => items.some((i) => i.hotel.data.o
   </section>
 </Base>
 
-<script is:inline src="js/hotely-filter.js?v=5"></script>
+<script is:inline src="js/hotely-filter.js?v=6"></script>
 
 <script>
   // Mapa hotelů (Leaflet z npm, dynamický import, dlaždice OSM — stejně jako

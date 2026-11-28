@@ -2694,19 +2694,77 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .hf { margin-bottom: 32px; }
 .hf-search { margin-bottom: 22px; }
 
-/* Filtry: dva vycentrované řádky */
-.hf-line {
-  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
-  gap: 12px 28px; margin-bottom: 14px;
+/* Filtry: řádek rozbalovacích tlačítek (<details class=hf-dd>) + kapsle Zaměření */
+.hf-dds { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 14px; }
+.hf-dd { position: relative; }
+.hf-dd-btn {
+  list-style: none; display: inline-flex; align-items: center; gap: 10px;
+  font-size: 16px; color: var(--ink); background: var(--white);
+  border: 1px solid var(--line); border-radius: 100px;
+  padding: 9px 18px 9px 20px; min-height: 44px; cursor: pointer; user-select: none;
+  transition: border-color .25s var(--ease), background .25s var(--ease), color .25s var(--ease), box-shadow .25s var(--ease);
 }
-.hf-group { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.hf-label {
-  font-family: var(--sans); font-size: 13px; font-weight: 600;
-  letter-spacing: .12em; text-transform: uppercase; color: var(--gold-deep);
-  margin-right: 4px;
+.hf-dd-btn::-webkit-details-marker { display: none; }
+.hf-dd-btn::after {
+  content: ''; width: 7px; height: 7px; margin-top: -4px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg); opacity: .7; transition: transform .25s var(--ease), margin .25s var(--ease);
 }
+.hf-dd[open] > .hf-dd-btn::after { transform: rotate(-135deg); margin-top: 4px; }
+.hf-dd-btn:hover { border-color: var(--gold); box-shadow: 0 4px 14px rgba(146, 114, 51, .12); }
+.hf-dd[open] > .hf-dd-btn { border-color: var(--gold-deep); }
+.hf-dd.is-active > .hf-dd-btn { background: var(--gold-deep); border-color: var(--gold-deep); color: #fff; }
+.hf-dd-btn:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 3px; }
 
-.hf-select select,
+.hf-dd-panel {
+  position: absolute; z-index: 30; top: calc(100% + 8px); left: 0;
+  min-width: 240px; width: max-content; max-width: min(360px, 90vw); max-height: 380px; overflow: auto;
+  background: var(--white); border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: 0 18px 40px -16px rgba(33, 30, 24, .28);
+  padding: 8px; display: flex; flex-direction: column; gap: 2px;
+}
+.hf-dd-note { margin: 4px 10px 6px; font-size: 14px; color: var(--ink-soft); }
+
+/* Volba v okénku: řádek se zaškrtávacím čtverečkem */
+.hf-opt {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  font: inherit; font-size: 16px; color: var(--ink); background: transparent;
+  border: 0; border-radius: 8px; padding: 10px 12px; min-height: 44px; cursor: pointer;
+  transition: background .2s var(--ease);
+}
+.hf-opt:hover { background: var(--cream-2); }
+.hf-opt:disabled { cursor: default; color: var(--ink-soft); opacity: .5; background: transparent; }
+.hf-check {
+  flex: none; width: 20px; height: 20px; border: 1.5px solid var(--gold-soft); border-radius: 5px;
+  display: inline-flex; align-items: center; justify-content: center; background: var(--white);
+  transition: background .2s var(--ease), border-color .2s var(--ease);
+}
+.hf-opt[aria-pressed="true"] .hf-check { background: var(--gold-deep); border-color: var(--gold-deep); }
+.hf-opt[aria-pressed="true"] .hf-check::after {
+  content: ''; width: 5px; height: 10px; margin-top: -2px;
+  border-right: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(45deg);
+}
+.hf-opt-text { flex: 1; }
+.hf-opt-stars { color: var(--gold); letter-spacing: 2px; }
+.hf-opt-price { color: var(--gold-deep); font-weight: 600; letter-spacing: 1px; flex: 0 0 64px; }
+.hf-opt-n { color: var(--ink-soft); font-size: 15px; white-space: nowrap; }
+.hf-opt:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: -2px; }
+
+/* Zaměření: kapsle s ikonami pod tlačítky */
+.hf-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.hf-tag {
+  display: inline-flex; align-items: center; gap: 7px;
+  font: inherit; font-size: 15px; color: var(--ink-soft); background: transparent;
+  border: 1px solid transparent; border-radius: 100px;
+  padding: 7px 14px; min-height: 40px; cursor: pointer;
+  transition: background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
+}
+.hf-tag:hover { color: var(--ink); border-color: var(--line); background: var(--white); }
+.hf-tag svg { flex: none; color: var(--gold); }
+.hf-tag[aria-pressed="true"] { color: var(--gold-deep); border-color: var(--gold); background: var(--white); }
+.hf-tag:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 3px; }
+
+/* Pruh výsledků */
 .hf-sort select {
   font: inherit; font-size: 16px; color: var(--ink);
   background-color: var(--white);
@@ -2718,24 +2776,7 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   background-size: 5px 5px; background-repeat: no-repeat;
   transition: border-color .25s var(--ease);
 }
-.hf-select select:hover, .hf-sort select:hover { border-color: var(--gold); }
-
-.hf-chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  font: inherit; font-size: 16px; line-height: 1.2; color: var(--ink);
-  background: var(--white); border: 1px solid var(--line); border-radius: 100px;
-  padding: 8px 15px; min-height: 42px; cursor: pointer;
-  transition: background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease);
-}
-.hf-chip:hover { border-color: var(--gold); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(146, 114, 51, .12); }
-.hf-chip:active { transform: translateY(0); box-shadow: none; }
-.hf-chip[aria-pressed="true"] { background: var(--gold-deep); border-color: var(--gold-deep); color: #fff; }
-.hf-chip svg { flex: none; color: var(--gold); }
-.hf-chip[aria-pressed="true"] svg { color: #fff; }
-.hf-star { color: var(--gold); margin-left: 2px; }
-.hf-chip[aria-pressed="true"] .hf-star { color: var(--gold-soft); }
-
-/* Pruh výsledků */
+.hf-sort select:hover { border-color: var(--gold); }
 .hf-bar {
   display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap;
   margin-top: 22px; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
@@ -2762,12 +2803,8 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .hf-seg[aria-pressed="true"] { background: var(--gold-deep); color: #fff; }
 .hf-seg[hidden] { display: none; }
 
-.hf-select select:focus-visible, .hf-sort select:focus-visible,
-.hf-chip:focus-visible, .hf-seg:focus-visible,
-.hf-toggle:focus-visible, .hf-reset:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 3px; }
+.hf-sort select:focus-visible, .hf-seg:focus-visible, .hf-reset:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 3px; }
 
-.hf-toggle { display: none; }
-.hf-toggle-n { margin-left: 4px; }
 
 /* Výsledky */
 .hf-grid[hidden], .hf-grid > li[hidden], .hf-empty[hidden] { display: none; }
@@ -2787,13 +2824,13 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 .hf-map .leaflet-popup-content a { color: var(--gold-deep); font-weight: 600; }
 
 @media (max-width: 860px) {
-  .hf-ready .hf-toggle { display: flex; margin: 0 auto 16px; min-height: 44px; }
-  .hf-ready .hf-panel { display: none; }
-  .hf-ready .hf.is-open .hf-panel { display: block; }
-  .hf-line { justify-content: flex-start; flex-direction: column; align-items: stretch; gap: 16px; }
-  .hf-select select { width: 100%; }
+  .hf-dds { justify-content: flex-start; }
+  .hf-tags { justify-content: flex-start; }
+  .hf-dd { position: static; }
+  .hf-dds { position: relative; }
+  .hf-dd-panel { left: 0; right: 0; min-width: 0; }
   .hf-bar-right { width: 100%; justify-content: space-between; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hf-chip, .hf-chip:hover { transition: none; transform: none; }
+  .hf-dd-btn, .hf-dd-btn::after, .hf-tag, .hf-opt { transition: none; }
 }
