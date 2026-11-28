@@ -1,6 +1,13 @@
 ---
 import Ikona from '../components/Ikona.astro';
 import Base from '../layouts/Base.astro';
+import { nejnovejsiClanek, BLOG_URL } from '../lib/blog';
+
+// Nejnovější článek z blogu — načte se při buildu (viz src/lib/blog.ts).
+const clanek = await nejnovejsiClanek();
+const clanekDatum = clanek?.datum
+  ? clanek.datum.toLocaleDateString('cs-CZ', { day: 'numeric', month: 'long', year: 'numeric' })
+  : '';
 ---
 <Base
   title="Snail Travel — Exkluzivní cestování na míru"
@@ -345,6 +352,36 @@ import Base from '../layouts/Base.astro';
       </div>
     </div>
   </section>
+
+  <!-- ============ Z BLOGU (nejnovější článek z blog.snailtravel.cz) ============
+       Krystof 28. 11. 2026: ukázka nejnovějšího článku, ať na něj lidé
+       kliknou. Data z RSS při buildu (src/lib/blog.ts); když blog není
+       dostupný, sekce se nevykreslí. Blog je samostatný web → nové okno. -->
+  {clanek && (
+    <section class="section blog-teaser" id="blog">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="kicker">Z našeho blogu</p>
+          <h2 class="display">Inspirace a zprávy<br />z našich cest</h2>
+        </header>
+        <a class="blog-card reveal" href={clanek.odkaz} target="_blank" rel="noopener">
+          <div class="blog-card-media">
+            {clanek.obrazek
+              ? <img src={clanek.obrazek} alt="" loading="lazy" width="1038" height="576" />
+              : <img src="assets/footer-bg.jpg" alt="" loading="lazy" />}
+          </div>
+          <div class="blog-card-body">
+            {clanek.kategorie[0] && <p class="blog-card-cat">{clanek.kategorie[0]}</p>}
+            <h3 class="blog-card-title">{clanek.nazev}</h3>
+            {clanek.perex && <p class="blog-card-perex">{clanek.perex}</p>}
+            <p class="blog-card-meta">{[clanek.autor, clanekDatum].filter(Boolean).join(' · ')}</p>
+            <span class="blog-card-cta">Přečíst článek <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+        <p class="blog-more reveal"><a href={BLOG_URL} target="_blank" rel="noopener">Všechny články na blogu</a></p>
+      </div>
+    </section>
+  )}
 
   <!-- ============ CITÁT / PARALLAX ============ -->
   <section class="quote-band">
