@@ -2661,6 +2661,13 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   margin: 0 0 10px;
 }
 .feature-item p { color: var(--ink-soft); margin: 0; }
+/* Ceník VIP salónku (vip-sluzby.astro) — obrázek pod textem, klik = plná velikost */
+.vip-cenik { display: block; margin-top: 18px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 14px 34px -22px rgba(33, 30, 24, .45); transition: box-shadow .3s var(--ease), transform .3s var(--ease); }
+.vip-cenik img { display: block; width: 100%; height: auto; }
+.vip-cenik-hint { display: block; padding: 10px 14px; font-size: 15px; color: var(--gold-deep); background: var(--white); }
+.vip-cenik:hover { transform: translateY(-2px); box-shadow: 0 20px 40px -22px rgba(33, 30, 24, .55); }
+.vip-cenik:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .vip-cenik, .vip-cenik:hover { transition: none; transform: none; } }
 @media (max-width: 560px) {
   .feature-item { gap: 16px; }
   .feature-item .icon-circle { width: 44px; height: 44px; }
