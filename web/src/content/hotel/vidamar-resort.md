@@ -21,4 +21,7 @@ galerie:
 poloha:
   lat: 32.6377884
   lng: -16.9283691
+strava: polopenze
+# řetězec doplněn z veřejných informací (listopad 2026), k ověření klientem
+retezec: Vidamar Resorts
 ---

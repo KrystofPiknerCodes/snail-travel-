@@ -1,0 +1,309 @@
+---
+// Přehled všech hotelů s filtrováním (země, hvězdy, řetězec, strava, odznáčky,
+// název). Karty se vykreslují na serveru (bez JS se ukážou všechny), filtr
+// běží v web/public/js/hotely-filter.js přes data-* atributy na <li>.
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Ikona from '../components/Ikona.astro';
+import HotelCard from '../components/HotelCard.astro';
+import { indexDestinace, resolveAncestors } from '../lib/hierarchie';
+import { cenovaKategorie, VSECHNY_KATEGORIE } from '../lib/cena';
+import { ODZNAKY, ODZNAKY_SLUGY, STRAVA_LABEL, STRAVA_SLUGY } from '../lib/odznaky';
+
+const destinace = await getCollection('destinace');
+const hotely = await getCollection('hotel');
+const byId = indexDestinace(destinace);
+const rel = (p?: string) => (p ? p.replace(/^\//, '') : '');
+const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const pocetText = (n: number) => `${n} ${n === 1 ? 'hotel' : n >= 2 && n <= 4 ? 'hotely' : 'hotelů'}`;
+
+const items = hotely
+  .map((hotel) => {
+    const chain = resolveAncestors(hotel.data.nadrazena, byId);
+    const zeme = chain[0]?.data.nazev ?? 'Ostatní';
+    return {
+      hotel,
+      zeme,
+      href: `destinace/${[...chain.map((c) => c.id), hotel.id].join('/')}`,
+      lokace: chain.map((c) => c.data.nazev).join(' / '),
+    };
+  })
+  .sort((a, b) => a.zeme.localeCompare(b.zeme, 'cs') || a.hotel.data.nazev.localeCompare(b.hotel.data.nazev, 'cs'));
+
+// Možnosti filtru jen z toho, co v datech skutečně je.
+const zemeMap = new Map<string, number>();
+items.forEach((i) => zemeMap.set(i.zeme, (zemeMap.get(i.zeme) ?? 0) + 1));
+const zemeList = [...zemeMap.entries()];
+const retezce = [...new Set(items.map((i) => i.hotel.data.retezec).filter(Boolean) as string[])].sort((a, b) => a.localeCompare(b, 'cs'));
+const hasNezavisle = items.some((i) => !i.hotel.data.retezec);
+const hvezdyList = [3, 4, 5].filter((n) => items.some((i) => i.hotel.data.hvezdy === n));
+const stravaList = STRAVA_SLUGY.filter((s) => items.some((i) => i.hotel.data.strava === s));
+const urovneCen = items.map((i) => (i.hotel.data.cena_od != null ? cenovaKategorie(i.hotel.data.cena_od).uroven : 0));
+const cenyList = VSECHNY_KATEGORIE.filter((k) => urovneCen.includes(k.uroven));
+// Hotely s polohou -> špendlíky na mapě (data pro skript na konci souboru).
+const mapData = items
+  .filter((i) => i.hotel.data.poloha)
+  .map((i) => ({ id: i.hotel.id, nazev: i.hotel.data.nazev, href: i.href, lat: i.hotel.data.poloha!.lat, lng: i.hotel.data.poloha!.lng }));
+const odznakyList = ODZNAKY_SLUGY.filter((s) => items.some((i) => i.hotel.data.odznaky.includes(s)));
+---
+
+<Base
+  title="Hotely — Snail Travel"
+  description="Najděte si svůj hotel — vyberte podle země, hvězdiček, řetězce, stravování nebo zaměření."
+  activeNav="hotely"
+>
+  <!-- Hlavička bez fotky (Krystof, listopad 2026) — stejný světlý page head
+       jako O nás / Reference. Hledání je stejné oválné pole s lupou jako na
+       /destinace a /reference (.dest-search), filtry hned pod ním v kompaktních
+       řádcích (Krystof: "jak máme vyhledávače všude", "celé víc kompaktní"). -->
+  <section class="section dest-head hf-head">
+    <div class="wrap">
+      <p class="kicker reveal">Hotely</p>
+      <h1 class="display reveal" data-delay="1">Najděte si svůj hotel</h1>
+      <p class="dest-lead reveal" data-delay="2">
+        Podle země, hvězdiček, řetězce, stravování i&nbsp;zaměření pobytu.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="hotely-seznam">
+    <div class="wrap">
+      <form class="hf" id="hfForm" role="search" aria-label="Hledání hotelů" novalidate>
+        <div class="dest-search hf-search">
+          <Ikona name="magnifier" size={22} class="dest-search-icon" />
+          <label for="hfQ" class="hf-sr">Hledat hotel podle názvu</label>
+          <input type="search" id="hfQ" name="q" placeholder="Hledat hotel — např. Savoy, Belmond, Calheta…" autocomplete="off" spellcheck="false" />
+          <button type="button" class="dest-search-clear" id="hfQClear" aria-label="Vymazat">×</button>
+        </div>
+
+        <button type="button" class="btn btn-ghost hf-toggle" id="hfToggle" aria-expanded="false" aria-controls="hfPanel" hidden>
+          <span>Filtry</span> <span class="hf-toggle-n" id="hfToggleN"></span>
+        </button>
+
+        <div class="hf-panel" id="hfPanel">
+          <div class="hf-line">
+            <label class="hf-select">
+              <span class="hf-sr">Země / destinace</span>
+              <select id="hfZeme" name="zeme">
+                <option value="">Všechny destinace</option>
+                {zemeList.map(([z, n]) => <option value={norm(z)}>{z} ({n})</option>)}
+              </select>
+            </label>
+            {retezce.length > 0 && (
+              <label class="hf-select">
+                <span class="hf-sr">Hotelový řetězec</span>
+                <select id="hfRetezec" name="retezec">
+                  <option value="">Všechny řetězce</option>
+                  {retezce.map((r) => <option value={norm(r)}>{r}</option>)}
+                  {hasNezavisle && <option value="_nezavisle">Nezávislé hotely</option>}
+                </select>
+              </label>
+            )}
+
+            {hvezdyList.length > 0 && (
+              <div class="hf-group" role="group" aria-label="Hvězdy">
+                <span class="hf-label" aria-hidden="true">Hvězdy</span>
+                {hvezdyList.map((n) => (
+                  <button type="button" class="hf-chip" data-group="hvezdy" data-value={String(n)} aria-pressed="false" aria-label={`${n} hvězdy`}>{n}<span class="hf-star" aria-hidden="true">★</span></button>
+                ))}
+              </div>
+            )}
+
+            {cenyList.length > 0 && (
+              <div class="hf-group" role="group" aria-label="Cena">
+                <span class="hf-label" aria-hidden="true">Cena</span>
+                {cenyList.map((k) => (
+                  <button type="button" class="hf-chip" data-group="cena" data-value={String(k.uroven)} aria-pressed="false" aria-label={`${k.symbol} — ${k.popis}`} title={k.popis}>{k.symbol}</button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div class="hf-line">
+            {stravaList.length > 0 && (
+              <div class="hf-group" role="group" aria-label="Strava">
+                <span class="hf-label" aria-hidden="true">Strava</span>
+                {stravaList.map((s) => (
+                  <button type="button" class="hf-chip" data-group="strava" data-value={s} aria-pressed="false">{STRAVA_LABEL[s]}</button>
+                ))}
+              </div>
+            )}
+
+            {odznakyList.length > 0 && (
+              <div class="hf-group" role="group" aria-label="Zaměření">
+                <span class="hf-label" aria-hidden="true">Zaměření</span>
+                {odznakyList.map((s) => (
+                  <button type="button" class="hf-chip" data-group="odznaky" data-value={s} aria-pressed="false">
+                    <Ikona name={ODZNAKY[s].ikona} size={18} />
+                    <span>{ODZNAKY[s].label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div class="hf-bar">
+          <div class="hf-bar-left">
+            <p class="hf-count" id="hfCount" aria-live="polite" role="status">Nalezeno {pocetText(items.length)}</p>
+            <button type="reset" class="hf-reset" id="hfReset">Zrušit filtry</button>
+          </div>
+          <div class="hf-bar-right">
+            <label class="hf-sort">
+              <span class="hf-sr">Řadit</span>
+              <select id="hfSort" name="razeni">
+                <option value="destinace">Řadit podle destinace</option>
+                <option value="nazev">Řadit podle názvu</option>
+                <option value="hvezdy">Nejvíc hvězd první</option>
+                <option value="cena">Od nejlevnějších</option>
+              </select>
+            </label>
+            <div class="hf-view" role="group" aria-label="Zobrazení">
+              <button type="button" class="hf-seg" id="hfViewList" aria-pressed="true">Seznam</button>
+              <button type="button" class="hf-seg" id="hfViewMap" aria-pressed="false" hidden>Mapa</button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="hf-map" id="hfMap" hidden role="region" aria-label="Mapa hotelů"></div>
+      <p class="hf-map-note" id="hfMapNote" hidden>Na mapě je {mapData.length} z {items.length} hotelů, ostatní zatím nemají zadanou polohu.</p>
+      <script type="application/json" id="hfMapData" set:html={JSON.stringify(mapData)}></script>
+
+      <ul class="country-grid hf-grid" id="hfGrid">
+        {items.map((i, idx) => (
+          <HotelCard
+            hotel={i.hotel}
+            href={i.href}
+            lokace={i.lokace}
+            rel={rel}
+            data={{
+              'data-id': i.hotel.id,
+              'data-poradi': String(idx),
+              'data-cena': i.hotel.data.cena_od != null ? String(cenovaKategorie(i.hotel.data.cena_od).uroven) : '',
+              'data-cenaod': i.hotel.data.cena_od != null ? String(i.hotel.data.cena_od) : '',
+              'data-nazev': norm(i.hotel.data.nazev),
+              'data-zeme': norm(i.zeme),
+              'data-hvezdy': String(i.hotel.data.hvezdy ?? ''),
+              'data-retezec': norm(i.hotel.data.retezec ?? ''),
+              'data-strava': i.hotel.data.strava ?? '',
+              'data-odznaky': i.hotel.data.odznaky.join(' '),
+            }}
+          />
+        ))}
+      </ul>
+
+      <div class="hf-empty" id="hfEmpty" hidden>
+        <p>Žádný hotel neodpovídá vybraným filtrům.</p>
+        <button type="button" class="btn btn-ghost" id="hfEmptyReset">Zrušit filtry</button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script is:inline src="js/hotely-filter.js?v=5"></script>
+
+<script>
+  // Mapa hotelů (Leaflet z npm, dynamický import, dlaždice OSM — stejně jako
+  // MapaMista.astro). Špendlíky sledují filtr: hotely-filter.js posílá událost
+  // "hotely:filtr" se seznamem viditelných id.
+  const el = document.getElementById('hfMap');
+  const btnMap = document.getElementById('hfViewMap');
+  const btnList = document.getElementById('hfViewList');
+  const grid = document.getElementById('hfGrid');
+  const note = document.getElementById('hfMapNote');
+  const data: Array<{ id: string; nazev: string; href: string; lat: number; lng: number }> =
+    JSON.parse(document.getElementById('hfMapData')?.textContent || '[]');
+
+  const cardEls = Array.from(document.querySelectorAll<HTMLElement>('#hfGrid > li'));
+  const allCount = cardEls.length;
+  const zemeOf = new Map(cardEls.map((li) => [li.dataset.id, li.dataset.zeme]));
+  // Filtr (hotely-filter.js) poprvé proběhne dřív, než tenhle skript začne
+  // poslouchat "hotely:filtr" — výběr z URL (např. ?zeme=botswana) si proto
+  // přečteme rovnou z karet, jinak by mapa ukázala všechny hotely.
+  let visible: Set<string> | null = new Set(cardEls.filter((li) => !li.hidden).map((li) => li.dataset.id!));
+  let map: any = null;
+  let L: any = null;
+  let markers: Array<{ id: string; m: any }> = [];
+
+  function refresh(fit: boolean) {
+    if (!map) return;
+    const pts: any[] = [];
+    markers.forEach(({ id, m }) => {
+      const on = !visible || visible.has(id);
+      if (on) { m.addTo(map); pts.push(m.getLatLng()); } else { m.remove(); }
+    });
+    // Mapa se vždy přesune na právě vybrané hotely (např. Botswana), ne aby
+    // zůstala na předchozím výřezu. Když nikdo z výběru polohu nemá, ukáže
+    // svět a poznámka to řekne.
+    if (fit) {
+      // Nikdo z výběru polohu nemá (např. jen Sadibe) → přiblížit aspoň na
+      // jeho destinaci podle ostatních hotelů ze stejné země, ne na celý svět.
+      let box = pts;
+      if (!box.length && visible && visible.size) {
+        const zeme = new Set([...visible].map((id) => zemeOf.get(id)));
+        box = data.filter((d) => zeme.has(zemeOf.get(d.id))).map((d) => L.latLng(d.lat, d.lng));
+      }
+      if (box.length) map.fitBounds(L.latLngBounds(box).pad(0.25), { maxZoom: 12 });
+      else map.setView([15, 10], 2);
+    }
+    if (note) {
+      const total = visible ? visible.size : allCount;
+      note.textContent = pts.length === 0
+        ? 'Vybrané hotely zatím nemají na mapě zadanou polohu.'
+        : pts.length === total
+          ? ''
+          : `Na mapě je ${pts.length} z ${total} vybraných hotelů, ostatní zatím nemají zadanou polohu.`;
+      note.hidden = el!.hidden || !note.textContent;
+    }
+  }
+
+  async function ensureMap() {
+    if (map || !el) return;
+    const [mod] = await Promise.all([import('leaflet'), import('leaflet/dist/leaflet.css')]);
+    L = (mod as any).default ?? mod;
+    map = L.map(el, { center: [30, 10], zoom: 3, scrollWheelZoom: false });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> přispěvatelé',
+    }).addTo(map);
+    map.on('click', () => map.scrollWheelZoom.enable());
+    el.addEventListener('mouseleave', () => map.scrollWheelZoom.disable());
+    const icon = L.divIcon({ className: 'hf-pin', html: '<span></span>', iconSize: [26, 26], iconAnchor: [13, 13], popupAnchor: [0, -14] });
+    markers = data.map((d) => {
+      const m = L.marker([d.lat, d.lng], { icon, title: d.nazev, alt: d.nazev });
+      const pop = document.createElement('div');
+      const a = document.createElement('a');
+      a.href = d.href;
+      a.textContent = d.nazev;
+      pop.appendChild(a);
+      m.bindPopup(pop);
+      return { id: d.id, m };
+    });
+    refresh(true);
+  }
+
+  async function show(mapView: boolean) {
+    if (!el || !grid || !btnMap || !btnList) return;
+    btnMap.setAttribute('aria-pressed', String(mapView));
+    btnList.setAttribute('aria-pressed', String(!mapView));
+    el.hidden = !mapView;
+    if (note && !mapView) note.hidden = true;
+    grid.classList.toggle('hf-grid-off', mapView);
+    if (mapView) {
+      await ensureMap();
+      map.invalidateSize();
+      refresh(true);
+    }
+  }
+
+  if (el && btnMap && btnList && data.length > 0) {
+    btnMap.hidden = false;
+    btnMap.addEventListener('click', () => show(true));
+    btnList.addEventListener('click', () => show(false));
+    document.addEventListener('hotely:filtr', (e) => {
+      visible = new Set((e as CustomEvent).detail.visible as string[]);
+      refresh(!el.hidden);
+    });
+  }
+</script>

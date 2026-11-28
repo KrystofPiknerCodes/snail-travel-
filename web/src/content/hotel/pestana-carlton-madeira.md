@@ -20,4 +20,7 @@ galerie:
 poloha:
   lat: 32.6424614
   lng: -16.9220174
+strava: snidane
+# řetězec doplněn z veřejných informací (listopad 2026), k ověření klientem
+retezec: Pestana
 ---

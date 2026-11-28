@@ -1909,6 +1909,26 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
 }
 .country-grid li.is-featured .country-name { font-size: 19px; }
 
+/* Hvězdy + cena na kartě hotelu — dřív badge přes fotku, rušilo to (zpětná
+   vazba klient, listopad 2026). Teď vlastní řádek POD jménem přes celou
+   šířku karty, ne vedle (dlouhého) jména — to by se s většími hvězdami
+   (druhá zpětná vazba: "ať jsou větší") nevešlo vedle sebe. */
+.hotel-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.hotel-card-stars {
+  font-size: 17px;
+  letter-spacing: 2px;
+  color: var(--gold-deep);
+}
+.hotel-card-meta .price-tag-karta .price-tag-symbol { color: var(--gold-deep); font-size: 18px; }
+.hotel-card-meta .price-tag-missing { color: var(--ink-soft); }
+
+
 /* Odznak s počtem klientských referencí (js/dest-refs.js).
    Selektor musí být .country-grid .country-refs — jinak ho přebije
    .country-grid a výš (aspect-ratio, display: block, overlaye). */
@@ -2599,3 +2619,130 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
    tmavá --gold-deep tam zaniká, nad fotkou světlejší zlatá. */
 .site-header:not(.scrolled) .nav a.is-active { color: var(--gold-soft) !important; }
 .site-header:not(.scrolled) .nav a.is-active::after { background: var(--gold-soft); }
+
+/* ============================================================
+   HOTELY — vyhledávání hotelů na /hotely (hotely.astro, js/hotely-filter.js)
+   Kompaktní verze (listopad 2026, Krystof: "jak máme vyhledávače všude",
+   "celé víc kompaktní"): hledání = stejné oválné pole .dest-search jako na
+   /destinace a /reference, filtry ve dvou vycentrovaných řádcích (výběry +
+   štítky s malým popiskem), pod tím jeden pruh s počtem / řazením /
+   Seznam–Mapa. Písmo i barvy jen ze stávajících proměnných, text min. 16 px.
+   Na mobilu jsou filtry sbalené za tlačítkem "Filtry" (jen s JS — třída
+   .hf-ready na <html>; bez JS jsou vždy vidět).
+   ============================================================ */
+.hf-head { padding-bottom: 0; }
+.hf-head .display { margin-bottom: 14px; }
+.hf-head .dest-lead { margin-bottom: 0; }
+#hotely-seznam { padding-top: clamp(28px, 3.5vw, 44px); }
+
+.hf-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.hf { margin-bottom: 32px; }
+.hf-search { margin-bottom: 22px; }
+
+/* Filtry: dva vycentrované řádky */
+.hf-line {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+  gap: 12px 28px; margin-bottom: 14px;
+}
+.hf-group { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.hf-label {
+  font-family: var(--sans); font-size: 13px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--gold-deep);
+  margin-right: 4px;
+}
+
+.hf-select select,
+.hf-sort select {
+  font: inherit; font-size: 16px; color: var(--ink);
+  background-color: var(--white);
+  border: 1px solid var(--line); border-radius: 100px;
+  padding: 9px 40px 9px 18px; min-height: 42px;
+  appearance: none; -webkit-appearance: none; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--gold-deep) 50%), linear-gradient(135deg, var(--gold-deep) 50%, transparent 50%);
+  background-position: calc(100% - 20px) 52%, calc(100% - 15px) 52%;
+  background-size: 5px 5px; background-repeat: no-repeat;
+  transition: border-color .25s var(--ease);
+}
+.hf-select select:hover, .hf-sort select:hover { border-color: var(--gold); }
+
+.hf-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: inherit; font-size: 16px; line-height: 1.2; color: var(--ink);
+  background: var(--white); border: 1px solid var(--line); border-radius: 100px;
+  padding: 8px 15px; min-height: 42px; cursor: pointer;
+  transition: background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+.hf-chip:hover { border-color: var(--gold); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(146, 114, 51, .12); }
+.hf-chip:active { transform: translateY(0); box-shadow: none; }
+.hf-chip[aria-pressed="true"] { background: var(--gold-deep); border-color: var(--gold-deep); color: #fff; }
+.hf-chip svg { flex: none; color: var(--gold); }
+.hf-chip[aria-pressed="true"] svg { color: #fff; }
+.hf-star { color: var(--gold); margin-left: 2px; }
+.hf-chip[aria-pressed="true"] .hf-star { color: var(--gold-soft); }
+
+/* Pruh výsledků */
+.hf-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap;
+  margin-top: 22px; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.hf-bar-left, .hf-bar-right { display: flex; align-items: center; gap: 10px 20px; flex-wrap: wrap; }
+.hf-count { margin: 0; font-family: var(--serif); font-size: 1.25rem; color: var(--ink); }
+.hf-reset {
+  font: inherit; font-size: 16px; color: var(--gold-deep); background: none; border: 0; cursor: pointer;
+  padding: 10px 0; min-height: 44px; visibility: hidden;
+  background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat;
+  background-size: 100% 1px; background-position: 0 calc(100% - 10px);
+  transition: background-size .3s var(--ease);
+}
+.hf.has-filters .hf-reset { visibility: visible; }
+.hf-reset:hover { background-size: 0 1px; background-position: 100% calc(100% - 10px); }
+
+.hf-view { display: inline-flex; padding: 3px; border: 1px solid var(--line); border-radius: 100px; background: var(--white); }
+.hf-seg {
+  font: inherit; font-size: 16px; color: var(--ink-soft); background: transparent; border: 0;
+  border-radius: 100px; padding: 7px 18px; min-height: 36px; cursor: pointer;
+  transition: background .25s var(--ease), color .25s var(--ease);
+}
+.hf-seg:hover { color: var(--ink); }
+.hf-seg[aria-pressed="true"] { background: var(--gold-deep); color: #fff; }
+.hf-seg[hidden] { display: none; }
+
+.hf-select select:focus-visible, .hf-sort select:focus-visible,
+.hf-chip:focus-visible, .hf-seg:focus-visible,
+.hf-toggle:focus-visible, .hf-reset:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 3px; }
+
+.hf-toggle { display: none; }
+.hf-toggle-n { margin-left: 4px; }
+
+/* Výsledky */
+.hf-grid[hidden], .hf-grid > li[hidden], .hf-empty[hidden] { display: none; }
+.hf-grid.hf-grid-off { display: none; }
+.hf-empty { text-align: center; padding: 56px 0; }
+.hf-empty p { font-family: var(--serif-2); font-size: 1.4rem; margin: 0 0 20px; color: var(--ink-soft); }
+
+/* Mapa */
+.hf-map { height: min(70vh, 600px); min-height: 380px; border: 1px solid var(--line); border-radius: 6px; margin-bottom: 12px; background: var(--cream-2); }
+.hf-map[hidden], .hf-map-note[hidden] { display: none; }
+.hf-map-note { margin: 0 0 28px; font-size: 16px; color: var(--ink-soft); }
+.hf-pin span {
+  display: block; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--gold-deep); border: 3px solid #fff; box-shadow: 0 1px 6px rgba(0,0,0,.4);
+}
+.hf-map .leaflet-popup-content { font-family: var(--sans); font-size: 16px; }
+.hf-map .leaflet-popup-content a { color: var(--gold-deep); font-weight: 600; }
+
+@media (max-width: 860px) {
+  .hf-ready .hf-toggle { display: flex; margin: 0 auto 16px; min-height: 44px; }
+  .hf-ready .hf-panel { display: none; }
+  .hf-ready .hf.is-open .hf-panel { display: block; }
+  .hf-line { justify-content: flex-start; flex-direction: column; align-items: stretch; gap: 16px; }
+  .hf-select select { width: 100%; }
+  .hf-bar-right { width: 100%; justify-content: space-between; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hf-chip, .hf-chip:hover { transition: none; transform: none; }
+}

@@ -2,7 +2,7 @@
 export interface Props {
   title: string;
   description?: string;
-  activeNav?: 'o-nas' | 'destinace' | 'reference' | 'zazitky' | 'kontakt' | 'vip-sluzby' | 'dulezite-informace' | '';
+  activeNav?: 'o-nas' | 'destinace' | 'hotely' | 'reference' | 'zazitky' | 'kontakt' | 'vip-sluzby' | 'dulezite-informace' | '';
   /** Homepage má full-bleed video hero — hlavička tam začíná průhledná a
    * po odscrollování zezlátne/zkrémovatí (řídí js/main.js přes .scrolled).
    * Ostatní stránky nemají hero pod hlavičkou, takže zůstávají "page-light"
@@ -41,7 +41,7 @@ const {
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css?v=100" />
+<link rel="stylesheet" href="css/style.css?v=107" />
 <link rel="stylesheet" href="css/destinace-detail.css?v=79" />
 </head>
 <body class:list={[{ 'page-light': !transparentHero }]}>
@@ -71,6 +71,7 @@ const {
           Více <span class="nav-more-caret" aria-hidden="true">▾</span>
         </button>
         <div class="nav-more-panel">
+          <a href="hotely" class={activeNav === 'hotely' ? 'is-active' : ''}>Hotely</a>
           <a href="vip-sluzby" class={activeNav === 'vip-sluzby' ? 'is-active' : ''}>VIP služby</a>
           <a href="dulezite-informace" class={activeNav === 'dulezite-informace' ? 'is-active' : ''}>Důležité informace</a>
         </div>
@@ -89,6 +90,7 @@ const {
 <div class="mobile-nav" id="mobileNav" aria-hidden="true">
   <a href="o-nas">O nás</a>
   <a href="destinace">Destinace</a>
+  <a href="hotely">Hotely</a>
   <a href="reference">Reference</a>
   <a href="#filozofie">Filozofie</a>
   <a href="#zazitky">Zážitky</a>
@@ -113,6 +115,7 @@ const {
     <nav class="footer-nav" aria-label="Patička">
       <a href="o-nas">O nás</a>
       <a href="destinace">Destinace</a>
+      <a href="hotely">Hotely</a>
       <a href="reference">Reference</a>
       <a href="#filozofie">Filozofie</a>
       <a href="#zazitky">Zážitky</a>

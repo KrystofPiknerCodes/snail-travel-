@@ -21,4 +21,8 @@ galerie:
 poloha:
   lat: 32.7222046
   lng: -16.8153285
+strava: snidane
+# řetězec doplněn z veřejných informací (listopad 2026), k ověření klientem
+retezec: PortoBay
+odznaky: [golf]
 ---

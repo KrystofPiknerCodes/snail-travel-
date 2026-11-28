@@ -22,4 +22,7 @@ galerie:
 poloha:
   lat: 32.6406140
   lng: -16.9239058
+strava: snidane
+# řetězec doplněn z veřejných informací (listopad 2026), k ověření klientem
+retezec: Belmond
 ---

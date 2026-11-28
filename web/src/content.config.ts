@@ -249,6 +249,26 @@ const hotelCollection = defineCollection({
     plaz: z.string().optional(),
     sport_zabava: z.string().optional(),
     nas_nazor: z.string().optional(),
+
+    // Pole pro filtrování na stránce /hotely (listopad 2026). Zvlášť od
+    // textových polí výš (`co_cena_zahrnuje`, `stravovani` zůstávají zobrazovaný
+    // text) — filtr potřebuje pevný slovník, ne volný text.
+    // Hotelový řetězec / značka (Hilton, Belmond...). Prázdné = nezávislý hotel
+    // nebo zatím neznámé.
+    retezec: z.string().optional(),
+    // Typ stravy pro filtr. Prázdné = neznámé (nefabrikovat).
+    strava: z.enum(['snidane', 'polopenze', 'plna-penze', 'all-inclusive']).optional(),
+    // Odznáčky hotelu (slugy viz web/src/lib/odznaky.ts, kde jsou i popisky/ikony).
+    odznaky: z
+      .array(
+        z.enum([
+          'all-inclusive', 'wellness', 'plazove', 'jen-dospeli', 'eko', 'wow', 's-detmi',
+          'ayurveda', 'barefoot', 'eurovikend', 'exoticky', 'fly-drive', 'golf', 'ledove',
+          'plavby', 'vlaky', 'lyzovani', 'pobytovy', 'poznavaci', 'vily', 'safari',
+          'stopover', 'seniori',
+        ])
+      )
+      .default([]),
   }),
 });
 

@@ -21,4 +21,5 @@ galerie:
 poloha:
   lat: 32.7495336
   lng: -17.0244953
+strava: snidane
 ---

@@ -89,4 +89,8 @@ nas_nazor: >
   Doporučuji všem milovníkům slunění, vodních sportů a koupání ve vyhřáté
   vodě Atlantiku, vzhledem k uměle vybudované laguně. Hotel svým komfortem
   a kvalitou služeb uspokojí i ty nejnáročnější z vás.
+strava: all-inclusive
+# řetězec doplněn z veřejných informací (listopad 2026), k ověření klientem
+retezec: Savoy Signature
+odznaky: [all-inclusive, plazove]
 ---

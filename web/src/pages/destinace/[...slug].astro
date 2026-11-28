@@ -15,6 +15,7 @@ import MapaMista from '../../components/MapaMista.astro';
 import CenaTag from '../../components/CenaTag.astro';
 import PhotoSwiper from '../../components/PhotoSwiper.astro';
 import HotelCard from '../../components/HotelCard.astro';
+import { ODZNAKY } from '../../lib/odznaky';
 import { czechNbsp } from '../../lib/typography';
 import {
   indexDestinace,
@@ -165,43 +166,9 @@ const hotelInfoText = h
     ].filter((s) => s.text) as Array<{ nadpis: string; text: string; ikona: string }>)
   : [];
 
-// Odznáčky hotelu — zatím jen ukázka natvrdo (viz docs/navrh-stitky-hotelu.html),
-// ne napojené na datový model. skupina 'A' = info o hotelu (plný zlatý kroužek),
-// 'B' = zážitky (obrysový kroužek) — stejné rozlišení jako v návrhu.
-const hotelBadgesDemo = h
-  ? [
-      {
-        skupina: 'A',
-        label: 'All inclusive',
-        ikona: 'cocktail',
-      },
-      {
-        skupina: 'A',
-        label: 'Wellness',
-        ikona: 'droplet',
-      },
-      {
-        skupina: 'A',
-        label: 'Plážové hotely',
-        ikona: 'beach-umbrella',
-      },
-      {
-        skupina: 'B',
-        label: 'Golfový zájezd',
-        ikona: 'golf-flag',
-      },
-      {
-        skupina: 'B',
-        label: 'Eurovíkend',
-        ikona: 'luggage',
-      },
-      {
-        skupina: 'B',
-        label: 'Pobytový zájezd',
-        ikona: 'island',
-      },
-    ]
-  : [];
+// Odznáčky hotelu z pole `odznaky` (slovník v lib/odznaky.ts). skupina 'A' =
+// info o hotelu (plný zlatý kroužek), 'B' = typ zájezdu (obrysový kroužek).
+const hotelBadges = h ? h.odznaky.map((slug) => ODZNAKY[slug]) : [];
 
 // Hero fotka/slider nahoře stránky — dřív jen u destinace/oblasti, hotel
 // tam měl jen text bez podkladu (viz komentář historie: kicker-light/.display
@@ -309,15 +276,14 @@ const pageDescription =
       šipky má plnou cestu — kvůli <base href> by holé „#id" vedlo na homepage. */}
   <div id="po-hero" style="scroll-margin-top: var(--header-h, 84px)"></div>
 
-  <!-- ============ ODZNÁČKY HOTELU — ukázka z docs/navrh-stitky-hotelu.html,
-       natvrdo pár příkladů (ne z dat), umístění pod hero/nad rozcestníkem
-       odsouhlaseno Krystof, 21.9.2026. ============ -->
-  {kind === 'hotel' && hotelBadgesDemo.length > 0 && (
+  <!-- ============ ODZNÁČKY HOTELU — z pole `odznaky` (návrh: docs/navrh-stitky-hotelu.html),
+       umístění pod hero/nad rozcestníkem odsouhlaseno Krystof, 21.9.2026. ============ -->
+  {kind === 'hotel' && hotelBadges.length > 0 && (
     <div class="hotel-badges">
       <div class="wrap">
         <p class="hotel-badges-label">Tento hotel nabízí</p>
         <div class="badge-row">
-          {hotelBadgesDemo.map(({ skupina, label, ikona }) => (
+          {hotelBadges.map(({ skupina, label, ikona }) => (
             <div data-kubai-trigger class={`badge ${skupina === 'A' ? 'badge-fill' : 'badge-outline'}`}>
               <span class="badge-ring">
                 <Ikona name={ikona} size={32} />

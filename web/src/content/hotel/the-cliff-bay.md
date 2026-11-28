@@ -24,4 +24,7 @@ galerie:
 poloha:
   lat: 32.6392673
   lng: -16.9257335
+strava: snidane
+# řetězec doplněn z veřejných informací (listopad 2026), k ověření klientem
+retezec: PortoBay
 ---

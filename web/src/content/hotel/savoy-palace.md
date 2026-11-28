@@ -20,4 +20,7 @@ galerie:
 poloha:
   lat: 32.6436598
   lng: -16.9205632
+strava: snidane
+# řetězec doplněn z veřejných informací (listopad 2026), k ověření klientem
+retezec: Savoy Signature
 ---
