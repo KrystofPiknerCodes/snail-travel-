@@ -22,6 +22,7 @@ import {
   resolveAncestors,
   childOblasti,
   hotelyPod,
+  hotelyVOkoli,
   buildBreadcrumb,
   resolveKontinent,
   KONTINENT_NAZEV,
@@ -126,6 +127,24 @@ const h = kind === 'hotel' ? (entry as HotelEntry).data : null;
 const hotelGalerie =
   h && h.galerie.length > 0 ? h.galerie : h?.foto ? [{ src: h.foto, alt: h.nazev }] : [];
 
+// "Hotely v okolí" — podle GPS napříč celou kolekcí, ne jen v rámci stejné
+// destinace/oblasti (Krystof, listopad 2026: "ber podle gps lokace tech
+// ostatních hotelu a dáš ty co jsou blízko" — golfová hřiště v okolí
+// záměrně vynechána, budou řešit na snailtravelgolf.cz, ne tady).
+const hotelyBlizko = kind === 'hotel' ? hotelyVOkoli(entry as HotelEntry, hotelyAll) : [];
+
+// "Poptat hotel" — odkaz na kontaktní formulář (jen na homepage, viz
+// index.astro#kontakt) s hotelem a lokací v query stringu; formulář si je
+// přečte a předvyplní pole "Kam vás to láká?" (public/js/kontakt-prefill.js).
+// Krystofovo zadání, listopad 2026: "poptávka by rovnou vyplnila hotel...
+// i Destinaci a oblast".
+const poptatHotelHref =
+  kind === 'hotel'
+    ? `?hotel=${encodeURIComponent((entry as HotelEntry).data.nazev)}&misto=${encodeURIComponent(
+        chain.map((c) => c.data.nazev).join(', ')
+      )}#kontakt`
+    : '';
+
 // "Info" — všechny textové sekce hotelu pohromadě, jeden blok s "Přečíst
 // více" (viz sekce INFO níž), ne rozsekané na samostatné sekce/kotvy.
 // `ikona` je jméno piktogramu Kubai Icons (src/ikony/index.ts) před každým mezititulkem
@@ -193,9 +212,10 @@ const tocItems =
     : kind === 'hotel' && h
     ? ([
         hotelInfoText.length > 0 && { id: 'info', label: 'Info' },
+        h.nas_nazor && { id: 'nas-nazor', label: 'Tip od Turbošneka' },
         hotelGalerie.length > 0 && { id: 'fotogalerie', label: 'Fotogalerie' },
         h.poloha && { id: 'mapa', label: 'Mapa' },
-        h.nas_nazor && { id: 'nas-nazor', label: 'Tip od šneků' },
+        hotelyBlizko.length > 0 && { id: 'hotely-okoli', label: 'V okolí' },
       ].filter(Boolean) as Array<{ id: string; label: string }>)
     : [];
 
@@ -340,9 +360,30 @@ const pageDescription =
         </section>
       )}
 
+      <!-- ============ TIP OD TURBOŠNEKA ============ -->
+      <!-- Hned pod úvodním popisem hotelu, ne až za fotogalerií/mapou —
+           zpětná vazba klient, listopad 2026: "posunula bych to výš,
+           ideálně hned pod úvodní popis hotelu". -->
+      {h!.nas_nazor && (
+        <section class="section" id="nas-nazor" style="background: var(--cream-2);">
+          <div class="wrap dest-intro">
+            <div class="dest-intro-head reveal">
+              <h2 class="display">Tip od Turbošneka</h2>
+            </div>
+            <div class="dest-intro-text-full reveal" data-delay="1">
+              <p>{czechNbsp(h!.nas_nazor)}</p>
+            </div>
+          </div>
+        </section>
+      )}
+
       <!-- ============ FOTOGALERIE ============ -->
       <section class="section" id="fotogalerie">
         <div class="wrap">
+          <header class="section-head reveal" style="text-align:center;">
+            <p class="kicker">Fotogalerie</p>
+            <h2 class="display">Fotografie hotelu</h2>
+          </header>
           {hotelGalerie.length > 0 ? (
             <PhotoSwiper images={hotelGalerie} rel={rel} />
           ) : (
@@ -356,16 +397,25 @@ const pageDescription =
         <MapaMista lat={h!.poloha.lat} lng={h!.poloha.lng} zoom={15} nazev={h!.nazev} />
       )}
 
-      <!-- ============ TIP OD ŠNEKŮ ============ -->
-      {h!.nas_nazor && (
-        <section class="section" id="nas-nazor">
-          <div class="wrap dest-intro">
-            <div class="dest-intro-head reveal">
-              <h2 class="display">Tip od šneků</h2>
-            </div>
-            <div class="dest-intro-text-full reveal" data-delay="1">
-              <p>{czechNbsp(h!.nas_nazor)}</p>
-            </div>
+      <!-- ============ HOTELY V OKOLÍ ============ -->
+      {hotelyBlizko.length > 0 && (
+        <section class="section" id="hotely-okoli" style="background: var(--cream-2);">
+          <div class="wrap">
+            <header class="section-head reveal">
+              <p class="kicker">V okolí</p>
+              <h2 class="display">Hotely v okolí</h2>
+              <p class="lead">Další adresy naší nabídky nedaleko {h!.nazev}.</p>
+            </header>
+            <ul class="country-grid reveal" data-delay="1">
+              {hotelyBlizko.map(({ hotel, vzdalenost }) => (
+                <HotelCard
+                  hotel={hotel}
+                  href={hotelHref(hotel)}
+                  lokace={`${vzdalenost < 1 ? 'pod 1 km' : `${Math.round(vzdalenost)} km`} odsud`}
+                  rel={rel}
+                />
+              ))}
+            </ul>
           </div>
         </section>
       )}
@@ -382,7 +432,7 @@ const pageDescription =
               &nbsp;·&nbsp;
               <a href="tel:+420602552624">+420&nbsp;602&nbsp;552&nbsp;624</a>
             </p>
-            <a href="#kontakt" class="btn btn-pill">Naplánovat cestu</a>
+            <a href={poptatHotelHref} class="btn btn-pill">Poptat hotel</a>
             <p style="margin-top:18px;"><a href={`destinace/${[...chain.map((c) => c.id)].join('/')}`}>&larr; Zpět na {chain[chain.length - 1]?.data.nazev}</a></p>
           </div>
         </div>
@@ -398,7 +448,7 @@ const pageDescription =
         <div class="wrap">
           <header class="section-head reveal">
             <p class="kicker">Destinace</p>
-            <h2 class="display">{oblasti.length > 0 ? 'Vyberte oblast' : 'Konkrétní hotely'}</h2>
+            <h2 class="display">{oblasti.length > 0 ? 'Vyberte oblast' : 'Pečlivě vybrané hotely'}</h2>
             <p class="lead">
               {oblasti.length > 0
                 ? 'Nabídka je rozdělená podle oblastí — vyberte si tu, která vám sedí.'
@@ -407,11 +457,12 @@ const pageDescription =
           </header>
 
           {oblasti.length > 0 ? (
-            <ul class="country-grid reveal" data-delay="1">
-              {oblasti.map((o) => {
+            <>
+            <ul class="country-grid reveal" data-delay="1" id="oblastiGrid">
+              {oblasti.map((o, i) => {
                 const pocetHotelu = hotelyAll.filter((h2) => h2.data.nadrazena === o.id).length;
                 return (
-                  <li>
+                  <li class={i >= VIDITELNYCH_HOTELU ? 'is-more' : ''}>
                     <a href={`${basePath}/${o.id}`}>
                       <div class="country-media">
                         {o.data.hlavni_foto ? (
@@ -430,6 +481,14 @@ const pageDescription =
                 );
               })}
             </ul>
+            {oblasti.length > VIDITELNYCH_HOTELU && (
+              <div class="cta-row country-grid-cta">
+                <button class="btn btn-ghost country-grid-toggle" type="button" aria-expanded="false" aria-controls="oblastiGrid">
+                  <span class="btn-ghost-label">Zobrazit všechny oblasti ({oblasti.length})</span>
+                </button>
+              </div>
+            )}
+            </>
           ) : (
             <ul class="country-grid reveal" data-delay="1">
               {hotelyPrime.map((hotel) => (
@@ -742,4 +801,4 @@ const pageDescription =
 <script is:inline src="js/photo-swiper.js?v=2"></script>
 {kind === 'destinace' && <script is:inline src="js/weather-live.js?v=2"></script>}
 {(kind === 'destinace' || kind === 'oblast' || kind === 'hotel') && <script is:inline src="js/dest-collapse.js?v=1"></script>}
-{hotelyDestinace.length > VIDITELNYCH_HOTELU && <script is:inline src="js/dest-hotel-toggle.js?v=1"></script>}
+{(hotelyDestinace.length > VIDITELNYCH_HOTELU || oblasti.length > VIDITELNYCH_HOTELU) && <script is:inline src="js/dest-hotel-toggle.js?v=2"></script>}

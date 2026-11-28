@@ -8,7 +8,6 @@ hlavni_foto: /assets/madeira/santa-cruz.jpg
 
 chybi:
   - "Popis oblasti od klienta — jen název z výpisky oblastí Madeiry na živém webu, žádný samostatný text zatím nemáme."
-  - "Fotka je zatím jen stock (Pexels, letecký pohled na pobřeží u Santa Cruz s přistávajícím letadlem) pro ukázku karty s fotkou — nahradit vlastní fotkou z zájezdu."
 ---
 
 ⚠ Doplnit od klienta — popis oblasti zatím chybí.

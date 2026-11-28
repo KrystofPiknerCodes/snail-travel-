@@ -19,7 +19,7 @@ const vse = await getCollection('destinace');
 const destinace = vse.filter((d) => d.data.typ === 'destinace');
 
 const KONTINENTY = [
-  { kod: 'EU', id: 'kontinent-evropa', trida: '', kicker: 'Destinace · Evropa', nadpis: 'Kontinent u dosahu', vLokaci: 'v Evropě', zkratka: 'Evropa' },
+  { kod: 'EU', id: 'kontinent-evropa', trida: '', kicker: 'Destinace · Evropa', nadpis: 'Tak blízko, tak pestrá.', vLokaci: 'v Evropě', zkratka: 'Evropa' },
   { kod: 'AF', id: 'kontinent-afrika', trida: 'alt', kicker: 'Destinace · Afrika', nadpis: 'Divoké kontinentální srdce', vLokaci: 'v Africe', zkratka: 'Afrika' },
   { kod: 'AS', id: 'kontinent-asie', trida: '', kicker: 'Destinace · Asie', nadpis: 'Vůně a barvy Východu', vLokaci: 'v Asii', zkratka: 'Asie' },
   { kod: 'NA', id: 'kontinent-amerika-sever', trida: 'alt', kicker: 'Destinace · Střední &amp; Severní Amerika', nadpis: 'Od kaňonů po karibské pláže', vLokaci: 've Střední a Severní Americe', zkratka: 'Severní Amerika' },
@@ -120,15 +120,16 @@ function poKontinentu(kod: string) {
         {KONTINENTY.map((k) => {
           const zeme = poKontinentu(k.kod);
           if (zeme.length === 0) return null;
-          const foto = zeme.find((d) => d.data.hlavni_foto)?.data.hlavni_foto;
           return (
             <li>
               <a href={`${Astro.url.pathname}#${k.id}`} class="cont-tile" data-cont={k.kod} data-target={k.id}>
-                {foto && <img src={rel(foto)} alt="" loading="lazy" width="480" height="300" />}
-                <span class="cont-tile-text">
+                <span class="cont-tile-body">
                   <span class="cont-tile-name">{k.zkratka}</span>
                   <span class="cont-tile-count">{sklonujDestinace(zeme.length)}</span>
                 </span>
+                <svg class="cont-tile-arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
               </a>
             </li>
           );
@@ -194,7 +195,7 @@ function poKontinentu(kod: string) {
     <div class="wrap">
       <div class="dest-cta-inner reveal">
         <h2 class="display">Nenašli jste svou destinaci?</h2>
-        <p>Rádi ji připravíme na míru. Napište nám, kam vás to láká — ozveme se do&nbsp;48&nbsp;hodin.</p>
+        <p>Rádi ji pro vás najdeme na míru. Napište nám, kam vás to láká — ozveme se do&nbsp;48&nbsp;hodin.</p>
         <a href="#kontakt" class="btn btn-pill">Naplánovat cestu</a>
       </div>
     </div>
@@ -207,5 +208,5 @@ function poKontinentu(kod: string) {
 <script is:inline src="js/destinations.js?v=5"></script>
 <script is:inline src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 <script is:inline src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
-<script is:inline src="js/globe.js?v=18"></script>
-<script is:inline src="js/dest-continents.js?v=4"></script>
+<script is:inline src="js/globe.js?v=19"></script>
+<script is:inline src="js/dest-continents.js?v=5"></script>

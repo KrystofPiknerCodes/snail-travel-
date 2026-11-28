@@ -88,7 +88,7 @@ import Base from '../layouts/Base.astro';
 
     <div class="bento dest-bento reveal">
         <a class="tile" data-fit="cover" href="destinace/madeira">
-          <div class="tile-media"><img class="tile-img" src="assets/dest-madeira.jpg" onerror="this.onerror=null;this.src='assets/ph-madeira.svg'" alt="Dramatické útesy Madeiry" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-media"><img class="tile-img" src="assets/dest-madeira.jpg" onerror="this.onerror=null;this.src='assets/ph-madeira.svg'" alt="Kvetoucí bugenvilie nad pobřežím Funchalu" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <h3 class="tile-title">Madeira</h3>
             <p class="tile-desc">Dramatické útesy a&nbsp;věčné jaro</p>
@@ -120,7 +120,7 @@ import Base from '../layouts/Base.astro';
         </a>
 
         <a class="tile" data-fit="cover" href="destinace/mauritius">
-          <div class="tile-media"><img class="tile-img" src="assets/dest-mauritius.jpg" onerror="this.onerror=null;this.src='assets/ph-mauritius.svg'" alt="Pláž na Mauriciu" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-media"><img class="tile-img" src="assets/dest-mauritius.jpg" onerror="this.onerror=null;this.src='assets/ph-mauritius.svg'" alt="Letecký pohled na tyrkysovou lagunu Mauricia" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <h3 class="tile-title">Mauritius</h3>
             <p class="tile-desc">Bílé pláže a&nbsp;korálové útesy</p>
@@ -172,7 +172,7 @@ import Base from '../layouts/Base.astro';
         <div class="pillar reveal" data-kubai-trigger data-delay="3">
           <Ikona name="phone" size={52} class="pillar-icon" />
           <h3>Osobní vztah</h3>
-          <p>Nejste číslo v systému. Telefon vám zvedneme kdykoliv, ne jen v úředních hodinách.</p>
+          <p>Kdykoli nám zavoláte, telefon vám zvedne jedna z nás z týmu Snail Travel. Bez robotů. 24 hodin denně, 7 dní v týdnu.</p>
         </div>
       </div>
     </div>
@@ -184,12 +184,12 @@ import Base from '../layouts/Base.astro';
       <header class="section-head reveal">
         <p class="kicker">Kurátorský výběr</p>
         <h2 class="display">Zážitky, které si pamatujete<br />ještě roky poté</h2>
-        <p class="lead">Deset způsobů, jak může vypadat vaše příští cesta — vybíráme jen to, co má smysl zažít osobně.</p>
+        <p class="lead">Mnoho způsobů, jak může vypadat vaše příští cesta — vybíráme nevšední zážitky.</p>
       </header>
 
       <div class="bento reveal">
         <a class="tile" data-fit="cover" href="#kontakt">
-          <div class="tile-media"><img class="tile-img" src="assets/zaz-golf.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-golf.svg'" alt="Golfové hřiště s výhledem na moře" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
+          <div class="tile-media"><img class="tile-img" src="assets/zaz-golf.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-golf.svg'" alt="Golfové hřiště lemované palmami v luxusním resortu" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Golf</p>
             <div class="tile-rule"></div>
@@ -213,7 +213,7 @@ import Base from '../layouts/Base.astro';
             <p class="tile-desc">Evropské metropole na&nbsp;pár dní, beze spěchu.</p>
           </div>
         </a>
-        <a class="tile" href="#kontakt">
+        <a class="tile" data-fit="cover" href="#kontakt">
           <div class="tile-media"><img class="tile-img" src="assets/zaz-poznavani.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-poznavani.svg'" alt="Poznávací cesta historickým místem" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Poznávání</p>
@@ -221,7 +221,7 @@ import Base from '../layouts/Base.astro';
             <p class="tile-desc">Historie a&nbsp;kultura se&nbsp;soukromým průvodcem.</p>
           </div>
         </a>
-        <a class="tile" href="#kontakt">
+        <a class="tile" data-fit="cover" href="#kontakt">
           <div class="tile-media"><img class="tile-img" src="assets/zaz-svatby.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-svatby.svg'" alt="Svatba v zahraničí" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Svatby</p>
@@ -229,7 +229,7 @@ import Base from '../layouts/Base.astro';
             <p class="tile-desc">Váš den, na&nbsp;místě, které si budete pamatovat navždy.</p>
           </div>
         </a>
-        <a class="tile" href="#kontakt">
+        <a class="tile" data-fit="cover" href="#kontakt">
           <div class="tile-media"><img class="tile-img" src="assets/zaz-wellness.jpg" onerror="this.onerror=null;this.src='assets/ph-zaz-wellness.svg'" alt="Luxusní wellness resort" loading="lazy" /><span class="tile-cta">Zobrazit nabídky</span></div>
           <div class="tile-body">
             <p class="tile-cat">Wellness</p>
@@ -361,12 +361,12 @@ import Base from '../layouts/Base.astro';
         <p class="kicker">Začněme</p>
         <h2 class="display">Naplánujte<br />svou cestu</h2>
         <p class="contact-text">
-          Řekněte nám, kam vás to láká. Náš poradce se vám ozve do&nbsp;48&nbsp;hodin
-          s&nbsp;prvním návrhem cesty — nezávazně a&nbsp;diskrétně.
+          Řekněte nám, kam vás to láká. Náš travel designér se vám ozve do&nbsp;48&nbsp;hodin
+          a&nbsp;připraví vám návrh cesty — nezávazně a&nbsp;diskrétně.
         </p>
         <div class="contact-details">
-          <a href="mailto:cesty@snailtravel.cz">cesty@snailtravel.cz</a>
-          <a href="tel:+420000000000">+420&nbsp;000&nbsp;000&nbsp;000</a>
+          <a href="mailto:info@snailtravel.cz">info@snailtravel.cz</a>
+          <a href="tel:+420602552624">+420&nbsp;602&nbsp;552&nbsp;624</a>
         </div>
       </div>
 
@@ -379,14 +379,31 @@ import Base from '../layouts/Base.astro';
           <label for="email">E‑mail</label>
           <input type="email" id="email" name="email" autocomplete="email" required />
         </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="kdy">Kdy chcete cestovat?</label>
+            <input type="text" id="kdy" name="kdy" placeholder="např. květen 2027" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="pocet">Kolik vás pojede?</label>
+            <input type="text" id="pocet" name="pocet" placeholder="např. 2 dospělí" autocomplete="off" />
+          </div>
+        </div>
         <div class="field">
           <label for="message">Kam vás to láká?</label>
-          <textarea id="message" name="message" rows="4" required></textarea>
+          <textarea id="message" name="message" rows="3" required></textarea>
+        </div>
+        <div class="field">
+          <label for="prani">Máte speciální přání?</label>
+          <textarea id="prani" name="prani" rows="2"></textarea>
         </div>
         <button type="submit" class="btn btn-solid">Odeslat poptávku</button>
+        <p class="form-hint">Poptávka je nezávazná.</p>
         <p class="form-note" id="formNote" role="status" aria-live="polite"></p>
       </form>
     </div>
   </section>
 
 </Base>
+
+<script is:inline src="js/kontakt-prefill.js?v=1"></script>

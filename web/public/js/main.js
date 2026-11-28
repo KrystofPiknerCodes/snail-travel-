@@ -7,10 +7,17 @@
 
   var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---------- Header: solid bar after scroll ---------- */
+  /* ---------- Header: solid bar after scroll ----------
+     Jen stránky s průhledným video hero (ne .page-light, viz Base.astro)
+     mají mít tenhle scroll-dependent přepínač vůbec — jinde je `.scrolled`
+     natvrdo dané při SSR a tahle funkce ho na scrollY<=60 omylem strhávala,
+     takže se aktivní odkaz v navigaci (zlatá na krémové) stal nečitelný,
+     než se stránka poprvé scrollovala přes 60px (nález impeccable audit,
+     listopad 2026: kontrast 1.7:1, potřeba 4.5:1). */
   var header = document.getElementById("header");
+  var alwaysSolid = document.body.classList.contains("page-light");
   function onScrollHeader() {
-    if (window.scrollY > 60 || header.classList.contains("header-solid")) header.classList.add("scrolled");
+    if (alwaysSolid || window.scrollY > 60 || header.classList.contains("header-solid")) header.classList.add("scrolled");
     else header.classList.remove("scrolled");
   }
   onScrollHeader();

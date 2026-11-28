@@ -20,7 +20,6 @@ perex: >
 
 chybi:
   - "Delší popis Funchalu (památky, tržnice, konkrétní čtvrti) — zatím jen stručný fakt převzatý z popisu Madeiry, plnohodnotný text k doplnění od klienta."
-  - "Fotka je zatím jen stock (Pexels, ulice ve Funchalu) pro ukázku karty s fotkou — nahradit vlastní fotkou z zájezdu."
 ---
 
 Funchal je hlavní město Madeiry a její jediný větší přístav — sem přiletíte,

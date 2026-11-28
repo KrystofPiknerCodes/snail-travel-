@@ -36,11 +36,10 @@ const { hotel, href, lokace, rel, class: className, data } = Astro.props;
     </div>
     <div class="country-body">
       <span class="country-name">{hotel.data.nazev}</span>
-      {/* Hvězdy a cena byly přes fotku — rušilo to (zpětná vazba klient,
-          listopad 2026: "na fotce je to rušivé"). Teď pod názvem, na
-          vlastním řádku přes celou šířku karty — vedle (dlouhého) jména
-          by se velké hvězdy nevešly (druhá zpětná vazba: "ať jsou větší").
-          Přeneseno z nasazené verze z druhého počítače (28. 11. 2026). */}
+      <!-- Hvězdy a cena byly přes fotku — rušilo to (zpětná vazba klient,
+           listopad 2026: "na fotce je to rušivé"). Teď pod názvem, na
+           vlastním řádku přes celou šířku karty — vedle (dlouhého) jména
+           by se velké hvězdy nevešly (druhá zpětná vazba: "ať jsou větší"). -->
       <span class="hotel-card-meta">
         {hotel.data.hvezdy && (
           <span class="hotel-card-stars" data-rate>

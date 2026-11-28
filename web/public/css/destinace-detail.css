@@ -163,31 +163,12 @@
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
-/* Hvězdy + cena na kartě hotelu — dřív každý v jiném rohu (hvězdy vlevo,
-   cena vpravo), po zvýraznění cenového badge (viz níže) to vedle sebe
-   působilo nesourodě. Teď oba badge žijí v jednom sloupci vpravo nahoře,
-   stejný tmavší/výraznější styl. Zpětná vazba Krystof, září 2026. */
-.country-badge-stack {
-  position: absolute;
-  top: 10px; right: 10px;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
-.country-badge-stack .country-badge {
-  position: static;
-  padding: 7px 12px;
-  background: rgba(14, 11, 7, 0.72);
-  font-size: 14px;
-  letter-spacing: 1.5px;
-  line-height: 1;
-}
 /* Hvězdy vždy jako 5 znaků (N vybarvených + zbytek tlumený), stejný princip
-   jako $ u CenaTag — na přání Krystof, září 2026: "ať je jich vidět 5". */
+   jako $ u CenaTag — na přání Krystof, září 2026: "ať je jich vidět 5".
+   Dřív byly hvězdy + cena jako tmavý badge přes fotku karty hotelu
+   (.country-badge-stack) — přesunuto vedle jména, viz .hotel-card-head
+   ve style.css (zpětná vazba klient, listopad 2026: "na fotce rušivé"). */
 .country-stars-off { opacity: 0.35; }
-.country-badge-price { display: inline-flex; align-items: center; }
 .country-sub {
   display: block;
   margin-top: 5px;
