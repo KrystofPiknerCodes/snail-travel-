@@ -56,16 +56,28 @@ import Base from '../layouts/Base.astro';
               k cestování patří.
             </p>
             <!-- Ceník VIP Service Club Continental (Letiště Praha) — obrázek od
-                 Krystofa, 28. 11. 2026. Klik otevře plnou velikost, ať je ceník
-                 čitelný i na mobilu. -->
-            <a class="vip-cenik" href="assets/vip/cenik-club-continental.webp" target="_blank" rel="noopener">
+                 Krystofa, 28. 11. 2026. Klik ho zvětší přímo na stránce
+                 (<dialog>, bez nového okna); zavře se klikem, křížkem nebo Esc. -->
+            <button type="button" class="vip-cenik" id="vipCenikOpen" aria-label="Zvětšit ceník VIP salónku">
               <img
                 src="assets/vip/cenik-club-continental.webp"
                 alt="Ceník VIP Service Club Continental na Letišti Praha — ceny odbavení podle počtu osob, ostatní služby a manipulační poplatky"
                 width="2000" height="1256" loading="lazy"
               />
-              <span class="vip-cenik-hint">Zobrazit ceník v plné velikosti</span>
-            </a>
+            </button>
+            <dialog class="vip-cenik-dlg" id="vipCenikDlg" aria-label="Ceník VIP salónku">
+              <button type="button" class="vip-cenik-close" aria-label="Zavřít">×</button>
+              <img src="assets/vip/cenik-club-continental.webp" alt="Ceník VIP Service Club Continental na Letišti Praha" width="2000" height="1256" />
+            </dialog>
+            <script is:inline>
+              (function () {
+                var b = document.getElementById('vipCenikOpen');
+                var d = document.getElementById('vipCenikDlg');
+                if (!b || !d || !d.showModal) return;
+                b.addEventListener('click', function () { d.showModal(); });
+                d.addEventListener('click', function () { d.close(); });
+              })();
+            </script>
           </span>
         </div>
 

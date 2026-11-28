@@ -2661,12 +2661,17 @@ body.page-light .site-header .hact-phone-num:hover { color: var(--gold-deep); }
   margin: 0 0 10px;
 }
 .feature-item p { color: var(--ink-soft); margin: 0; }
-/* Ceník VIP salónku (vip-sluzby.astro) — obrázek pod textem, klik = plná velikost */
-.vip-cenik { display: block; margin-top: 18px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 14px 34px -22px rgba(33, 30, 24, .45); transition: box-shadow .3s var(--ease), transform .3s var(--ease); }
+/* Ceník VIP salónku (vip-sluzby.astro) — obrázek pod textem, klik ho zvětší
+   v <dialog> přímo na stránce (bez nového okna). */
+.vip-cenik { display: block; width: 100%; padding: 0; margin-top: 18px; background: none; cursor: zoom-in; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 14px 34px -22px rgba(33, 30, 24, .45); transition: box-shadow .3s var(--ease), transform .3s var(--ease); }
 .vip-cenik img { display: block; width: 100%; height: auto; }
-.vip-cenik-hint { display: block; padding: 10px 14px; font-size: 15px; color: var(--gold-deep); background: var(--white); }
 .vip-cenik:hover { transform: translateY(-2px); box-shadow: 0 20px 40px -22px rgba(33, 30, 24, .55); }
 .vip-cenik:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 3px; }
+.vip-cenik-dlg { padding: 0; border: 0; background: transparent; max-width: 96vw; max-height: 94vh; overflow: visible; cursor: zoom-out; }
+.vip-cenik-dlg::backdrop { background: rgba(20, 18, 14, .82); }
+.vip-cenik-dlg img { display: block; max-width: 96vw; max-height: 94vh; width: auto; height: auto; border-radius: 8px; }
+.vip-cenik-close { position: fixed; top: 14px; right: 16px; width: 48px; height: 48px; border-radius: 50%; border: 0; background: rgba(255,255,255,.92); color: var(--ink); font-size: 28px; line-height: 1; cursor: pointer; }
+.vip-cenik-close:focus-visible { outline: 2px solid var(--gold-soft); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .vip-cenik, .vip-cenik:hover { transition: none; transform: none; } }
 @media (max-width: 560px) {
   .feature-item { gap: 16px; }
